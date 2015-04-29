@@ -162,9 +162,16 @@ gulp.task "test:api:standalone",
         "lint"
         "build"
         "run"
+        "sleep"
     ],
-    shell.task [ "sleep 1", JASMINE_APITEST ], ignoreErrors: true
-
+    ->
+        gulp.src ""
+            .pipe shell( JASMINE_APITEST, ignoreErrors: true )
+            .on "end", ->
+                # this is a workaround, otherwise the process wouldn't exit because the app still runs
+                setTimeout ->
+                    process.exit()
+                , 0
 
 gulp.task "test:api",
     "Perform all API tests.",
