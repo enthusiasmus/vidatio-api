@@ -14,6 +14,7 @@ frisby.globalSetup
         json: true
         baseUri: config.url
 
+
 frisby.create "Check CORS middleware to return Access-Control-Allow Headers"
     .options "/"
     .expectStatus 200

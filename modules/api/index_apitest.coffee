@@ -102,7 +102,5 @@ frisby.create "Expect penguins logger on /v0/logs/penguins"
     .expectJSON
         fields:
             name: "penguins"
-    .after ->
-
     .toss()
 

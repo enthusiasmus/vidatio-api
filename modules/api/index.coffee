@@ -44,10 +44,10 @@ passport.use new BasicStrategy {}, ( username, password, done ) ->
     return done(null, false)
 
 
-router.use "/v#{config.apiVersion}/penguin",      penguin
-router.use "/v#{config.apiVersion}/penguins",     penguins
+router.use "/#{config.apiVersion}/penguin",      penguin
+router.use "/#{config.apiVersion}/penguins",     penguins
 
-router.use "/v#{config.apiVersion}/logs", logRoutes
+router.use "/#{config.apiVersion}/logs", logRoutes
 
 router.all "/#{config.apiVersion}/*", (req, res) ->
     logger.error req: req, "not found!"

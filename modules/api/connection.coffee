@@ -9,7 +9,7 @@ config = require "../config"
 connection = ""
 
 connect = ->
-    connection = mongoose.createConnection config.db.url,
+    connection = mongoose.createConnection config.db.host,
         server:
             socketOptions:
                 keepAlive: 1

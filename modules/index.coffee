@@ -47,6 +47,7 @@ applyMiddlewares = ( app ) ->
     # parse json
     app.use bodyParser.json()
 
+    # add the api
     app.use api
 
 
