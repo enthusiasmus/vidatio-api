@@ -39,29 +39,31 @@ frisby.create "Expect 404 on not defined /v0/api route"
 
 
 
-expectedLoggers = []
-
-expectedLoggers.push
+penguinLogger =
     name: "penguins"
     level: "TRACE"
-    streams: [ {
+    streams: [{
         type: "rotating-file"
         path: "#{ config.dirs.log }/penguins.log"
         period: "1d"
         count: 365
         level: "TRACE"
-    } ]
+    }]
 
-expectedLoggers.push
+
+apiLogger =
     name: "api"
     level: "TRACE"
-    streams: [ {
+    streams: [{
         type: "rotating-file"
         path: "#{ config.dirs.log }/api.log"
         period: "1d"
         count: 365
         level: "TRACE"
-    } ]
+    }]
+
+expectedLoggers = [ penguinLogger, apiLogger ]
+
 
 frisby.create "Expect available loggers on /v0/logs"
     .get "/v0/logs"
