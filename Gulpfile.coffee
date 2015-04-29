@@ -40,7 +40,7 @@ JASMINE_UNITTEST = "jasmine-node -m '_test.' --matchall --forceexit --color --no
 
 
 gulp.task "run",
-    "Run the App",
+    "Run the App.",
     [
         "lint"
         "build"
@@ -190,7 +190,7 @@ gulp.task "test:unit",
 
 
 gulp.task "docs",
-    "Generate apidocjs"
+    "Generate apidoc."
     [ "clean:docs" ],
     (cb) ->
         apidoc.exec
