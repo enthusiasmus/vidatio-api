@@ -6,6 +6,8 @@ passport = require "passport"
 
 {penguin,penguins} = require "./penguins"
 
+{upload} = require "./upload"
+
 {routes:logRoutes, api:logger} = require "../logger"
 
 router = Router()
@@ -45,6 +47,8 @@ passport.use new BasicStrategy {}, ( username, password, done ) ->
 
 router.use "/penguin", penguin
 router.use "/penguins", penguins
+
+router.use "/upload", upload
 
 router.use "/logs", logRoutes
 
