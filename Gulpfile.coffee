@@ -73,10 +73,11 @@ gulp.task "develop",
 
         watch FILES, ( file ) ->
             if file.isNull()
+                # delete build file on deletion
                 buildFile = file.relative.replace /^modules/, "build"
                 buildFile = buildFile.replace /coffee$/, "js"
-
                 fs.unlinkSync __dirname + "/" + buildFile
+
                 delete cache.caches.coffee[__dirname + "/" + file.relative]
             gulp.start "build"
             gulp.start "test:unit"
