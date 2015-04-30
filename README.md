@@ -36,6 +36,7 @@ api
  │    │         ├── index.coffee
  │    │         └── penguin.coffee
  │    ├── config.coffee
+ │    ├── config.coffee.example
  │    ├── index_apitest.coffee
  │    ├── index.coffee
  │    ├── index_test.coffee
@@ -91,3 +92,31 @@ Available tasks
 ```
 
 ## Logging
+[Bunyan](https://github.com/trentm/node-bunyan) is a simple logger, use (Log.io)[https://github.com/NarrativeScience/Log.io] for real-time logging in your browser - works great.
+
+## Linting
+There's a [CoffeeScript Style Guide](https://github.com/polarmobile/coffeescript-style-guide), you can modify the `coffeelint.json` file for your needs (e.g. 4 spaces instead of 2).
+
+## EditorConfig
+The `.editorconfig` contains all relevant styles for your editor, your IDE/Editor should support it, otherwise install a plugin from [editorconfig.org](http://editorconfig.org/).
+
+## Some thoughts
+The application is designed in a highly modularized way. 
+
+* The `modules` folder contains the main application, it should serve the API.
+    * `config.coffee`/`config.coffee.example` &rArr; the `config.coffee` file isn't included in the repository
+    * `index.coffee` &rArr; exports a function, which starts the server
+    * `logger.coffee` &rArr; here's the place, where the loggers are defined. In this case the logger and some logger specific routes (e.g. to change the log level of a router) are exported. The loggers are defined here because this makes other sub-modules like the api independent of the used logger, just make sure that these logging functions are implemented:
+        * fatal
+        * error
+        * warn
+        * info
+        * debug
+        * trace
+* The `_apidoc` folder is used to store apidoc files which doesn't fit anywhere else, like `footer.md`.
+* The API is designed as middleware for express.js, this means that a simple `app.use require("./api")` is everything you have to do. 
+    * Within the `api` folder there is a separate folder for each REST Ressource, e.g. `penguins` which contains following files:
+        * `_apidoc.coffee` &rArr; apidoc specifications from older versions should be moved here (to enable comparison between api versions)
+        * `index.coffee` &rArr; exports the routes for single and multiple Resource (penguin / penguins).
+        * `index_apitest.coffee` &rArr; self-explanatory
+        * `penguin.coffee` &rArr; Mongoose Schema, Model
