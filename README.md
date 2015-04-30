@@ -59,10 +59,10 @@ In this setup, [Jasmine](http://jasmine.github.io/) is used for testing.
 [Frisby.js](frisbyjs.com) is used for Api Tests, same naming conventions apply for Api Tests like for Unit Tests except that they end with `_apitest.js`. 
 
 ## Debug
-[Node-Inspector](https://github.com/node-inspector/node-inspector) is the debugging tool of choice.
+[Node-Inspector](https://github.com/node-inspector/node-inspector) is the debugging tool of choice, by default `gulp dev` starts the app in debug mode and Node-Inspector.
 
 ## Docs
-[APIDOC](http://apidocjs.com/) - see homepage for details.
+[APIDOC](http://apidocjs.com/) - see homepage for details, can be generated with `gulp docs`, target directory is `./docs`.
 
 ## Gulp
 Self-explanatory. Here's the output from `gulp help`:
