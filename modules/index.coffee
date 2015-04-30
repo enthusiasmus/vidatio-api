@@ -50,6 +50,9 @@ applyMiddlewares = ( app ) ->
     # add the api
     app.use "/#{config.apiVersion}/", api
 
+    app.use "*", (req, res) ->
+        res.status(404).json error: "not found"
+
 
 
 module.exports = ( newConfig ) ->
