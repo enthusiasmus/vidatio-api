@@ -4,6 +4,11 @@
 
 ```sh
 api
+ ├── .editorconfig
+ ├── .gitignore
+ ├── .git
+ │     ├──*
+ │     *
  ├── app.coffee
  ├── app.js
  ├── coffeelint.json
