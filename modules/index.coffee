@@ -48,7 +48,7 @@ applyMiddlewares = ( app ) ->
     app.use bodyParser.json()
 
     # add the api
-    app.use api
+    app.use "/#{config.apiVersion}/", api
 
 
 

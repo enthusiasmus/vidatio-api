@@ -7,7 +7,6 @@ passport = require "passport"
 {penguin,penguins} = require "./penguins"
 
 {routes:logRoutes, api:logger} = require "../logger"
-config = require "../config"
 
 router = Router()
 
@@ -44,19 +43,12 @@ passport.use new BasicStrategy {}, ( username, password, done ) ->
     return done(null, false)
 
 
-router.use "/#{config.apiVersion}/penguin",      penguin
-router.use "/#{config.apiVersion}/penguins",     penguins
+router.use "/penguin", penguin
+router.use "/penguins", penguins
 
-router.use "/#{config.apiVersion}/logs", logRoutes
+router.use "/logs", logRoutes
 
-router.all "/#{config.apiVersion}/*", (req, res) ->
-    logger.error req: req, "not found!"
-
-    res.status(404).json error: "not found"
-
-
-
-router.all "*", (req, res) ->
+router.all "/*", (req, res) ->
     logger.error req: req, "not found!"
 
     res.status(404).json error: "not found"
