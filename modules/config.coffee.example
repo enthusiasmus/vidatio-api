@@ -1,0 +1,12 @@
+class Config
+    constructor: ->
+        @apiVersion = "v0"
+        @port = 3333
+        @host = "localhost"
+        @url = "http://#{@host}:#{@port}"
+        @db =
+            host: "localhost"
+        @dirs =
+            log: "./logs"
+
+module.exports = new Config
