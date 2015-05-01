@@ -1,16 +1,20 @@
 "use strict"
 
+fs = require "fs"
+
 gulp       = require("gulp-help")(require("gulp"))
 coffee     = require "gulp-coffee"
 coffeelint = require "gulp-coffeelint"
 concat     = require "gulp-concat"
 nodemon    = require "gulp-nodemon"
 inspector  = require "gulp-node-inspector"
+remember   = require "gulp-remember"
 watch      = require "gulp-watch"
 apidoc     = require "gulp-apidoc"
 cache      = require "gulp-cached"
 plumber    = require "gulp-plumber"
 shell      = require "gulp-shell"
+watch      = require "gulp-watch"
 del        = require "del"
 
 
@@ -27,10 +31,11 @@ TESTFILES = [
 ]
 
 DIRS =
+    modules: "./modules"
     build: "./build"
     docs:  "./docs"
 
-APP = "app.js"
+APP = "./app.js"
 
 NODEMONSTARTED = false
 
@@ -46,7 +51,7 @@ gulp.task "run",
         "build"
     ],
     ->
-        require "./app"
+        require APP
 
 
 gulp.task "default",
@@ -62,24 +67,23 @@ gulp.task "develop",
     [
         "build"
         "nodemon"
-        "debug"
         "sleep"
         "test"
-    ],
-    ->
-        gulp.watch [ FILES ], [ "build", "test:unit", "test:api" ]
-            .on "change", (event) ->
-                if event.type is "deleted"
-                    delete cache.caches["coffee"][event.path]
-            .on "error", ->
-                console.error "an error happened while watching coffee files"
+    ],->
 
-        gulp.watch [ TESTFILES ], [ "build", "test:unit", "test:api" ]
-            .on "change", (event) ->
-                if event.type is "deleted"
-                    delete cache.caches["coffee"][event.path]
-            .on "error", ->
-                console.log "an error happened while watching test files"
+        watch FILES, ( file ) ->
+            if file.isNull()
+                buildFile = file.relative.replace /^modules/, "build"
+                buildFile = buildFile.replace /coffee$/, "js"
+
+                fs.unlinkSync __dirname + "/" + buildFile
+                delete cache.caches.coffee[__dirname + "/" + file.relative]
+            gulp.start "build"
+            gulp.start "test:unit"
+            gulp.start "test:api"
+
+        gulp.src( [] )
+            .pipe inspector()
 
 
 gulp.task "test",
@@ -107,7 +111,7 @@ gulp.task "debug",
 gulp.task "lint",
     "Lints all CoffeeScript source files.",
     ->
-        gulp.src "./modules/**/*.coffee"
+        gulp.src FILES
             .pipe coffeelint()
             .pipe coffeelint.reporter()
 
@@ -118,7 +122,7 @@ gulp.task "build",
     ->
         gulp.src FILES
             .pipe plumber()
-            .pipe cache("coffee")
+            .pipe cache( "coffee" )
             .pipe coffee( bare: true ).on( "error", -> this.emit "end" )
             .pipe gulp.dest( DIRS.build )
 
@@ -201,7 +205,7 @@ gulp.task "docs",
     [ "clean:docs" ],
     (cb) ->
         apidoc.exec
-            src: "./modules"
+            src: DIRS.modules
             dest: DIRS.docs
         cb()
 
