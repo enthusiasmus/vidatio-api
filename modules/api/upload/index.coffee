@@ -21,22 +21,58 @@ adminAuth = (req, res, next) ->
 uploadRoot = upload.route "/"
 
 ###
-@api {post} upload/ POST - retrieve an external ressource
-@apiName upload
+@api {post} upload/ POST - retrieve an external ressource via POST
+@apiName uploadPost
 @apiGroup Upload
 @apiVersion 0.0.1
 @apiPermission admin
 @apiDescription Forward an external ressource to our client.
 
 @apiParam {String} url  external ressource.
-
 @apiUse basicAuth
+@apiExample {curl} Example usage:
+    curl --data "url=http://www.wien.gv.at/statistik/ogd/b17-migrationbackground-vie-subdc.csv" \
+    -u admin:admin -i \
+    http://localhost:3333/v0/upload
 ###
-
 uploadRoot.post basicAuth, ( req, res ) ->
     logger.debug url: req.body.url, "retrieve file from another server"
 
     request = http.get req.body.url, (resp) ->
+        logger.debug code: resp.statusCode, "http code from http.post request"
+
+        bodyChunks = []
+        resp.on 'data', (chunk) ->
+            bodyChunks.push chunk
+
+        .on 'end', ->
+            body = Buffer.concat bodyChunks
+            logger.debug "return file"
+            res.send body
+
+    request.on 'error', (e) ->
+        logger.error error:e.message, "wasn't able to retrieve file by url"
+        res.status(500).json error: "not found"
+
+###
+@api {get} upload?url=:url GET - retrieve an external ressource via GET
+@apiName uploadGet
+@apiGroup Upload
+@apiVersion 0.0.1
+@apiPermission admin
+@apiDescription Forward an external ressource to our client.
+
+@apiParam {String} url  external ressource.
+@apiExample {curl} Example usage:
+    curl -u admin:admin -i \
+    http://localhost:3333/v0/upload?url=http://www.wien.gv.at/statistik/ogd/b17-migrationbackground-vie-subdc.csv
+@apiUse basicAuth
+###
+
+uploadRoot.get basicAuth, ( req, res ) ->
+    logger.debug url: req.query.url, "retrieve file from another server"
+
+    request = http.get req.query.url, (resp) ->
         logger.debug code: resp.statusCode, "http code from http.get request"
 
         bodyChunks = []
@@ -45,7 +81,7 @@ uploadRoot.post basicAuth, ( req, res ) ->
 
         .on 'end', ->
             body = Buffer.concat bodyChunks
-            logger.debug body: body, "return file"
+            logger.debug "return file"
             res.send body
 
     request.on 'error', (e) ->
