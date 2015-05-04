@@ -44,14 +44,17 @@ passport.use new BasicStrategy {}, ( username, password, done ) ->
 
 
 router.use "/penguin", penguin
-router.use "/penguins", penguins
+router.use "/penguin", penguins
+
+router.get "/auth", passport.authenticate( "basic",  session: false ), ( req, res ) ->
+    res.json name: req.user.username
 
 router.use "/logs", logRoutes
 
 router.all "/*", (req, res) ->
     logger.error req: req, "not found!"
 
-    res.status(404).json error: "not found"
+    res.status( 404 ).json error: "not found"
 
 
 module.exports = router
