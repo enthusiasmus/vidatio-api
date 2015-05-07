@@ -6,6 +6,8 @@ passport = require "passport"
 
 {penguin,penguins} = require "./penguins"
 
+{upload} = require "./upload"
+
 {routes:logRoutes, api:logger} = require "../logger"
 
 router = Router()
@@ -48,6 +50,8 @@ router.use "/penguin", penguins
 
 router.get "/auth", passport.authenticate( "basic",  session: false ), ( req, res ) ->
     res.json name: req.user.username
+
+router.use "/upload", upload
 
 router.use "/logs", logRoutes
 
