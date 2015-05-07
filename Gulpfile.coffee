@@ -8,7 +8,6 @@ coffeelint = require "gulp-coffeelint"
 concat     = require "gulp-concat"
 nodemon    = require "gulp-nodemon"
 inspector  = require "gulp-node-inspector"
-remember   = require "gulp-remember"
 watch      = require "gulp-watch"
 apidoc     = require "gulp-apidoc"
 cache      = require "gulp-cached"
@@ -119,7 +118,9 @@ gulp.task "lint",
 
 gulp.task "build",
     "Lints and builds the project to '#{DIRS.build}'.",
-    [ "lint" ],
+    [
+        "lint"
+    ],
     ->
         gulp.src FILES
             .pipe plumber()
@@ -203,7 +204,9 @@ gulp.task "test:unit",
 
 gulp.task "docs",
     "Generate apidoc."
-    [ "clean:docs" ],
+    [
+        "clean:docs"
+    ],
     (cb) ->
         apidoc.exec
             src: DIRS.modules
