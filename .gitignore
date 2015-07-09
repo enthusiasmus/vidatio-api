@@ -35,3 +35,5 @@ userconfig*
 config.coffee
 
 modules/config.coffee
+
+.idea/
