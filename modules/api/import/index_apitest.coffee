@@ -18,7 +18,7 @@ frisby.globalSetup
 
 
 frisby.create('A get request with a query variable called url is requested')
-    .get '/v0/upload?url=' + data
+    .get '/v0/import?url=' + data
     .auth "admin", "admin"
     .expectStatus 200
     .expectBodyContains('Migrationshintergrund')

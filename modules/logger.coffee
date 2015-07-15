@@ -39,8 +39,8 @@ loggers =
         level: "trace"
         serializers:
             bunyan.stdSerializers
-    upload: bunyan.createLogger
-        name: "upload"
+    _import: bunyan.createLogger
+        name: "_import"
         streams: [
             type:   "rotating-file"
             path:   "#{ config.dirs.log }/upload.log"

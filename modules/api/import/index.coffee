@@ -4,11 +4,11 @@
 passport = require "passport"
 
 config   = require "../../config"
-{upload:logger}   = require "../../logger"
+{_import:logger}   = require "../../logger"
 
 http = require "http"
 
-upload = Router()
+_import = Router()
 
 basicAuth = passport.authenticate "basic",  session: false
 
@@ -18,12 +18,12 @@ adminAuth = (req, res, next) ->
     logger.info { user: req.user }, "is admin"
     next()
 
-uploadRoot = upload.route "/"
+importRoot = _import.route "/"
 
 ###
-@api {get} upload?url=:url GET - retrieve an external ressource via GET
-@apiName uploadGet
-@apiGroup Upload
+@api {get} import?url=:url GET - retrieve an external ressource via GET
+@apiName importGet
+@apiGroup Import
 @apiVersion 0.0.1
 @apiPermission admin
 @apiDescription Forward an external ressource to our client.
@@ -31,10 +31,10 @@ uploadRoot = upload.route "/"
 @apiParam {String} url  external ressource.
 @apiExample {curl} Example usage:
     curl -u admin:admin -i \
-    http://localhost:3333/v0/upload?url=http://www.wien.gv.at/statistik/ogd/b17-migrationbackground-vie-subdc.csv
+    http://localhost:3333/v0/import?url=http://www.wien.gv.at/statistik/ogd/b17-migrationbackground-vie-subdc.csv
 ###
 
-uploadRoot.get ( req, res ) ->
+importRoot.get ( req, res ) ->
     logger.debug url: req.query.url, "retrieve file from another server"
 
     request = http.get req.query.url, (resp) ->
@@ -54,4 +54,4 @@ uploadRoot.get ( req, res ) ->
         res.status(500).json error: "not found"
 
 module.exports =
-    upload:   upload
+    _import:   _import
