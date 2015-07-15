@@ -32,10 +32,9 @@ uploadRoot = upload.route "/"
 @apiExample {curl} Example usage:
     curl -u admin:admin -i \
     http://localhost:3333/v0/upload?url=http://www.wien.gv.at/statistik/ogd/b17-migrationbackground-vie-subdc.csv
-@apiUse basicAuth
 ###
 
-uploadRoot.get basicAuth, ( req, res ) ->
+uploadRoot.get ( req, res ) ->
     logger.debug url: req.query.url, "retrieve file from another server"
 
     request = http.get req.query.url, (resp) ->
