@@ -57,7 +57,6 @@ router.use "/import", _import
 
 router.use "/user", user
 
-
 router.use "/logs", logRoutes
 
 router.all "/*", (req, res) ->

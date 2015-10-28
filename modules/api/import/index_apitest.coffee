@@ -21,4 +21,4 @@ frisby.create('A get request with a query variable called url is requested')
     .auth "admin", "admin"
     .expectStatus 200
     .expectBodyContains('Gemeindenummer;Name;Wahlberechtigte')
-.toss()
+    .toss()

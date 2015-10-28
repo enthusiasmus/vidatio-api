@@ -50,8 +50,8 @@ loggers =
         level: "trace"
         serializers:
             bunyan.stdSerializers
-    users: bunyan.createLogger
-        name: "users"
+    user: bunyan.createLogger
+        name: "user"
         streams: [
             type:   "rotating-file"
             path:   "#{ config.dirs.log }/users.log"

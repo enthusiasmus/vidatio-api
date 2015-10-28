@@ -5,37 +5,50 @@ passport = require "passport"
 LocalStrategy = require('passport-local').Strategy
 
 config   = require "../../config"
-{users:logger}   = require "../../logger"
+{user:logger}   = require "../../logger"
 
 
 {model:User} = require "./user"
 
+user = Router()
 
-# user = Router()
-# console.log user
+passport.use new LocalStrategy User.authenticate()
+passport.serializeUser User.serializeUser()
+passport.deserializeUser User.deserializeUser()
 
-
-# passport.use(new LocalStrategy(User.authenticate()))
-# passport.serializeUser(User.serializeUser())
-# passport.deserializeUser(User.deserializeUser())
-
-# userRoot = user.root "/"
+userRoot = user.route "/"
 
 
-# userRoot.post (req, res) ->
-#     console.log "AHUEHUEHUE"
-#     user = new User
-#     user.email = req.body.email
+###
+@api {post} user/ POST - register a user
+@apiName addUser
+@apiGroup User
+@apiVersion 0.0.1
+@apiDescription Register a new User-
 
-#     User.register user, req.body.passowrd, (err, user) ->
-#         if err
-#             logger.debug err: err, "error registering user"
+@apiParam {String} email  Users' email
+@apiParam {String} password  Users' password
 
-#         passport.authenticate('local') req, res ->
-#             logger.debug "success"
+@apiUse SuccessUser
+###
+userRoot.post (req, res) ->
+    user = new User
 
-# userRoot.get (req, res) ->
-#     console.log "SÖRS"
+    user.email = req.body.email
 
-# module.exports =
-#     user: user
+    User.register user, req.body.password, (err, user) ->
+        console.log "hi"
+        if err
+            logger.debug err: err, "error registering user"
+            res.status( 500 ).json error: err
+
+        logger.info user: user, "success registering user"
+
+        res.json
+            _id: user._id
+            email: user.email
+
+        # passport auth still to do
+
+module.exports =
+    user: user
