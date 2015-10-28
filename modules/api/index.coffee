@@ -8,6 +8,8 @@ passport = require "passport"
 
 {_import} = require "./import"
 
+{user} = require "./users"
+
 {routes:logRoutes, api:logger} = require "../logger"
 
 router = Router()
@@ -52,6 +54,9 @@ router.get "/auth", passport.authenticate( "basic",  session: false ), ( req, re
     res.json name: req.user.username
 
 router.use "/import", _import
+
+router.use "/user", user
+
 
 router.use "/logs", logRoutes
 

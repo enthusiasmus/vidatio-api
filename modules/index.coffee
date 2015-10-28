@@ -27,6 +27,7 @@ allowCors = ( req, res, next ) ->
 
 applyMiddlewares = ( app ) ->
     app.use passport.initialize()
+    app.use passport.session()
 
     # add the logger middleware
     app.use logger
