@@ -31,7 +31,7 @@ importRoot = _import.route "/"
 @apiParam {String} url  external ressource.
 @apiExample {curl} Example usage:
     curl -u admin:admin -i \
-    http://localhost:3333/v0/import?url=http://www.wien.gv.at/statistik/ogd/b17-migrationbackground-vie-subdc.csv
+    http://localhost:3333/v0/import?url=http://data.ooe.gv.at/files/cms/Mediendateien/OGD/ogd_abtStat/Wahl_LT_09_OGD.csv
 ###
 
 importRoot.get ( req, res ) ->

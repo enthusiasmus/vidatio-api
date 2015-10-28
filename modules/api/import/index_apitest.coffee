@@ -4,8 +4,7 @@ frisby = require "frisby"
 
 config = require "../../config"
 
-data =
-    'http://www.wien.gv.at/statistik/ogd/b17-migrationbackground-vie-subdc.csv'
+data = 'http://data.ooe.gv.at/files/cms/Mediendateien/OGD/ogd_abtStat/Wahl_LT_09_OGD.csv'
 
 frisby.globalSetup
     request:
@@ -21,5 +20,5 @@ frisby.create('A get request with a query variable called url is requested')
     .get '/v0/import?url=' + data
     .auth "admin", "admin"
     .expectStatus 200
-    .expectBodyContains('Migrationshintergrund')
+    .expectBodyContains('Gemeindenummer')
 .toss()
