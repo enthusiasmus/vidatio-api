@@ -2,7 +2,8 @@
 
 mongoose = require "mongoose"
 validate = require "mongoose-validator"
-basic = require "basic-auth-mongoose"
+{extend} = require "mongoose-validator"
+crypto = require "crypto"
 
 db = require "../connection"
 
@@ -13,6 +14,15 @@ emailValidator = [
         message: "API.USER.REGISTER.EMAIL.NOTVALID"
 ]
 
+extend "isName", (val) ->
+
+nameValidator = [
+    validate
+        validator: "matches"
+        arguments: /^[\w_.-]+$/
+        message: "API.USER.REGISTER.NAME.NOTVALID"
+]
+
 userSchema = mongoose.Schema
     email:
         type: String
@@ -20,11 +30,12 @@ userSchema = mongoose.Schema
         unique: true
         required: true
         validate: emailValidator
-    username:
+    name:
         type: String
         trim: true
         unique: true
         required: true
+        validate: nameValidator
     deleted:
         type: Boolean
         required: true
@@ -33,14 +44,55 @@ userSchema = mongoose.Schema
         type: Boolean
         required: true
         default: false
+    _password:
+        type: String
+        required: true
+    hash:
+        type: String
+        required: true
+    salt:
+        type: String
+        required: true
+
+userSchema.virtual("password").set (password) ->
+    @_password = password
+    @salt = @makeSalt()
+    @hash = @encryptPassword password
+.get ->
+    @_password
+
+userSchema.methods =
+    makeSalt: ->
+        return Math.round( new Date().valueOf() * Math.random() ) + ""
+
+    encryptPassword: (password) ->
+        return ""  unless password
+        try
+            return crypto.createHmac("sha1", @salt)
+                .update(password)
+                .digest("hex")
+        catch err
+            return ""
+        return
+
+    authenticate: (password) ->
+        return true if @encryptPassword(password) is @hash
+
+userSchema.statics =
+    findByNameOrEmail: (nameOrEmail, cb) ->
+        @findOne
+            $or: [
+                { email: nameOrEmail }
+                { name: nameOrEmail }
+            ]
+        , (error, user) ->
+            return cb error, user
 
 
-userSchema.plugin basic
 userModel = db.model "User", userSchema
 module.exports =
     schema: userSchema
     model:  userModel
-
 
 ###
 @apiDefine SuccessUser
@@ -56,7 +108,7 @@ module.exports =
     HTTP/1.1 200 OK
     {
         "_id": "5635ed0505b07e9c1ade03b4",
-        "username": "test@test.com",
+        "name": "test",
         "email": "test@test.com",
         "deleted": false
     }

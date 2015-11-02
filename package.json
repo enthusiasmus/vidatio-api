@@ -46,7 +46,6 @@
   },
   "devDependencies": {
     "apidoc": "^0.12.1",
-    "basic-auth-mongoose": "^0.1.1",
     "del": "^1.1.1",
     "frisby": "^0.8.5",
     "gulp": "^3.8.11",

@@ -12,27 +12,10 @@ config   = require "../../config"
 
 user = Router()
 
-passport.use new BasicStrategy ( username, password, done ) ->
-    User.findOne
-        username: username
-    , ( error, user ) ->
-        return done error if error
-        return done null, false if !user
-        return done null, false if !user.authenticate password
-        return done null, user
-
-
-passport.serializeUser ( user, done ) ->
-    done null, user._id
-
-passport.deserializeUser ( id, done ) ->
-    User.findById id, ( err, user ) ->
-        done err, user
 
 basicAuth = passport.authenticate "basic",  session: false
 
 userRoot = user.route "/"
-
 
 ###
 @api {post} user/ POST - register a user
@@ -46,35 +29,35 @@ userRoot = user.route "/"
 
 @apiUse SuccessUser
 ###
-userRoot.post ( req, res ) ->
+userRoot.post (req, res) ->
     user = new User
 
     user.email = req.body.email
-    user.username = req.body.email
+    user.name = req.body.name
     user.password = req.body.password
 
-    user.save ( error, user ) ->
+    user.save (error, user) ->
         if error
             console.log "if user save error"
             logger.debug error: error, "error registering user"
-            return res.status( 500 ).json error: error
+            return res.status(500).json error: error
 
         console.log "success registering user"
         logger.info user: user, "success registering user"
-        req.login user, ( error ) ->
-            if error
-                console.log "error login user"
-                console.log error
-                logger.debug error: error, "error login new user"
-                return res.status( 500 ).json error: error
+        # req.login user, ( error ) ->
+        #     if error
+        #         console.log "error login user"
+        #         console.log error
+        #         logger.debug error: error, "error login new user"
+        #         return res.status( 500 ).json error: error
 
-            console.log "success login user"
-            logger.info user: user, "success login new user"
-            return res.json
-                _id: user._id
-                username: user.username
-                email: user.email
-                deleted: user.deleted
+        #     console.log "success login user"
+        #     logger.info user: user, "success login new user"
+        return res.json
+            _id: user._id
+            name: user.name
+            email: user.email
+            deleted: user.deleted
 
 
 userIdRoot = user.route "/:id"
@@ -92,16 +75,16 @@ conflicts when creating a User with the same name later).
 @apiUse SuccessUser
 ###
 
-userIdRoot.delete ( req, res ) ->
+userIdRoot.delete basicAuth, (req, res) ->
     logger.debug id: req.params.id, "delete a user by id"
 
-    User.findById req.params.id, "id name", ( error, user ) ->
+    User.findById req.params.id, "id name", (error, user) ->
         if error
             logger.error error: error, "wasn't able to get user"
-            res.status( 500 ).json error: error
+            res.status(500).json error: error
         else
             if not user? or user.deleted
-                return res.status( 404 ).json error: "not found"
+                return res.status(404).json error: "not found"
 
             user.deleted = true
             user.username = "#{ user.username }:#{ user.email }"
@@ -109,10 +92,22 @@ userIdRoot.delete ( req, res ) ->
                 if error
                     logger.error error: error, "wasn't able to save user"
 
-                    res.status( 500 ).json error: error
+                    res.status(500).json error: error
                 else
                     logger.debug user: user, "return user"
                     res.json message: "successfully deleted user"
+
+
+userCheckRoot = user.route "/check"
+userCheckRoot.get (req, res) ->
+    for key, value of req.query
+        switch key
+            when "email", "name"
+                obj = "#{key}": value
+                User.findOne obj, (error, user) ->
+                    return res.status(500).json error: error if error
+                    return res.status(404).json error: error if not user? or user.deleted
+                    return res.status(200).json message: value + " available"
 
 module.exports =
     user: user
