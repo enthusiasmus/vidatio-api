@@ -94,10 +94,12 @@ module.exports =
 @apiSuccess {Object} user
 @apiSuccess {ObjectId} user._id Contains the users' object id
 @apiSuccess {Number} user.__v Internal Revision of the document.
-@apiSuccess {String} user.username Contains the users' username
-@apiSuccess {String} user.email Contains the users' email
-@apiSuccess {String} user.salt Contains the users' salt of password
-@apiSuccess {String} user.hash Contains the users' password as hash
+@apiSuccess {String} user.name Contains the users' username.
+@apiSuccess {String} user.email Contains the users' email.
+@apiSuccess {String} user.salt Contains the users' salt of password.
+@apiSuccess {String} user.hash Contains the users' password as hash.
+@apiSuccess {Boolean} user.admin Tells if the user is admin.
+@apiSuccess {Boolean} user.deleted Tells if the user is deleted.
 @apiSuccessExample {json} Success-Response:
     HTTP/1.1 200 OK
     {
@@ -105,5 +107,6 @@ module.exports =
         "name": "test",
         "email": "test@test.com",
         "deleted": false
+        "admin": false
     }
 ###
