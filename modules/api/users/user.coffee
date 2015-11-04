@@ -44,9 +44,6 @@ userSchema = mongoose.Schema
         type: Boolean
         required: true
         default: false
-    _password:
-        type: String
-        required: true
     hash:
         type: String
         required: true
@@ -55,11 +52,8 @@ userSchema = mongoose.Schema
         required: true
 
 userSchema.virtual("password").set (password) ->
-    @_password = password
     @salt = @makeSalt()
     @hash = @encryptPassword password
-.get ->
-    @_password
 
 userSchema.methods =
     makeSalt: ->
