@@ -9,7 +9,7 @@ config = require "../config"
 connection = ""
 
 connect = ->
-    connection = mongoose.createConnection config.db.host,
+    connection = mongoose.createConnection config.mongo,
         server:
             socketOptions:
                 keepAlive: 1
@@ -25,6 +25,6 @@ connection.on "disconnected", ->
     connect()
 
 connection.once "open", ->
-    logger.info config.db.url, "db connection opened"
+    logger.info config.mongo, "db connection opened"
 
 module.exports = connection

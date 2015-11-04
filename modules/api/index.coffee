@@ -4,11 +4,12 @@
 passport = require "passport"
 {BasicStrategy} = require "passport-http"
 
+{model:User} = require "./users/user"
 {penguin,penguins} = require "./penguins"
 
 {_import} = require "./import"
-
 {user} = require "./users"
+
 
 {routes:logRoutes, api:logger} = require "../logger"
 

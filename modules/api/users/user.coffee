@@ -28,13 +28,13 @@ userSchema = mongoose.Schema
         type: String
         trim: true
         unique: true
-        required: true
+        required: "API.USER.REGISTER.EMAIL.REQUIRED"
         validate: emailValidator
     name:
         type: String
         trim: true
         unique: true
-        required: true
+        required: "API.USER.REGISTER.NAME.REQUIRED"
         validate: nameValidator
     deleted:
         type: Boolean

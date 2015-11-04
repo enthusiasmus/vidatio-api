@@ -5,6 +5,7 @@ passport = require "passport"
 {BasicStrategy:BasicStrategy} = require "passport-http"
 
 config   = require "../../config"
+errorHandler   = require "../../helper/error-handler"
 
 {user:logger}   = require "../../logger"
 
@@ -25,6 +26,7 @@ userRoot = user.route "/"
 @apiDescription Register a new User
 
 @apiParam {String} email  Users' email
+@apiParam {String} name  Users' name
 @apiParam {String} password  Users' password
 
 @apiUse SuccessUser
@@ -38,21 +40,12 @@ userRoot.post (req, res) ->
 
     user.save (error, user) ->
         if error
-            console.log "if user save error"
             logger.debug error: error, "error registering user"
+            error = errorHandler.format error
             return res.status(500).json error: error
 
-        console.log "success registering user"
         logger.info user: user, "success registering user"
-        # req.login user, ( error ) ->
-        #     if error
-        #         console.log "error login user"
-        #         console.log error
-        #         logger.debug error: error, "error login new user"
-        #         return res.status( 500 ).json error: error
 
-        #     console.log "success login user"
-        #     logger.info user: user, "success login new user"
         return res.json
             _id: user._id
             name: user.name
@@ -78,36 +71,59 @@ conflicts when creating a User with the same name later).
 userIdRoot.delete basicAuth, (req, res) ->
     logger.debug id: req.params.id, "delete a user by id"
 
-    User.findById req.params.id, "id name", (error, user) ->
+    User.findOneAndUpdate {
+        _id: req.params.id
+    },  {
+        name: "#{ user.name }:#{ user.email }"
+        email: "#{ user.name }:#{ user.email }"
+        deleted: true
+    }, {
+        "new": true
+    }, (error, user) ->
         if error
-            logger.error error: error, "wasn't able to get user"
-            res.status(500).json error: error
+            logger.error error: error, "wasn't able to update user"
+            error = errorHandler.format error
+            return res.status(500).json error: error
         else
-            if not user? or user.deleted
+            if not user? or !user.deleted
                 return res.status(404).json error: "not found"
 
-            user.deleted = true
-            user.username = "#{ user.username }:#{ user.email }"
-            user.save ( error ) ->
-                if error
-                    logger.error error: error, "wasn't able to save user"
-
-                    res.status(500).json error: error
-                else
-                    logger.debug user: user, "return user"
-                    res.json message: "successfully deleted user"
-
+            logger.debug user: user, "successfully updated user"
+            res.json message: "successfully deleted user"
 
 userCheckRoot = user.route "/check"
+
+###
+@api {check} user/check?email&name GET - check if a username or email exists
+@apiName checkUser
+@apiGroup User
+@apiVersion 0.0.1
+
+@apiDescription Check if the given username or email is already in the database.
+
+@apiSuccessExample {json} Success-Response:
+    HTTP/1.1 200 OK
+    {
+        "message": "email / name available
+    }
+###
+
 userCheckRoot.get (req, res) ->
     for key, value of req.query
         switch key
             when "email", "name"
                 obj = "#{key}": value
                 User.findOne obj, (error, user) ->
-                    return res.status(500).json error: error if error
-                    return res.status(404).json error: error if not user? or user.deleted
-                    return res.status(200).json message: value + " available"
+                    if error
+                        logger.error error: error, "wasn't able to find user by #{key}"
+                        error = errorHandler.format error
+                        return res.status(500).json error: error
+
+                    if not user? or user.deleted
+                        return res.status(404).json error: "not found"
+
+                    logger.debug user: user, "found user by #{key}"
+                    return res.status(200).json message: value + " not available"
 
 module.exports =
     user: user

@@ -39,7 +39,7 @@ APP = "./app.js"
 NODEMONSTARTED = false
 
 
-JASMINE_APITEST = "jasmine-node -m '_apitest.' --matchall --forceexit --color --nohelpers #{DIRS.build}"
+JASMINE_APITEST = "NODE_ENV='test' jasmine-node -m '_apitest.' --matchall --forceexit --color --nohelpers #{DIRS.build}"
 JASMINE_UNITTEST = "jasmine-node -m '_test.' --matchall --forceexit --color --nohelpers #{DIRS.build}"
 
 
