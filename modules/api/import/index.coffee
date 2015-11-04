@@ -3,20 +3,11 @@
 {Router} = require "express"
 passport = require "passport"
 
-config   = require "../../config"
 {_import:logger}   = require "../../logger"
 
 http = require "http"
 
 _import = Router()
-
-basicAuth = passport.authenticate "basic",  session: false
-
-adminAuth = (req, res, next) ->
-    return res.status(401).end() unless req.user? and req.user.isAdmin?
-    return res.status(401).end() if req.user.isAdmin is false
-    logger.info { user: req.user }, "is admin"
-    next()
 
 importRoot = _import.route "/"
 

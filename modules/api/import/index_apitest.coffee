@@ -16,9 +16,8 @@ frisby.globalSetup
         baseUri: config.url
 
 
-frisby.create('A get request with a query variable called url is requested')
-    .get '/v0/import?url=' + data
-    .auth "admin", "admin"
-    .expectStatus 200
-    .expectBodyContains('Gemeindenummer;Name;Wahlberechtigte')
-    .toss()
+# frisby.create('A get request with a query variable called url is requested')
+#     .get '/v0/import?url=' + data
+#     .expectStatus(200)
+#     .expectBodyContains('Gemeindenummer;Name;Wahlberechtigte')
+#     .toss()
