@@ -126,7 +126,6 @@ frisby.create "Expect username validation error on registering user without user
         expect(body.error.errors.name.value).not.toBeTruthy()
     .toss()
 
-# coffeelint: disable=max_line_length
 User.remove {}, ->
     frisby.create "Expect a successful registration of a user"
         .post "/v0/user",
