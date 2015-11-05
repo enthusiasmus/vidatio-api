@@ -21,6 +21,16 @@ frisby.create "Expect 500 on registering user without email"
         password: "admin"
     .expectHeaderContains("Content-Type", "json")
     .expectStatus(500)
+    .expectJSON
+        error:
+            name: "ValidationError"
+            errors:
+                email:
+                    i18n: "API.USER.REGISTER.EMAIL.REQUIRED"
+                    value: ""
+                name:
+                    i18n: "API.USER.REGISTER.NAME.REQUIRED"
+                    value: ""
     .toss()
 
 frisby.create "Expect email validation error on registering user with wrong email"
@@ -30,6 +40,13 @@ frisby.create "Expect email validation error on registering user with wrong emai
         password: "admin"
     .expectHeaderContains("Content-Type", "json")
     .expectStatus(500)
+    .expectJSON
+        error:
+            name: "ValidationError"
+            errors:
+                email:
+                    i18n: "API.USER.REGISTER.EMAIL.NOTVALID"
+                    value: "admin"
     .after (error, res, body) ->
         expect(body.error.name).toBe("ValidationError")
         expect(body.error.errors).toEqual(jasmine.any(Object))
@@ -45,6 +62,13 @@ frisby.create "Expect email validation error on registering user without email"
         password: "admin"
     .expectHeaderContains("Content-Type", "json")
     .expectStatus(500)
+    .expectJSON
+        error:
+            name: "ValidationError"
+            errors:
+                email:
+                    i18n: "API.USER.REGISTER.EMAIL.REQUIRED"
+                    value: ""
     .after (error, res, body) ->
         expect(body.error.name).toBe("ValidationError")
         expect(body.error.errors).toEqual(jasmine.any(Object))
@@ -60,6 +84,13 @@ frisby.create "Expect username validation error on registering user with wrong u
         password: "admin"
     .expectHeaderContains("Content-Type", "json")
     .expectStatus(500)
+    .expectJSON
+        error:
+            name: "ValidationError"
+            errors:
+                name:
+                    i18n: "API.USER.REGISTER.NAME.NOTVALID"
+                    value: "admin§"
     .after (error, res, body) ->
         expect(body.error.name).toBe("ValidationError")
         expect(body.error.errors).toEqual(jasmine.any(Object))
@@ -75,6 +106,13 @@ frisby.create "Expect username validation error on registering user without user
         password: "admin"
     .expectHeaderContains("Content-Type", "json")
     .expectStatus(500)
+    .expectJSON
+        error:
+            name: "ValidationError"
+            errors:
+                name:
+                    i18n: "API.USER.REGISTER.NAME.REQUIRED"
+                    value: ""
     .after (error, res, body) ->
         expect(body.error.name).toBe("ValidationError")
         expect(body.error.errors).toEqual(jasmine.any(Object))
@@ -90,6 +128,7 @@ User.remove {}, ->
             name: "admin"
             password: "admin"
         .expectHeaderContains("Content-Type", "json")
+        .expectStatus(200)
         .after (error, res, body) ->
             user = body
 
@@ -106,19 +145,26 @@ User.remove {}, ->
                 }
                 .toss()
 
-            # frisby.create "user should not get successfully deleted because wrong authentication"
-            #     .delete "/v0/user/#{user._id}"
-            #     .auth user.email, "admin2"
-            #     expectStatus(401)
-            #     .toss()
+            frisby.create "user should not get successfully deleted because wrong authentication"
+                .delete "/v0/user/#{user._id}"
+                .auth user.email, "admin2"
+                .expectStatus(401)
+                .toss()
 
-            # frisby.create "Expect a mongo error because of duplicate entry"
-            #     .post "/v0/user",
-            #         email: "admin@admin.com"
-            #         name: "admin"
-            #         password: "admin"
-            #     .inspectJSON()
-            #     .toss()
+            frisby.create "Expect a mongo error because of duplicate entry"
+                .post "/v0/user",
+                    email: "admin@admin.com"
+                    name: "admin"
+                    password: "admin"
+                .expectStatus(500)
+                .expectJSON
+                    error:
+                        name: "MongoError"
+                        errors:
+                            mongo:
+                                i18n: "API.MONGO.ERROR"
+                                value: "undefined"
+                .toss()
 
             frisby.create "user should get successfully deleted"
                 .delete "/v0/user/#{user._id}"

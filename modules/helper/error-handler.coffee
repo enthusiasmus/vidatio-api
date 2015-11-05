@@ -16,8 +16,8 @@
 class ErrorHandler
     format: (error) ->
 
-        console.log "****************************"
-        console.log error
+        # console.log "****************************"
+        # console.log error
 
         _formatedError = {}
         _formatedError.name = error.name
@@ -29,6 +29,9 @@ class ErrorHandler
                     _formatedError.errors["#{key}"] = {}
                     _formatedError.errors["#{key}"].i18n = value.message
                     _formatedError.errors["#{key}"].value = value.value
+                    unless _formatedError.errors["#{key}"].value?
+                        _formatedError.errors["#{key}"].value = ""
+
 
             when "MongoError"
                 _formatedError.errors.mongo = {}
