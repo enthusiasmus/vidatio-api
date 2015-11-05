@@ -19,9 +19,9 @@ frisby.create "Expect 500 on registering user without email"
         email: ""
         username: ""
         password: "admin"
-    .expectHeaderContains("Content-Type", "json")
-    .expectStatus(500)
-    .expectJSON
+    .expectHeaderContains "Content-Type", "json"
+    .expectStatus 500
+    .expectJSON {
         error:
             name: "ValidationError"
             errors:
@@ -31,6 +31,7 @@ frisby.create "Expect 500 on registering user without email"
                 name:
                     i18n: "API.USER.REGISTER.NAME.REQUIRED"
                     value: ""
+    }
     .toss()
 
 frisby.create "Expect email validation error on registering user with wrong email"
@@ -38,15 +39,16 @@ frisby.create "Expect email validation error on registering user with wrong emai
         email: "admin"
         username: "admin"
         password: "admin"
-    .expectHeaderContains("Content-Type", "json")
-    .expectStatus(500)
-    .expectJSON
+    .expectHeaderContains "Content-Type", "json"
+    .expectStatus 500
+    .expectJSON {
         error:
             name: "ValidationError"
             errors:
                 email:
                     i18n: "API.USER.REGISTER.EMAIL.NOTVALID"
                     value: "admin"
+    }
     .after (error, res, body) ->
         expect(body.error.name).toBe("ValidationError")
         expect(body.error.errors).toEqual(jasmine.any(Object))
@@ -60,15 +62,16 @@ frisby.create "Expect email validation error on registering user without email"
         email: ""
         name: "admin"
         password: "admin"
-    .expectHeaderContains("Content-Type", "json")
-    .expectStatus(500)
-    .expectJSON
+    .expectHeaderContains "Content-Type", "json"
+    .expectStatus 500
+    .expectJSON {
         error:
             name: "ValidationError"
             errors:
                 email:
                     i18n: "API.USER.REGISTER.EMAIL.REQUIRED"
                     value: ""
+    }
     .after (error, res, body) ->
         expect(body.error.name).toBe("ValidationError")
         expect(body.error.errors).toEqual(jasmine.any(Object))
@@ -82,15 +85,16 @@ frisby.create "Expect username validation error on registering user with wrong u
         email: "admin@admin.com"
         name: "admin§"
         password: "admin"
-    .expectHeaderContains("Content-Type", "json")
-    .expectStatus(500)
-    .expectJSON
+    .expectHeaderContains "Content-Type", "json"
+    .expectStatus 500
+    .expectJSON {
         error:
             name: "ValidationError"
             errors:
                 name:
                     i18n: "API.USER.REGISTER.NAME.NOTVALID"
                     value: "admin§"
+    }
     .after (error, res, body) ->
         expect(body.error.name).toBe("ValidationError")
         expect(body.error.errors).toEqual(jasmine.any(Object))
@@ -104,15 +108,16 @@ frisby.create "Expect username validation error on registering user without user
         email: "admin@admin.com"
         name: ""
         password: "admin"
-    .expectHeaderContains("Content-Type", "json")
-    .expectStatus(500)
-    .expectJSON
+    .expectHeaderContains "Content-Type", "json"
+    .expectStatus 500
+    .expectJSON {
         error:
             name: "ValidationError"
             errors:
                 name:
                     i18n: "API.USER.REGISTER.NAME.REQUIRED"
                     value: ""
+    }
     .after (error, res, body) ->
         expect(body.error.name).toBe("ValidationError")
         expect(body.error.errors).toEqual(jasmine.any(Object))
@@ -121,14 +126,15 @@ frisby.create "Expect username validation error on registering user without user
         expect(body.error.errors.name.value).not.toBeTruthy()
     .toss()
 
+# coffeelint: disable=max_line_length
 User.remove {}, ->
     frisby.create "Expect a successful registration of a user"
         .post "/v0/user",
             email: "admin@admin.com"
             name: "admin"
             password: "admin"
-        .expectHeaderContains("Content-Type", "json")
-        .expectStatus(200)
+        .expectHeaderContains "Content-Type", "json"
+        .expectStatus 200
         .after (error, res, body) ->
             user = body
 
@@ -138,8 +144,8 @@ User.remove {}, ->
 
             frisby.create "username should already exist in database"
                 .get "/v0/user/check?name=#{user.name}"
-                .expectHeaderContains("Content-Type", "json")
-                .expectStatus(200)
+                .expectHeaderContains "Content-Type", "json"
+                .expectStatus 200
                 .expectJSON {
                     message: "admin not available"
                 }
@@ -148,7 +154,7 @@ User.remove {}, ->
             frisby.create "user should not get successfully deleted because wrong authentication"
                 .delete "/v0/user/#{user._id}"
                 .auth user.email, "admin2"
-                .expectStatus(401)
+                .expectStatus 401
                 .toss()
 
             frisby.create "Expect a mongo error because of duplicate entry"
@@ -156,23 +162,33 @@ User.remove {}, ->
                     email: "admin@admin.com"
                     name: "admin"
                     password: "admin"
-                .expectStatus(500)
-                .expectJSON
+                .expectStatus 500
+                .expectJSON {
                     error:
                         name: "MongoError"
                         errors:
                             mongo:
                                 i18n: "API.MONGO.ERROR"
                                 value: "undefined"
+                }
                 .toss()
 
             frisby.create "user should get successfully deleted"
                 .delete "/v0/user/#{user._id}"
                 .auth user.email, "admin"
-                .expectHeaderContains("Content-Type", "json")
-                .expectStatus(200)
+                .expectHeaderContains "Content-Type", "json"
+                .expectStatus 200
                 .expectJSON {
                     message: "successfully deleted user"
+                }
+                .toss()
+
+            frisby.create "username should be valid again"
+                .get "/v0/user/check?name=#{user.name}"
+                .expectHeaderContains "Content-Type", "json"
+                .expectStatus 404
+                .expectJSON {
+                    error:  "not found"
                 }
                 .toss()
 
