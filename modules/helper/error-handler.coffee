@@ -1,10 +1,14 @@
 "use strict"
 
 ###
-# This Class formats all error objects for client-side handling
+# This Class formats ValidationError- and MongoError objects for client-side handling
 # {
 #     name: "ValidationError"
 #     errors: {
+#         email: {
+#             i18n: "NOT.VALID.ANYTHING"
+#             value: "§$"
+#         }
 #         name: {
 #             i18n: "NOT.VALID.ANYTHING"
 #             value: undefined
@@ -15,10 +19,6 @@
 
 class ErrorHandler
     format: (error) ->
-
-        # console.log "****************************"
-        # console.log error
-
         _formatedError = {}
         _formatedError.name = error.name
         _formatedError.errors = {}
@@ -31,7 +31,6 @@ class ErrorHandler
                     _formatedError.errors["#{key}"].value = value.value
                     unless _formatedError.errors["#{key}"].value?
                         _formatedError.errors["#{key}"].value = ""
-
 
             when "MongoError"
                 _formatedError.errors.mongo = {}
