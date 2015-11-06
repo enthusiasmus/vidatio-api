@@ -5,6 +5,9 @@ frisby = require "frisby"
 config = require "../../config"
 {model:User} = require "./user"
 
+apiVersion = "/v0"
+userRoute = apiVersion + "/users"
+
 frisby.globalSetup
     request:
         body: undefined
@@ -15,7 +18,7 @@ frisby.globalSetup
         baseUri: config.url
 
 frisby.create "Expect 500 on registering user without email"
-    .post "/v0/user",
+    .post userRoute,
         email: ""
         username: ""
         password: "admin"
@@ -35,7 +38,7 @@ frisby.create "Expect 500 on registering user without email"
     .toss()
 
 frisby.create "Expect email validation error on registering user with wrong email"
-    .post "/v0/user",
+    .post userRoute,
         email: "admin"
         username: "admin"
         password: "admin"
@@ -58,7 +61,7 @@ frisby.create "Expect email validation error on registering user with wrong emai
     .toss()
 
 frisby.create "Expect email validation error on registering user without email"
-    .post "/v0/user",
+    .post userRoute,
         email: ""
         name: "admin"
         password: "admin"
@@ -81,7 +84,7 @@ frisby.create "Expect email validation error on registering user without email"
     .toss()
 
 frisby.create "Expect username validation error on registering user with wrong username"
-    .post "/v0/user",
+    .post userRoute,
         email: "admin@admin.com"
         name: "admin§"
         password: "admin"
@@ -104,7 +107,7 @@ frisby.create "Expect username validation error on registering user with wrong u
     .toss()
 
 frisby.create "Expect username validation error on registering user without username"
-    .post "/v0/user",
+    .post userRoute,
         email: "admin@admin.com"
         name: ""
         password: "admin"
@@ -128,7 +131,7 @@ frisby.create "Expect username validation error on registering user without user
 
 User.remove {}, ->
     frisby.create "Expect a successful registration of a user"
-        .post "/v0/user",
+        .post userRoute,
             email: "admin@admin.com"
             name: "admin"
             password: "admin"
@@ -142,7 +145,7 @@ User.remove {}, ->
             expect(user.deleted).not.toBeTruthy()
 
             frisby.create "username should already exist in database"
-                .get "/v0/user/check?name=#{user.name}"
+                .get userRoute + "/check?name=#{user.name}"
                 .expectHeaderContains "Content-Type", "json"
                 .expectStatus 200
                 .expectJSON {
@@ -151,13 +154,13 @@ User.remove {}, ->
                 .toss()
 
             frisby.create "user should not get successfully deleted because wrong authentication"
-                .delete "/v0/user/#{user._id}"
+                .delete userRoute + "/#{user._id}"
                 .auth user.email, "admin2"
                 .expectStatus 401
                 .toss()
 
             frisby.create "Expect a mongo error because of duplicate entry"
-                .post "/v0/user",
+                .post userRoute,
                     email: "admin@admin.com"
                     name: "admin"
                     password: "admin"
@@ -173,7 +176,7 @@ User.remove {}, ->
                 .toss()
 
             frisby.create "user should get successfully deleted"
-                .delete "/v0/user/#{user._id}"
+                .delete userRoute + "/#{user._id}"
                 .auth user.email, "admin"
                 .expectHeaderContains "Content-Type", "json"
                 .expectStatus 200
@@ -183,11 +186,12 @@ User.remove {}, ->
                 .toss()
 
             frisby.create "username should be valid again"
-                .get "/v0/user/check?name=#{user.name}"
+                .get userRoute + "/check?name=#{user.name}"
                 .expectHeaderContains "Content-Type", "json"
-                .expectStatus 404
+                .expectStatus 200
                 .expectJSON {
-                    error:  "not found"
+                    message:  "user not found"
+                    available: true
                 }
                 .toss()
 

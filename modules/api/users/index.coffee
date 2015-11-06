@@ -120,10 +120,14 @@ userCheckRoot.get (req, res) ->
                         return res.status(500).json error: error
 
                     if not user? or user.deleted
-                        return res.status(404).json error: "not found"
+                        return res.status(200).json
+                            message: "user not found"
+                            available: true
 
                     logger.debug user: user, "found user by #{key}"
-                    return res.status(200).json message: value + " not available"
+                    return res.status(200).json
+                        message: value + " not available"
+                        available: false
 
 module.exports =
     user: user

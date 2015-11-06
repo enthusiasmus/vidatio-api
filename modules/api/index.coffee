@@ -34,7 +34,7 @@ router.use "/penguin", penguins
 
 router.use "/import", _import
 
-router.use "/user", user
+router.use "/users", user
 
 router.use "/logs", logRoutes
 
