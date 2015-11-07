@@ -10,6 +10,8 @@ passport = require "passport"
 {_import} = require "./import"
 {user} = require "./users"
 {auth} = require "./auth"
+{dataset} = require "./datasets"
+
 
 
 {routes:logRoutes, api:logger} = require "../logger"
@@ -35,8 +37,12 @@ router.use "/penguin", penguins
 
 router.use "/import", _import
 
+
 router.use "/users", user
 router.use "/auth", auth
+
+router.use "/dataset", dataset
+
 
 router.use "/logs", logRoutes
 
