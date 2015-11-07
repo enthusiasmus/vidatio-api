@@ -61,6 +61,7 @@ loggers =
         level: "trace"
         serializers:
             bunyan.stdSerializers
+
     auth: bunyan.createLogger
         name: "auth"
         streams: [
@@ -72,6 +73,7 @@ loggers =
         level: "trace"
         serializers:
             bunyan.stdSerializers
+
     dataset: bunyan.createLogger
         name: "dataset"
         streams: [

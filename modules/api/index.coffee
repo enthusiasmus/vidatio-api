@@ -12,8 +12,6 @@ passport = require "passport"
 {auth} = require "./auth"
 {dataset} = require "./datasets"
 
-
-
 {routes:logRoutes, api:logger} = require "../logger"
 
 router = Router()
@@ -36,7 +34,6 @@ router.use "/penguin", penguin
 router.use "/penguin", penguins
 
 router.use "/import", _import
-
 
 router.use "/users", user
 router.use "/auth", auth
