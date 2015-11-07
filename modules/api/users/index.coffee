@@ -13,7 +13,6 @@ errorHandler   = require "../../helper/error-handler"
 
 user = Router()
 
-
 basicAuth = passport.authenticate "basic",  session: false
 
 userRoot = user.route "/"

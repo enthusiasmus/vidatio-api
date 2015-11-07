@@ -5,8 +5,8 @@ frisby = require "frisby"
 config = require "../../config"
 {model:User} = require "./user"
 
-apiVersion = "/v0"
-userRoute = apiVersion + "/users"
+userRoute = "/" + config.apiVersion + "/users"
+authRoute = "/" + config.apiVersion + "/auth"
 
 frisby.globalSetup
     request:
@@ -130,6 +130,8 @@ frisby.create "Expect username validation error on registering user without user
     .toss()
 
 User.remove {}, ->
+
+    console.log "user registration"
     frisby.create "Expect a successful registration of a user"
         .post userRoute,
             email: "admin@admin.com"
@@ -157,6 +159,21 @@ User.remove {}, ->
                 .delete userRoute + "/#{user._id}"
                 .auth user.email, "admin2"
                 .expectStatus 401
+                .toss()
+
+            frisby.create "successfully authenticate user"
+                .get authRoute
+                .auth user.email, "admin2"
+                .expectStatus 401
+                .toss()
+
+            frisby.create "successfully authenticate user"
+                .get authRoute
+                .auth user.email, "admin"
+                .expectStatus 200
+                .expectJSON {
+                    message: "successfully authenticated"
+                }
                 .toss()
 
             frisby.create "Expect a mongo error because of duplicate entry"
