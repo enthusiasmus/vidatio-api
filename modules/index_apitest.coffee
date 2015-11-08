@@ -14,13 +14,13 @@ frisby.globalSetup
         json: true
         baseUri: config.url
 
-
-frisby.create "Check CORS middleware to return Access-Control-Allow Headers"
-    .options "/"
-    .expectStatus 200
-    .expectHeader "Access-Control-Allow-Origin", "*"
-    .expectHeader "Access-Control-Allow-Headers", "Origin, X-Requested-With, " +
-        "Content-Type, Accept, Authorization, X-HTTP-Method-Override"
-    .expectHeader "Access-Control-ALlow-Methods",
-        "GET, POST, PUT, DELETE, OPTIONS"
-    .toss()
+describe "test", ->
+    frisby.create "Check CORS middleware to return Access-Control-Allow Headers"
+        .options "/"
+        .expectStatus 200
+        .expectHeader "Access-Control-Allow-Origin", "*"
+        .expectHeader "Access-Control-Allow-Headers", "Origin, X-Requested-With, " +
+            "Content-Type, Accept, Authorization, X-HTTP-Method-Override"
+        .expectHeader "Access-Control-ALlow-Methods",
+            "GET, POST, PUT, DELETE, OPTIONS"
+        .toss()

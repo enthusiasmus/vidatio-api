@@ -62,7 +62,7 @@
     "gulp-shell": "^0.4.0",
     "gulp-util": "^3.0.4",
     "gulp-watch": "^4.2.4",
-    "jasmine-node": "git://github.com/mhevery/jasmine-node.git#Jasmine2.0",
+    "jasmine-node": "^1.14.5",
     "mongoose-validator": "^1.2.4"
   }
 }

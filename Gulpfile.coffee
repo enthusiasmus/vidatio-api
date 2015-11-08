@@ -16,6 +16,7 @@ shell      = require "gulp-shell"
 watch      = require "gulp-watch"
 del        = require "del"
 
+jn = require "jasmine-node"
 gutil      = require "gulp-util"
 
 
@@ -37,8 +38,8 @@ APP = "./app.js"
 
 NODEMONSTARTED = false
 
-JASMINE_APITEST = "NODE_ENV='test' jasmine-node -m '_apitest.' --matchAll #{DIRS.build}"
-JASMINE_UNITTEST = "jasmine-node -m '_test.' --matchAll #{DIRS.build}"
+JASMINE_APITEST = "jasmine-node -m '_apitest.' --matchall --forceexit --color --nohelpers #{DIRS.build}"
+JASMINE_UNITTEST = "jasmine-node -m '_test.' --matchall --forceexit --color --nohelpers #{DIRS.build}"
 
 gulp.task "run",
     "Run the App.",
