@@ -16,9 +16,6 @@ shell      = require "gulp-shell"
 watch      = require "gulp-watch"
 del        = require "del"
 
-
-jasmine = require "gulp-jasmine"
-
 gutil      = require "gulp-util"
 
 
@@ -39,6 +36,9 @@ DIRS =
 APP = "./app.js"
 
 NODEMONSTARTED = false
+
+JASMINE_APITEST = "NODE_ENV='test' jasmine-node -m '_apitest.' --matchAll #{DIRS.build}"
+JASMINE_UNITTEST = "jasmine-node -m '_test.' --matchAll #{DIRS.build}"
 
 gulp.task "run",
     "Run the App.",
@@ -184,9 +184,7 @@ gulp.task "test:api",
         "sleep"
         "test:unit"
     ],
-    ->
-        gulp.src "./build/**/*_test.js"
-        .pipe jasmine()
+    shell.task JASMINE_APITEST, ignoreErrors: true
 
 gulp.task "test:unit",
     "Perform all unit tests."
@@ -195,10 +193,7 @@ gulp.task "test:unit",
         "build"
         "sleep"
     ],
-    ->
-        gulp.src "./build/**/*_test.js"
-        .pipe jasmine()
-
+    shell.task JASMINE_UNITTEST, ignoreErrors: true
 
 gulp.task "docs",
     "Generate apidoc."
