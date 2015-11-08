@@ -103,7 +103,8 @@ userCheckRoot = user.route "/check"
 @apiSuccessExample {json} Success-Response:
     HTTP/1.1 200 OK
     {
-        "message": "email / name available
+        "message": "user "
+
     }
 ###
 
