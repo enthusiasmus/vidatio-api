@@ -2,7 +2,6 @@
 
 mongoose = require "mongoose"
 validate = require "mongoose-validator"
-{extend} = require "mongoose-validator"
 crypto = require "crypto"
 
 db = require "../connection"
@@ -13,8 +12,6 @@ emailValidator = [
         validator: "isEmail"
         message: "API.USER.REGISTER.EMAIL.NOTVALID"
 ]
-
-extend "isName", (val) ->
 
 nameValidator = [
     validate

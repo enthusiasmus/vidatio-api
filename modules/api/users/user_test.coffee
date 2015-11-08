@@ -31,9 +31,6 @@ describe "User model methods", ->
             spyOn(stringDummy, "toString").and.returnValue ""
             spyOn(crypto, "randomBytes").and.returnValue stringDummy
 
-            # spyOn(stringDummy, "toString").andReturn ""
-            # spyOn(crypto, "randomBytes").andReturn stringDummy
-
             user.makeSalt()
 
             expect(crypto.randomBytes).toHaveBeenCalledWith(64)
@@ -70,10 +67,6 @@ describe "User model methods", ->
             spyOn(updateSpy, "update").and.returnValue digestSpy
             spyOn(crypto, "createHmac").and.returnValue updateSpy
 
-            # spyOn(digestSpy, "digest").andReturn ""
-            # spyOn(updateSpy, "update").andReturn digestSpy
-            # spyOn(crypto, "createHmac").andReturn updateSpy
-
             user.encryptPassword "test"
 
             expect(crypto.createHmac).toHaveBeenCalledWith(
@@ -101,7 +94,7 @@ describe "User model methods", ->
 
         it "should make a call to encryptPassword with the plainText", ->
             spyOn(user, "encryptPassword").and.callThrough()
-            # spyOn(user, "encryptPassword").andCallThrough()
+
             user.authenticate "test123"
             expect(user.encryptPassword).toHaveBeenCalledWith "test123"
 
