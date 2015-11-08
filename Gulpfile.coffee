@@ -39,8 +39,8 @@ APP = "./app.js"
 NODEMONSTARTED = false
 
 
-JASMINE_APITEST = "NODE_ENV='test' jasmine-node -m '_apitest.' --matchall --forceexit --color --nohelpers #{DIRS.build}"
-JASMINE_UNITTEST = "jasmine-node -m '_test.' --coffee --matchall --forceexit --color --nohelpers #{DIRS.modules}"
+JASMINE_APITEST = "NODE_ENV='test' jasmine-node -m '_apitest.' --matchAll #{DIRS.build}"
+JASMINE_UNITTEST = "jasmine-node -m '_test.' --matchAll #{DIRS.build}"
 
 gulp.task "run",
     "Run the App.",

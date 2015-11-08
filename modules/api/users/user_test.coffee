@@ -28,11 +28,11 @@ describe "User model methods", ->
                 toString: ->
                     return ""
 
-            #spyOn(stringDummy, "toString").and.returnValue ""
-            # spyOn(crypto, "randomBytes").and.returnValue stringDummy
+            spyOn(stringDummy, "toString").and.returnValue ""
+            spyOn(crypto, "randomBytes").and.returnValue stringDummy
 
-            spyOn(stringDummy, "toString").andReturn ""
-            spyOn(crypto, "randomBytes").andReturn stringDummy
+            # spyOn(stringDummy, "toString").andReturn ""
+            # spyOn(crypto, "randomBytes").andReturn stringDummy
 
             user.makeSalt()
 
@@ -66,13 +66,13 @@ describe "User model methods", ->
             updateSpy =
                 update: (val)->
 
-            # spyOn(digestSpy, "digest").and.returnValue ""
-            # spyOn(updateSpy, "update").and.returnValue digestSpy
-            # spyOn(crypto, "createHmac").and.returnValue updateSpy
+            spyOn(digestSpy, "digest").and.returnValue ""
+            spyOn(updateSpy, "update").and.returnValue digestSpy
+            spyOn(crypto, "createHmac").and.returnValue updateSpy
 
-            spyOn(digestSpy, "digest").andReturn ""
-            spyOn(updateSpy, "update").andReturn digestSpy
-            spyOn(crypto, "createHmac").andReturn updateSpy
+            # spyOn(digestSpy, "digest").andReturn ""
+            # spyOn(updateSpy, "update").andReturn digestSpy
+            # spyOn(crypto, "createHmac").andReturn updateSpy
 
             user.encryptPassword "test"
 
@@ -86,10 +86,10 @@ describe "User model methods", ->
         it 'should return undefined when no password is given', ->
             expect(user.encryptPassword()).toEqual undefined
 
-        # it "should return undefined if an exception was thrown", ->
-        #     crypto.createHmac.isSpy = false
-        #     spyOn(crypto, "createHmac").and.throwError()
-        #     expect(user.encryptPassword("asdf")).toEqual undefined
+        it "should return undefined if an exception was thrown", ->
+            crypto.createHmac.isSpy = false
+            spyOn(crypto, "createHmac").and.throwError()
+            expect(user.encryptPassword("asdf")).toEqual undefined
 
 
     describe "authenticate", ->
@@ -100,8 +100,8 @@ describe "User model methods", ->
             expect(Schema.methods.authenticate).toEqual jasmine.any Function
 
         it "should make a call to encryptPassword with the plainText", ->
-            # spyOn(user, "encryptPassword").and.callThrough()
-            spyOn(user, "encryptPassword").andCallThrough()
+            spyOn(user, "encryptPassword").and.callThrough()
+            # spyOn(user, "encryptPassword").andCallThrough()
             user.authenticate "test123"
             expect(user.encryptPassword).toHaveBeenCalledWith "test123"
 
