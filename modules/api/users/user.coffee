@@ -103,7 +103,7 @@ module.exports =
         "_id": "5635ed0505b07e9c1ade03b4",
         "name": "test",
         "email": "test@test.com",
-        "deleted": false
+        "deleted": false,
         "admin": false
     }
 ###

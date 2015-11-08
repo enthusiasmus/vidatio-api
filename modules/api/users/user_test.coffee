@@ -79,12 +79,6 @@ describe "User model methods", ->
         it 'should return undefined when no password is given', ->
             expect(user.encryptPassword()).toEqual undefined
 
-        xit "should return undefined if an exception was thrown", ->
-            crypto.createHmac.isSpy = false
-            spyOn(crypto, "createHmac").and.throwError()
-            expect(user.encryptPassword("asdf")).toEqual undefined
-
-
     describe "authenticate", ->
         it "should exist and must be a function", ->
             expect(user.authenticate).toBeDefined()

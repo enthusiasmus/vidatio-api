@@ -30,6 +30,7 @@ userRoot = user.route "/"
 
 @apiUse SuccessUser
 ###
+
 userRoot.post (req, res) ->
     user = new User
 
@@ -64,7 +65,11 @@ userIdRoot = user.route "/:id"
 a deleted flag is set to True and the name of the User is changed (to prevent
 conflicts when creating a User with the same name later).
 
-@apiUse SuccessUser
+@apiSuccessExample {json} Success-Response:
+    HTTP/1.1 200 OK
+    {
+        "message": "successfully deleted user"
+    }
 ###
 
 userIdRoot.delete basicAuth, (req, res) ->
@@ -103,8 +108,8 @@ userCheckRoot = user.route "/check"
 @apiSuccessExample {json} Success-Response:
     HTTP/1.1 200 OK
     {
-        "message": "user "
-
+        "message": "user not found"
+        "available": true
     }
 ###
 
@@ -128,6 +133,8 @@ userCheckRoot.get (req, res) ->
                     return res.status(200).json
                         message: value + " not available"
                         available: false
+            else
+                return res.status(404).json error: "not found"
 
 module.exports =
     user: user
