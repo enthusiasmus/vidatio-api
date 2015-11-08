@@ -57,20 +57,20 @@ userSchema.virtual("password").set (password) ->
 
 userSchema.methods =
     makeSalt: ->
-        return Math.round( new Date().valueOf() * Math.random() ) + ""
+        return crypto.randomBytes(64).toString "base64"
 
     encryptPassword: (password) ->
-        return ""  unless password
+        return unless password?
         try
-            return crypto.createHmac("sha1", @salt)
-                .update(password)
+            return crypto.createHmac("sha256", @salt)
+                .update password
                 .digest("hex")
         catch err
-            return ""
+            return
         return
 
     authenticate: (password) ->
-        return true if @encryptPassword(password) is @hash
+        return @encryptPassword(password) is @hash
 
 userSchema.statics =
     findByNameOrEmail: (nameOrEmail, cb) ->

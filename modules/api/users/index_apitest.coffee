@@ -161,7 +161,7 @@ User.remove {}, ->
                 .expectStatus 401
                 .toss()
 
-            frisby.create "successfully authenticate user"
+            frisby.create "unsuccessfully authenticate user"
                 .get authRoute
                 .auth user.email, "admin2"
                 .expectStatus 401
