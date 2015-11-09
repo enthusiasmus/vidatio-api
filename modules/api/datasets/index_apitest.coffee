@@ -15,7 +15,7 @@ frisby.globalSetup
         baseUri: config.url
 
 frisby.create "Expect 500 on creating dataset without name"
-    .post "/v0/dataset",
+    .post "/v0/datasets",
         name: ""
         userId: "123abcd12312312312312312"
         data:
@@ -36,7 +36,7 @@ frisby.create "Expect 500 on creating dataset without name"
 
 Dataset.remove {}, ->
     frisby.create "Expect a successful creation of a dataset"
-        .post "/v0/dataset",
+        .post "/v0/datasets",
             name: "First Dataset"
             userId: "123abcd12312312312312312"
             data:
@@ -61,7 +61,7 @@ Dataset.remove {}, ->
 #            .toss()
 
             frisby.create "dataset should get successfully deleted"
-                .delete "/v0/dataset/#{dataset._id}"
+                .delete "/v0/datasets/#{dataset._id}"
 #                .auth user.email, "admin"
                 .expectHeaderContains "Content-Type", "json"
                 .expectStatus 200

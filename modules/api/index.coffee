@@ -27,7 +27,7 @@ passport.use new BasicStrategy (nameOrEmail, password, done) ->
             name: user.name
             email: user.email
             password: password
-        , "user auth successfull"
+        , "user auth successful"
         return done null, user
 
 router.use "/penguin", penguin
@@ -38,7 +38,7 @@ router.use "/import", _import
 router.use "/users", user
 router.use "/auth", auth
 
-router.use "/dataset", dataset
+router.use "/datasets", dataset
 
 
 router.use "/logs", logRoutes
