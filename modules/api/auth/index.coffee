@@ -28,6 +28,5 @@ authRoot.get basicAuth, (req, res) ->
     logger.debug "authenticate a user"
     res.status(200).json message: "successfully authenticated"
 
-
 module.exports =
     auth: auth

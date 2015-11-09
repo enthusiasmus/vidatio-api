@@ -9,6 +9,6 @@
 
 ###
 @apiDefine auth
-@apiHeader {string} user        User's e-mail.
+@apiHeader {string} user        User's e-mail or User's name.
 @apiHeader {string} password    User's password.
 ###

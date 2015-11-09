@@ -2,7 +2,6 @@
 
 mongoose = require "mongoose"
 validate = require "mongoose-validator"
-{extend} = require "mongoose-validator"
 crypto = require "crypto"
 
 db = require "../connection"
@@ -13,8 +12,6 @@ emailValidator = [
         validator: "isEmail"
         message: "API.USER.REGISTER.EMAIL.NOTVALID"
 ]
-
-extend "isName", (val) ->
 
 nameValidator = [
     validate
@@ -57,20 +54,20 @@ userSchema.virtual("password").set (password) ->
 
 userSchema.methods =
     makeSalt: ->
-        return Math.round( new Date().valueOf() * Math.random() ) + ""
+        return crypto.randomBytes(64).toString "base64"
 
     encryptPassword: (password) ->
-        return ""  unless password
+        return unless password?
         try
-            return crypto.createHmac("sha1", @salt)
-                .update(password)
+            return crypto.createHmac("sha256", @salt)
+                .update password
                 .digest("hex")
         catch err
-            return ""
+            return
         return
 
     authenticate: (password) ->
-        return true if @encryptPassword(password) is @hash
+        return @encryptPassword(password) is @hash
 
 userSchema.statics =
     findByNameOrEmail: (nameOrEmail, cb) ->
@@ -106,7 +103,7 @@ module.exports =
         "_id": "5635ed0505b07e9c1ade03b4",
         "name": "test",
         "email": "test@test.com",
-        "deleted": false
+        "deleted": false,
         "admin": false
     }
 ###

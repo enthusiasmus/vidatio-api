@@ -130,8 +130,6 @@ frisby.create "Expect username validation error on registering user without user
     .toss()
 
 User.remove {}, ->
-
-    console.log "user registration"
     frisby.create "Expect a successful registration of a user"
         .post userRoute,
             email: "admin@admin.com"
@@ -161,7 +159,7 @@ User.remove {}, ->
                 .expectStatus 401
                 .toss()
 
-            frisby.create "successfully authenticate user"
+            frisby.create "unsuccessfully authenticate user"
                 .get authRoute
                 .auth user.email, "admin2"
                 .expectStatus 401

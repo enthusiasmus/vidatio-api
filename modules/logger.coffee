@@ -66,7 +66,7 @@ loggers =
         name: "auth"
         streams: [
             type:   "rotating-file"
-            path:   "#{ config.dirs.log }/users.log"
+            path:   "#{ config.dirs.log }/auth.log"
             period: "1d"
             count:  365
         ]
