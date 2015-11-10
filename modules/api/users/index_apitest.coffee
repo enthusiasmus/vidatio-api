@@ -129,19 +129,42 @@ frisby.create "Expect username validation error on registering user without user
         expect(body.error.errors.name.value).not.toBeTruthy()
     .toss()
 
+
+frisby.create "username shouldnt exist in database"
+    .get userRoute + "/check?name=userAdmin"
+    .expectHeaderContains "Content-Type", "json"
+    .expectStatus 200
+    .after (error, res, body) ->
+        expect(body.message).toBeDefined()
+        expect(body.message).toEqual("user not found")
+        expect(body.available).toBeDefined()
+        expect(body.available).toBeTruthy()
+    .toss()
+
+frisby.create "username shouldnt exist in database"
+    .get userRoute + "/check?email=user@admin.com"
+    .expectHeaderContains "Content-Type", "json"
+    .expectStatus 200
+    .after (error, res, body) ->
+        expect(body.message).toBeDefined()
+        expect(body.message).toEqual("user not found")
+        expect(body.available).toBeDefined()
+        expect(body.available).toBeTruthy()
+    .toss()
+
 User.remove {}, ->
     frisby.create "Expect a successful registration of a user"
         .post userRoute,
-            email: "admin@admin.com"
-            name: "admin"
+            email: "user@admin.com"
+            name: "userAdmin"
             password: "admin"
         .expectHeaderContains "Content-Type", "json"
         .expectStatus 200
         .after (error, res, body) ->
             user = body
 
-            expect(user.email).toEqual("admin@admin.com")
-            expect(user.name).toEqual("admin")
+            expect(user.email).toEqual("user@admin.com")
+            expect(user.name).toEqual("userAdmin")
             expect(user.deleted).not.toBeTruthy()
 
             frisby.create "username should already exist in database"
@@ -149,7 +172,16 @@ User.remove {}, ->
                 .expectHeaderContains "Content-Type", "json"
                 .expectStatus 200
                 .expectJSON {
-                    message: "admin not available"
+                    message: "userAdmin not available"
+                }
+                .toss()
+
+            frisby.create "email should already exist in database"
+                .get userRoute + "/check?email=#{user.email}"
+                .expectHeaderContains "Content-Type", "json"
+                .expectStatus 200
+                .expectJSON {
+                    message: "user@admin.com not available"
                 }
                 .toss()
 
@@ -176,8 +208,8 @@ User.remove {}, ->
 
             frisby.create "Expect a mongo error because of duplicate entry"
                 .post userRoute,
-                    email: "admin@admin.com"
-                    name: "admin"
+                    email: "user@admin.com"
+                    name: "userAdmin"
                     password: "admin"
                 .expectStatus 500
                 .expectJSON {
@@ -202,6 +234,16 @@ User.remove {}, ->
 
             frisby.create "username should be valid again"
                 .get userRoute + "/check?name=#{user.name}"
+                .expectHeaderContains "Content-Type", "json"
+                .expectStatus 200
+                .expectJSON {
+                    message:  "user not found"
+                    available: true
+                }
+                .toss()
+
+            frisby.create "email should be valid again"
+                .get userRoute + "/check?email=#{user.email}"
                 .expectHeaderContains "Content-Type", "json"
                 .expectStatus 200
                 .expectJSON {
