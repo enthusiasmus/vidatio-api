@@ -6,7 +6,6 @@ config = require "../../config"
 {model:User} = require "./user"
 
 userRoute = "/" + config.apiVersion + "/users"
-authRoute = "/" + config.apiVersion + "/auth"
 
 frisby.globalSetup
     request:
@@ -189,21 +188,6 @@ User.remove {}, ->
                 .delete userRoute + "/#{user._id}"
                 .auth user.email, "admin2"
                 .expectStatus 401
-                .toss()
-
-            frisby.create "unsuccessfully authenticate user"
-                .get authRoute
-                .auth user.email, "admin2"
-                .expectStatus 401
-                .toss()
-
-            frisby.create "successfully authenticate user"
-                .get authRoute
-                .auth user.email, "admin"
-                .expectStatus 200
-                .expectJSON {
-                    message: "successfully authenticated"
-                }
                 .toss()
 
             frisby.create "Expect a mongo error because of duplicate entry"
