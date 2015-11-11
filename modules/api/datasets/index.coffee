@@ -115,5 +115,47 @@ datasetIdRoot.delete basicAuth, (req, res) ->
             logger.debug dataset: dataset, "successfully updated dataset"
             res.json message: "successfully deleted dataset"
 
+###
+@api {get} dataset/:id/ GET - get a dataset by Id
+@apiName getDataset
+@apiGroup Dataset
+@apiVersion 0.0.1
+
+@apiDescription Get a Dataset by Id.
+
+@apiExample {curl} Example usage:
+    curl http://localhost:3000/v0/datasets/56376b6406e4eeb46ad32b5
+
+@apiUse SuccessDataset
+@apiUse ErrorHandler
+@apiErrorExample {status} Error-Response:
+    HTTP/1.1 404 Not Found
+    {
+        error: "not found"
+    }
+###
+
+datasetIdRoot.get (req, res) ->
+    logger.debug id: req.params.id, "get a dataset by id"
+
+    console.log "req.params.id"
+    console.log req.params.id
+
+    Dataset.findById req.params.id,  "id name userId data options createdAt", (error, dataset) ->
+
+        console.log "dataset"
+        console.log dataset
+
+        if error
+            logger.error error: error, "wasn't able to get dataset"
+            error = errorHandler.format error
+            return res.status(500).json error: error
+        else
+            if not dataset? or dataset.deleted
+                return res.status(404).json error: "not found"
+
+            logger.debug dataset: dataset, "return dataset"
+            res.json dataset
+
 module.exports =
     dataset: dataset
