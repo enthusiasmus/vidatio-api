@@ -21,9 +21,42 @@ basicAuth = passport.authenticate "basic",  session: false
 datasetRoot = dataset.route "/"
 
 ###
-@api {post} dataset/ POST - create a dataset
+@api {get} datasets/ GET - get all Datasets
+@apiName getDatasets
+@apiGroup Datasets
+@apiVersion 0.0.1
+@apiDescription Get all available Datasets
+
+@apiExample {curl} Example usage:
+    curl http://localhost:3000/v0/datasets
+
+@apiUse SuccessDatasets
+@apiUse ErrorHandler
+###
+
+datasetRoot.get (req, res) ->
+    logger.debug "get all datasets"
+
+    Dataset.find deleted: false, "id name userId data options createdAt", (error, datasets) ->
+        if error
+            console.log "error"
+            console.log error
+            logger.debug error: error, "error retrieving datasets"
+            error = errorHandler.format error
+            return res.status(500).json error: error
+        else
+            unless datasets?
+                datasets = []
+
+            logger.debug datasets: datasets, "return datasets"
+            return res.status(200).json datasets
+
+
+
+###
+@api {post} datasets/ POST - create a dataset
 @apiName addDataset
-@apiGroup Dataset
+@apiGroup Datasets
 @apiVersion 0.0.1
 @apiDescription Create a new Dataset
 
@@ -67,9 +100,9 @@ datasetRoot.post basicAuth, (req, res) ->
 datasetIdRoot = dataset.route "/:id"
 
 ###
-@api {delete} dataset/:id/ DELETE - delete a Dataset by Id
+@api {delete} datasets/:id/ DELETE - delete a Dataset by Id
 @apiName deleteDataset
-@apiGroup Dataset
+@apiGroup Datasets
 @apiVersion 0.0.1
 
 @apiDescription Delete a Dataset by Id. This doesn't really delete the Dataset,

@@ -78,6 +78,18 @@ User.findOneAndRemove {
                         expect(dataset.options).toEqual({ option1: "option1" })
                         expect(dataset.deleted).not.toBeTruthy()
 
+                        frisby.create "get all datasets"
+                            .get datasetRoute
+                            .expectHeaderContains "Content-Type", "json"
+                            .expectStatus 200
+                            .after (error, res, body) ->
+                                datasets = body
+                                expect(datasets).toBeDefined()
+                                expect(datasets).toEqual(jasmine.any(Array))
+                                expect(datasets[0]).toEqual(jasmine.any(Object))
+                                expect(datasets).toEqual([dataset])
+                            .toss()
+
                         frisby.create "dataset should get successfully deleted"
                             .delete datasetRoute + "/#{dataset._id}"
                             .auth testuser.email, testuser.password
