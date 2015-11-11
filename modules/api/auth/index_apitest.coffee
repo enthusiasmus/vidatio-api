@@ -27,25 +27,13 @@ User.findOneAndRemove {
     "name": testuser.name
 }, (error, doc, result) ->
 
-    console.log "Error"
-    console.log error
-    console.log "doc"
-    console.log doc
-
-    console.log "result"
-    console.log result
-
-    frisby.create "Expect a successful registration of a user"
+    frisby.create "test"
         .post userRoute,
-            email: "admin@admin.com"
-            name: "admin"
-            password: "adminadmin"
+            email: testuser.email
+            name: testuser.name
+            password: testuser.password
         .after (error, res, body) ->
-            expect(false).toBeTruthy()
-
             user = body
-
-            console.log user
 
             frisby.create "unsuccessfully authenticate user"
                 .get authRoute
@@ -61,3 +49,6 @@ User.findOneAndRemove {
                     message: "successfully authenticated"
                 }
                 .toss()
+
+        .toss()
+
