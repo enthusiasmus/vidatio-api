@@ -17,17 +17,6 @@ catch e
 
 # define all loggers here
 loggers =
-    penguins: bunyan.createLogger
-        name: "penguins"
-        streams: [
-            type:   "rotating-file"
-            path:   "#{ config.dirs.log }/penguins.log"
-            period: "1d"
-            count:  365
-        ]
-        level: "trace"
-        serializers:
-            bunyan.stdSerializers
     api: bunyan.createLogger
         name: "api"
         streams: [

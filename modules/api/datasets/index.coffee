@@ -32,7 +32,6 @@ datasetRoot = dataset.route "/"
 @apiParam {Object} data  Data to be saved
 @apiParam {Object} options  Options of the visualization
 
-
 @apiExample {curl} Example usage:
     curl http://localhost:3000/v0/datasets -u admin:admin -H "Content-Type: application/json" -d '{"name": "vidatio", "data":{"key1": "value1"}}'
 

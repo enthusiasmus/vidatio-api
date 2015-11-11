@@ -38,19 +38,6 @@ frisby.create "Expect 404 on not defined /v0/api route"
     .toss()
 
 
-
-penguinLogger =
-    name: "penguins"
-    level: "TRACE"
-    streams: [{
-        type: "rotating-file"
-        path: "#{ config.dirs.log }/penguins.log"
-        period: "1d"
-        count: 365
-        level: "TRACE"
-    }]
-
-
 apiLogger =
     name: "api"
     level: "TRACE"
@@ -62,8 +49,7 @@ apiLogger =
         level: "TRACE"
     }]
 
-expectedLoggers = [ penguinLogger, apiLogger ]
-
+expectedLogger = [apiLogger]
 
 frisby.create "Expect available loggers on /v0/logs"
     .get "/v0/logs"
@@ -79,7 +65,7 @@ frisby.create "Expect available loggers on /v0/logs"
                 expect( stream.count ).toEqual jasmine.any Number
                 expect( stream.level ).toEqual jasmine.any String
             return
-    .expectJSON expectedLoggers
+    .expectJSON expectedLogger
     .toss()
 
 
@@ -93,16 +79,3 @@ frisby.create "Expect api logger on /v0/logs/api"
         fields:
             name: "api"
     .toss()
-
-
-frisby.create "Expect penguins logger on /v0/logs/penguins"
-    .get "/v0/logs/penguins"
-    .expectStatus 200
-    .expectJSONTypes
-        fields:
-            name: String
-    .expectJSON
-        fields:
-            name: "penguins"
-    .toss()
-

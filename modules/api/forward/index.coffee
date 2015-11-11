@@ -16,13 +16,12 @@ forwardRoot = forward.route "/"
 @apiName forwardGet
 @apiGroup Forward
 @apiVersion 0.0.1
-@apiPermission admin
 @apiDescription Forward an external ressource to our client.
 
-@apiParam {String} url  external ressource.
+@apiParam {String} url external ressource.
 @apiExample {curl} Example usage:
     curl -u admin:admin -i \
-    http://localhost:3333/v0/forward?url=http://data.ooe.gv.at/files/cms/Mediendateien/OGD/ogd_abtStat/Wahl_LT_09_OGD.csv
+    http://localhost:3000/v0/forward?url=http://data.ooe.gv.at/files/cms/Mediendateien/OGD/ogd_abtStat/Wahl_LT_09_OGD.csv
 ###
 
 forwardRoot.get ( req, res ) ->

@@ -28,7 +28,11 @@ userRoot = user.route "/"
 @apiParam {String} name  Users' name
 @apiParam {String} password  Users' password
 
+@apiExample {curl} Example usage:
+    curl http://localhost:3000/v0/users -H "Content-Type: application/json" -d '{"email": "admin@admin.com", "name":"admin", "password": "admin"}'
+
 @apiUse SuccessUser
+@apiUse ErrorHandler
 ###
 
 userRoot.post (req, res) ->
@@ -65,13 +69,21 @@ userIdRoot = user.route "/:id"
 a deleted flag is set to True and the name of the User is changed (to prevent
 conflicts when creating a User with the same name later).
 
-@apiUse basicAuth
+@apiExample {curl} Example usage:
+    curl -u admin:admin -X DELETE http://localhost:3000/v0/users/56376b6406e4eeb46ad32b5
 
+@apiUse basicAuth
 @apiSuccessExample {json} Success-Response:
     HTTP/1.1 200 OK
     {
         "message": "successfully deleted user"
     }
+@apiErrorExample {status} Error-Response:
+    HTTP/1.1 404 Not Found
+    {
+        error: "not found"
+    }
+@apiUse ErrorHandler
 ###
 
 userIdRoot.delete basicAuth, (req, res) ->
@@ -112,6 +124,18 @@ userCheckRoot = user.route "/check"
     {
         "message": "user not found"
         "available": true
+    }
+
+@apiSuccessExample {json} Success-Response:
+    HTTP/1.1 200 OK
+    {
+        "message": "user@admin.com not available"
+        "available": false
+    }
+@apiErrorExample {status} Error-Response:
+    HTTP/1.1 404 Not Found
+    {
+        error: "not found"
     }
 ###
 

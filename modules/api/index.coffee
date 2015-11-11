@@ -5,14 +5,13 @@ passport = require "passport"
 {BasicStrategy} = require "passport-http"
 
 {model:User} = require "./users/user"
-{penguin,penguins} = require "./penguins"
 
 {forward} = require "./forward"
 {user} = require "./users"
 {auth} = require "./auth"
 {dataset} = require "./datasets"
 
-{routes:logRoutes, api:logger} = require "../logger"
+{routes:logRoutes, auth:logger} = require "../logger"
 
 router = Router()
 
@@ -30,14 +29,9 @@ passport.use new BasicStrategy (nameOrEmail, password, done) ->
         , "user auth successful"
         return done null, user
 
-router.use "/penguin", penguin
-router.use "/penguin", penguins
-
 router.use "/forward", forward
-
 router.use "/users", user
 router.use "/auth", auth
-
 router.use "/datasets", dataset
 
 

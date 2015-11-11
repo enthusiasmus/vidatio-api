@@ -22,6 +22,19 @@ authRoot = auth.route "/"
 @apiGroup Auth
 @apiVersion 0.0.1
 @apiDescription Login a user
+
+@apiExample {curl} Example usage:
+    curl http://localhost:3000/v0/auth -u admin:admin
+
+@apiUse basicAuth
+@apiSuccessExample {json} Success-Response:
+    HTTP/1.1 200 OK
+    {
+        "message": "successfully authenticated"
+    }
+@apiErrorExample {json} Error-Response:
+    HTTP/1.1 401 Unauthorized {}
+@apiUse ErrorHandler
 ###
 
 authRoot.get basicAuth, (req, res) ->
