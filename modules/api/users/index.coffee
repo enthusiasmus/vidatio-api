@@ -65,6 +65,8 @@ userIdRoot = user.route "/:id"
 a deleted flag is set to True and the name of the User is changed (to prevent
 conflicts when creating a User with the same name later).
 
+@apiUse basicAuth
+
 @apiSuccessExample {json} Success-Response:
     HTTP/1.1 200 OK
     {

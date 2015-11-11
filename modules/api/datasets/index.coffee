@@ -32,8 +32,11 @@ datasetRoot = dataset.route "/"
 @apiParam {Object} data  Data to be saved
 @apiParam {Object} options  Options of the visualization
 
+@apiUse basicAuth
 @apiUse SuccessDataset
+@apiUse ErrorHandler
 ###
+
 datasetRoot.post basicAuth, (req, res) ->
     dataset = new Dataset
 
@@ -70,7 +73,18 @@ datasetIdRoot = dataset.route "/:id"
 @apiDescription Delete a Dataset by Id. This doesn't really deletes the Dataset,
 a deleted flag is set to true.
 
-@apiUse SuccessDataset
+@apiUse basicAuth
+@apiSuccessExample {json} Success-Response:
+    HTTP/1.1 200 OK
+    {
+        "message": "successfully deleted dataset"
+    }
+@apiErrorExample {status} Error-Response:
+    HTTP/1.1 404 Not Found
+    {
+        error: "not found"
+    }
+@apiUse ErrorHandler
 ###
 
 datasetIdRoot.delete (req, res) ->
@@ -95,40 +109,6 @@ datasetIdRoot.delete (req, res) ->
 
             logger.debug dataset: dataset, "successfully updated dataset"
             res.json message: "successfully deleted dataset"
-
-#userCheckRoot = user.route "/check"
-
-###
-@api {check} user/check?email&name GET - check if a username or email exists
-@apiName checkUser
-@apiGroup Dataset
-@apiVersion 0.0.1
-
-@apiDescription Check if the given username or email is already in the database.
-
-@apiSuccessExample {json} Success-Response:
-    HTTP/1.1 200 OK
-    {
-        "message": "email / name available
-    }
-###
-
-#userCheckRoot.get (req, res) ->
-#    for key, value of req.query
-#        switch key
-#            when "email", "name"
-#                obj = "#{key}": value
-#                User.findOne obj, (error, user) ->
-#                    if error
-#                        logger.error error: error, "wasn't able to find user by #{key}"
-#                        error = errorHandler.format error
-#                        return res.status(500).json error: error
-#
-#                    if not user? or user.deleted
-#                        return res.status(404).json error: "not found"
-#
-#                    logger.debug user: user, "found user by #{key}"
-#                    return res.status(200).json message: value + " not available"
 
 module.exports =
     dataset: dataset

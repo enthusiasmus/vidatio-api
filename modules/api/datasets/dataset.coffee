@@ -9,8 +9,6 @@ db = require "../connection"
 
 ObjectId = mongoose.Schema.Types.ObjectId
 
-#extend "isName", (val) ->
-
 nameValidator = [
     validate
         validator: "matches"
@@ -49,12 +47,6 @@ datasetSchema = mongoose.Schema
     options:
         type: Object
         required: false
-
-
-# datasetSchema.methods =
-
-# datasetSchema.statics =
-
 
 datasetModel = db.model "Dataset", datasetSchema
 module.exports =

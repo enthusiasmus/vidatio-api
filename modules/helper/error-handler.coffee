@@ -41,3 +41,26 @@ class ErrorHandler
 
 
 module.exports = new ErrorHandler
+
+###
+@apiDefine ErrorHandler
+@apiVersion 0.0.1
+@apiError {Object} errorhandler
+@apiError {String} name Contains the Name of the Error
+@apiError {Object} errors Contains all errors as objects
+@apiErrorExample {json} Error-Response:
+    HTTP/1.1 500 Internal Server Error
+    {
+        name: "ValidationError"
+        errors: {
+            email: {
+                i18n: "NOT.VALID.ANYTHING"
+                value: "§$"
+            }
+            name: {
+                i18n: "NOT.VALID.ANYTHING"
+                value: undefined
+            }
+        }
+    }
+###
