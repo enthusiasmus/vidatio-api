@@ -39,11 +39,11 @@ loggers =
         level: "trace"
         serializers:
             bunyan.stdSerializers
-    _import: bunyan.createLogger
-        name: "_import"
+    forward: bunyan.createLogger
+        name: "forward"
         streams: [
             type:   "rotating-file"
-            path:   "#{ config.dirs.log }/upload.log"
+            path:   "#{ config.dirs.log }/forward.log"
             period: "1d"
             count:  365
         ]

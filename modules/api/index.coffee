@@ -7,7 +7,7 @@ passport = require "passport"
 {model:User} = require "./users/user"
 {penguin,penguins} = require "./penguins"
 
-{_import} = require "./import"
+{forward} = require "./forward"
 {user} = require "./users"
 {auth} = require "./auth"
 {dataset} = require "./datasets"
@@ -33,7 +33,7 @@ passport.use new BasicStrategy (nameOrEmail, password, done) ->
 router.use "/penguin", penguin
 router.use "/penguin", penguins
 
-router.use "/import", _import
+router.use "/forward", forward
 
 router.use "/users", user
 router.use "/auth", auth
