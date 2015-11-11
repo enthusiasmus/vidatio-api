@@ -16,8 +16,7 @@ dataset = Router()
 
 ObjectId = mongoose.Schema.Types.ObjectId
 
-
-#basicAuth = passport.authenticate "basic",  session: false
+basicAuth = passport.authenticate "basic",  session: false
 
 datasetRoot = dataset.route "/"
 
@@ -35,11 +34,11 @@ datasetRoot = dataset.route "/"
 
 @apiUse SuccessDataset
 ###
-datasetRoot.post (req, res) ->
+datasetRoot.post basicAuth, (req, res) ->
     dataset = new Dataset
 
+    dataset.userId = req.user._id
     dataset.name = req.body.name
-    dataset.userId = req.body.userId
     dataset.data = req.body.data
     dataset.options = req.body.options
 
