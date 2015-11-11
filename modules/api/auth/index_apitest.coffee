@@ -27,7 +27,7 @@ User.findOneAndRemove {
     "name": testuser.name
 }, (error, doc, result) ->
 
-    frisby.create "test"
+    frisby.create "Create a user for authentication"
         .post userRoute,
             email: testuser.email
             name: testuser.name
