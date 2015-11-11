@@ -32,6 +32,10 @@ datasetRoot = dataset.route "/"
 @apiParam {Object} data  Data to be saved
 @apiParam {Object} options  Options of the visualization
 
+
+@apiExample {curl} Example usage:
+    curl http://localhost:3000/v0/datasets -u admin:admin -H "Content-Type: application/json" -d '{"name": "vidatio", "data":{"key1": "value1"}}'
+
 @apiUse basicAuth
 @apiUse SuccessDataset
 @apiUse ErrorHandler
@@ -60,8 +64,8 @@ datasetRoot.post basicAuth, (req, res) ->
             data: dataset.data
             options: dataset.options
             createdAt: dataset.createdAt
-#
-#
+
+
 datasetIdRoot = dataset.route "/:id"
 
 ###
@@ -70,8 +74,11 @@ datasetIdRoot = dataset.route "/:id"
 @apiGroup Dataset
 @apiVersion 0.0.1
 
-@apiDescription Delete a Dataset by Id. This doesn't really deletes the Dataset,
+@apiDescription Delete a Dataset by Id. This doesn't really delete the Dataset,
 a deleted flag is set to true.
+
+@apiExample {curl} Example usage:
+    curl -u admin:admin -X DELETE http://localhost:3000/v0/datasets/56376b6406e4eeb46ad32b5
 
 @apiUse basicAuth
 @apiSuccessExample {json} Success-Response:
@@ -87,7 +94,7 @@ a deleted flag is set to true.
 @apiUse ErrorHandler
 ###
 
-datasetIdRoot.delete (req, res) ->
+datasetIdRoot.delete basicAuth, (req, res) ->
     logger.debug id: req.params.id, "delete a dataset by id"
 
     Dataset.findOneAndUpdate {

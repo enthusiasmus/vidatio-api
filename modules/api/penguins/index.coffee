@@ -56,9 +56,6 @@ penguinRoot.post basicAuth, adminAuth, ( req, res ) ->
                 _id: penguin._id
                 name: penguin.name
 
-
-
-
 penguinIdRoot = penguin.route "/:id"
 
 ###

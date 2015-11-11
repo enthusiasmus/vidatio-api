@@ -1,3 +1,3 @@
 <center>
-<a href="https://vidatio.mediacube.at" target="_blank">Vidatio Project Site</a>
+<a href="https://develop.vidatio.mediacube.at" target="_blank">Vidatio Project Site</a>
 </center>
