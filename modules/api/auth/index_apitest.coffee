@@ -9,7 +9,7 @@ authRoute = "/" + config.apiVersion + "/auth"
 
 {model:User} = require "../users/user"
 
-testuser =
+testUser =
     name: "authAdmin"
     email: "auth@admin.com"
     password: "admin"
@@ -24,14 +24,14 @@ frisby.globalSetup
         baseUri: config.url
 
 User.findOneAndRemove {
-    "name": testuser.name
+    "name": testUser.name
 }, (error, doc, result) ->
 
     frisby.create "Create a user for authentication"
         .post userRoute,
-            email: testuser.email
-            name: testuser.name
-            password: testuser.password
+            email: testUser.email
+            name: testUser.name
+            password: testUser.password
         .after (error, res, body) ->
             user = body
 
@@ -43,7 +43,7 @@ User.findOneAndRemove {
 
             frisby.create "successfully authenticate user"
                 .get authRoute
-                .auth user.email, testuser.password
+                .auth user.email, testUser.password
                 .expectStatus 200
                 .expectJSON {
                     message: "successfully authenticated"

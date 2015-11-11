@@ -60,8 +60,7 @@ datasetRoot.post basicAuth, (req, res) ->
             data: dataset.data
             options: dataset.options
             createdAt: dataset.createdAt
-#
-#
+
 datasetIdRoot = dataset.route "/:id"
 
 ###

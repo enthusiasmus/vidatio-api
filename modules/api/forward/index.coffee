@@ -3,18 +3,18 @@
 {Router} = require "express"
 passport = require "passport"
 
-{_import:logger}   = require "../../logger"
+{forward:logger}   = require "../../logger"
 
 http = require "http"
 
-_import = Router()
+forward = Router()
 
-importRoot = _import.route "/"
+forwardRoot = forward.route "/"
 
 ###
-@api {get} import?url=:url GET - retrieve an external ressource via GET
-@apiName importGet
-@apiGroup Import
+@api {get} forward?url=:url GET - retrieve an external ressource via GET
+@apiName forwardGet
+@apiGroup Forward
 @apiVersion 0.0.1
 @apiPermission admin
 @apiDescription Forward an external ressource to our client.
@@ -22,10 +22,10 @@ importRoot = _import.route "/"
 @apiParam {String} url  external ressource.
 @apiExample {curl} Example usage:
     curl -u admin:admin -i \
-    http://localhost:3333/v0/import?url=http://data.ooe.gv.at/files/cms/Mediendateien/OGD/ogd_abtStat/Wahl_LT_09_OGD.csv
+    http://localhost:3333/v0/forward?url=http://data.ooe.gv.at/files/cms/Mediendateien/OGD/ogd_abtStat/Wahl_LT_09_OGD.csv
 ###
 
-importRoot.get ( req, res ) ->
+forwardRoot.get ( req, res ) ->
     logger.debug url: req.query.url, "retrieve file from another server"
 
     request = http.get req.query.url, (resp) ->
@@ -45,4 +45,4 @@ importRoot.get ( req, res ) ->
         res.status(500).json error: "not found"
 
 module.exports =
-    _import:   _import
+    forward: forward

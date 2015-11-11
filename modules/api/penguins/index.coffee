@@ -6,9 +6,7 @@ passport = require "passport"
 config   = require "../../config"
 {penguins:logger}   = require "../../logger"
 
-
 {model:Penguin} = require "./penguin"
-
 
 penguin = Router()
 penguins = Router()
@@ -36,6 +34,7 @@ penguinRoot = penguin.route "/"
 @apiUse basicAuth
 @apiUse SuccessPenguin
 ###
+
 penguinRoot.post basicAuth, adminAuth, ( req, res ) ->
     penguin = new Penguin
     penguin.name = req.body.name
@@ -56,9 +55,6 @@ penguinRoot.post basicAuth, adminAuth, ( req, res ) ->
                 _id: penguin._id
                 name: penguin.name
 
-
-
-
 penguinIdRoot = penguin.route "/:id"
 
 ###
@@ -72,6 +68,7 @@ penguinIdRoot = penguin.route "/:id"
 @apiUse basicAuth
 @apiUse SuccessPenguin
 ###
+
 penguinIdRoot.get basicAuth, ( req, res ) ->
     logger.debug id: req.params.id, "get a penguin by id"
 
@@ -88,7 +85,6 @@ penguinIdRoot.get basicAuth, ( req, res ) ->
             logger.debug penguin: penguin, "return penguin"
             res.json penguin
 
-
 ###
 @api {delete} penguin/:id/ GET - delete a Penguin by Id
 @apiName deletePenguin
@@ -102,6 +98,7 @@ conflicts when creating a Penguin with the same name later).
 @apiUse basicAuth
 @apiUse SuccessPenguin
 ###
+
 penguinIdRoot.delete basicAuth, ( req, res ) ->
     logger.debug id: req.params.id, "delete a penguin by id"
 
@@ -125,7 +122,6 @@ penguinIdRoot.delete basicAuth, ( req, res ) ->
                     logger.debug penguin: penguin, "return penguin"
                     res.json msg: "successfully deleted penguin"
 
-
 penguinsRoot = penguins.route "/"
 
 ###
@@ -139,6 +135,7 @@ penguinsRoot = penguins.route "/"
 @apiUse basicAuth
 @apiUse SuccessPenguins
 ###
+
 penguinsRoot.get basicAuth, ( req, res ) ->
     logger.debug "get all penguins"
 

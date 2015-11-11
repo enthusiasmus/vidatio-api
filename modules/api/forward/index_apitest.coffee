@@ -15,9 +15,9 @@ frisby.globalSetup
         json: true
         baseUri: config.url
 
-xdescribe "Import", ->
+xdescribe "Forward", ->
     frisby.create('A get request with a query variable called url is requested')
-        .get '/v0/import?url=' + data
+        .get '/v0/forward?url=' + data
         .expectStatus(200)
         .expectBodyContains('Gemeindenummer;Name;Wahlberechtigte')
         .toss()

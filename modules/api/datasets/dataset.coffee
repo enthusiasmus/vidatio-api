@@ -7,8 +7,6 @@ crypto = require "crypto"
 
 db = require "../connection"
 
-ObjectId = mongoose.Schema.Types.ObjectId
-
 nameValidator = [
     validate
         validator: "matches"
@@ -27,10 +25,10 @@ datasetSchema = mongoose.Schema
         required: true
         default: false
     userId:
-        type: ObjectId
+        type: mongoose.Schema.Types.ObjectId
         required: "API.DATASET.CREATE.USER_ID.REQUIRED"
     parentId:
-        type: ObjectId
+        type: mongoose.Schema.Types.ObjectId
         required: false
         default: null
     createdAt:
