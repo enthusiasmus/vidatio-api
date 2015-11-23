@@ -88,6 +88,14 @@ User.findOneAndRemove {
                                 expect(datasets).toEqual(jasmine.any(Array))
                                 expect(datasets[0]).toEqual(jasmine.any(Object))
                                 expect(datasets).toEqual([dataset])
+
+                        frisby.create "get dataset by id"
+                            .get datasetRoute + "/#{dataset._id}"
+                            .expectHeaderContains "Content-Type", "json"
+                            .expectStatus 200
+                            .after(error, res, body) ->
+                                expect(body).toBeDefined()
+                                expect(body).toEqual(dataset)
                             .toss()
 
                         frisby.create "dataset should get successfully deleted"
