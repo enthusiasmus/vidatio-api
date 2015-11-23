@@ -25,7 +25,8 @@ forwardRoot = forward.route "/"
 ###
 
 forwardRoot.get ( req, res ) ->
-    logger.info url: req.query.url, "retrieve file from another server"
+    logger.info "retrieve file from another server"
+    logger.debug params: req.query.url
 
     request = http.get req.query.url, (resp) ->
         logger.debug code: resp.statusCode, "http code from http.get request"

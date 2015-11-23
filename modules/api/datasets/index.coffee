@@ -73,6 +73,7 @@ datasetRoot.get (req, res) ->
 
 datasetRoot.post basicAuth, (req, res) ->
     logger.info "creating new dataset"
+    logger.debug params: req.body
 
     dataset = new Dataset
 
@@ -126,7 +127,8 @@ a deleted flag is set to true.
 ###
 
 datasetIdRoot.delete basicAuth, (req, res) ->
-    logger.info id: req.params.id, "delete a dataset by id"
+    logger.info "delete a dataset by id"
+    logger.debug params: req.params
 
     Dataset.findOneAndUpdate {
         _id: req.params.id
@@ -170,8 +172,8 @@ datasetIdRoot.delete basicAuth, (req, res) ->
 ###
 
 datasetIdRoot.get (req, res) ->
-    logger.info id: req.params.id, "get a dataset by id"
-
+    logger.info "get a dataset by id"
+    logger.debug params: req.params
     Dataset.findById req.params.id,  "id name userId data options createdAt", (error, dataset) ->
 
         if error

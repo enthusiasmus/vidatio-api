@@ -37,6 +37,7 @@ userRoot = user.route "/"
 
 userRoot.post (req, res) ->
     logger.info "creating new user"
+    logger.debug params: req.body
 
     user = new User
 
@@ -89,7 +90,8 @@ conflicts when creating a User with the same name later).
 ###
 
 userIdRoot.delete basicAuth, (req, res) ->
-    logger.info id: req.params.id, "delete a user by id"
+    logger.info "delete a user by id"
+    logger.debug params: req.params
 
     User.findOneAndUpdate {
         _id: req.params.id
@@ -143,7 +145,9 @@ userCheckRoot = user.route "/check"
 ###
 
 userCheckRoot.get (req, res) ->
-    logger.info query: req.query, "check if user with email or username already exists"
+    logger.info "check if user with email or username already exists"
+    logger.info params: req.query
+
     for key, value of req.query
         switch key
             when "email", "name"

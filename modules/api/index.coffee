@@ -16,12 +16,15 @@ passport = require "passport"
 router = Router()
 
 passport.use new BasicStrategy (nameOrEmail, password, done) ->
+    logger.info "basic strategy called"
+    logger.debug params: {nameOrEmail, password}
+
     User.findByNameOrEmail nameOrEmail, (error, user) ->
         return done error if error
         return done null, false if !user
         return done null, false if !user.authenticate password
 
-        logger.info
+        logger.debug
             user: user
             name: user.name
             email: user.email
