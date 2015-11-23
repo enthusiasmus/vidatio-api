@@ -41,6 +41,8 @@ datasetRoot = dataset.route "/"
 ###
 
 datasetRoot.post basicAuth, (req, res) ->
+    logger.info "creating new dataset"
+
     dataset = new Dataset
 
     dataset.userId = req.user._id
@@ -50,11 +52,11 @@ datasetRoot.post basicAuth, (req, res) ->
 
     dataset.save (error, dataset) ->
         if error
-            logger.debug error: error, "error saving dataset"
+            logger.error error: error, "error saving dataset"
             error = errorHandler.format error
             return res.status(500).json error: error
 
-        logger.info dataset: dataset, "success saving dataset"
+        logger.debug dataset: dataset, "success saving dataset"
 
         return res.json
             _id: dataset._id
@@ -93,7 +95,7 @@ a deleted flag is set to true.
 ###
 
 datasetIdRoot.delete basicAuth, (req, res) ->
-    logger.debug id: req.params.id, "delete a dataset by id"
+    logger.info id: req.params.id, "delete a dataset by id"
 
     Dataset.findOneAndUpdate {
         _id: req.params.id
@@ -110,6 +112,7 @@ datasetIdRoot.delete basicAuth, (req, res) ->
             return res.status(500).json error: error
         else
             if not dataset? or !dataset.deleted
+                logger.error error: "dataset not found or already deleted"
                 return res.status(404).json error: "not found"
 
             logger.debug dataset: dataset, "successfully updated dataset"
@@ -136,15 +139,9 @@ datasetIdRoot.delete basicAuth, (req, res) ->
 ###
 
 datasetIdRoot.get (req, res) ->
-    logger.debug id: req.params.id, "get a dataset by id"
-
-    console.log "req.params.id"
-    console.log req.params.id
+    logger.info id: req.params.id, "get a dataset by id"
 
     Dataset.findById req.params.id,  "id name userId data options createdAt", (error, dataset) ->
-
-        console.log "dataset"
-        console.log dataset
 
         if error
             logger.error error: error, "wasn't able to get dataset"
@@ -152,6 +149,7 @@ datasetIdRoot.get (req, res) ->
             return res.status(500).json error: error
         else
             if not dataset? or dataset.deleted
+                logger.error error: "dataset not found or deleted"
                 return res.status(404).json error: "not found"
 
             logger.debug dataset: dataset, "return dataset"

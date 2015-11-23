@@ -36,6 +36,8 @@ userRoot = user.route "/"
 ###
 
 userRoot.post (req, res) ->
+    logger.info "creating new user"
+
     user = new User
 
     user.email = req.body.email
@@ -44,11 +46,11 @@ userRoot.post (req, res) ->
 
     user.save (error, user) ->
         if error
-            logger.debug error: error, "error registering user"
+            logger.error error: error, "error registering user"
             error = errorHandler.format error
             return res.status(500).json error: error
 
-        logger.info user: user, "success registering user"
+        logger.debug user: user, "success registering user"
 
         return res.json
             _id: user._id
@@ -87,7 +89,7 @@ conflicts when creating a User with the same name later).
 ###
 
 userIdRoot.delete basicAuth, (req, res) ->
-    logger.debug id: req.params.id, "delete a user by id"
+    logger.info id: req.params.id, "delete a user by id"
 
     User.findOneAndUpdate {
         _id: req.params.id
@@ -104,6 +106,7 @@ userIdRoot.delete basicAuth, (req, res) ->
             return res.status(500).json error: error
         else
             if not user? or !user.deleted
+                logger.error error: "user not found or already deleted"
                 return res.status(404).json error: "not found"
 
             logger.debug user: user, "successfully updated user"
@@ -140,6 +143,7 @@ userCheckRoot = user.route "/check"
 ###
 
 userCheckRoot.get (req, res) ->
+    logger.info query: req.query, "check if user with email or username already exists"
     for key, value of req.query
         switch key
             when "email", "name"
@@ -151,6 +155,7 @@ userCheckRoot.get (req, res) ->
                         return res.status(500).json error: error
 
                     if not user? or user.deleted
+                        logger.error error: error, "wasn't able to find user by #{key}"
                         return res.status(200).json
                             message: "user not found"
                             available: true
@@ -160,6 +165,7 @@ userCheckRoot.get (req, res) ->
                         message: value + " not available"
                         available: false
             else
+                logger.error error: "wasn't able to handle key #{key}"
                 return res.status(404).json error: "not found"
 
 module.exports =
