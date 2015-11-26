@@ -15,6 +15,14 @@ testuser =
     email: "dataset@admin.com"
     password: "admin"
 
+testDataset =
+    name: "First Dataset"
+    userId: "123456781234567812345678"
+    data:
+        key1: "value1"
+    options:
+        option1: "option1"
+
 frisby.globalSetup
     request:
         body: undefined
@@ -57,15 +65,11 @@ User.findOneAndRemove {
                 }
                 .toss()
 
-            Dataset.remove {}, ->
+            Dataset.remove
+                name: "First Dataset"
+            , ->
                 frisby.create "Expect a successful creation of a dataset"
-                    .post datasetRoute,
-                        name: "First Dataset"
-                        userId: user._id
-                        data:
-                            key1: "value1"
-                        options:
-                            option1: "option1"
+                    .post datasetRoute, testDataset
                     .auth testuser.email, testuser.password
                     .expectHeaderContains "Content-Type", "json"
                     .expectStatus 200
@@ -93,7 +97,7 @@ User.findOneAndRemove {
                             .get datasetRoute + "/#{dataset._id}"
                             .expectHeaderContains "Content-Type", "json"
                             .expectStatus 200
-                            .after(error, res, body) ->
+                            .after (error, res, body) ->
                                 expect(body).toBeDefined()
                                 expect(body).toEqual(dataset)
                             .toss()

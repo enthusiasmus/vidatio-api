@@ -25,6 +25,7 @@ datasetSchema = mongoose.Schema
         required: true
         default: false
     userId:
+        ref: "User"
         type: mongoose.Schema.Types.ObjectId
         required: "API.DATASET.CREATE.USER_ID.REQUIRED"
     parentId:
