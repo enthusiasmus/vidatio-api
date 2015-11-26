@@ -36,11 +36,11 @@ datasetRoot = dataset.route "/"
 
 datasetRoot.get (req, res) ->
     logger.info "get all datasets"
+    logger.debug params: req.body
 
     Dataset.find deleted: false, "id name userId data options createdAt"
     .populate "userId", "name -_id"
     .exec (error, datasets) ->
-        console.log(datasets)
         if error
             logger.error error: error, "error retrieving datasets"
             error = errorHandler.format error
