@@ -19,7 +19,6 @@ del        = require "del"
 jn = require "jasmine-node"
 gutil      = require "gulp-util"
 
-
 FILES = [
     "./modules/**/*.coffee"
 ]
@@ -41,21 +40,17 @@ NODEMONSTARTED = false
 JASMINE_APITEST = "NODE_ENV='test' jasmine-node -m '_apitest.' --matchall --forceexit --color --nohelpers #{DIRS.build}"
 JASMINE_UNITTEST = "NODE_ENV='test' jasmine-node -m '_test.' --matchall --forceexit --color --nohelpers #{DIRS.build}"
 
-gulp.task "run",
-    "Run the App.",
-    [
-        "lint"
-        "build"
-    ],
-    ->
-        require APP
-
 gulp.task "default",
     "Runs 'develop' and 'test'.",
     [
         "develop"
     ]
 
+gulp.task "production",
+    "Runs 'nodemon'",
+    [
+        "nodemon"
+    ]
 
 gulp.task "develop",
     "Runs 'build' and watches the source files, rebuilds and starts tests on
@@ -82,7 +77,6 @@ gulp.task "develop",
         gulp.src( [] )
             .pipe inspector()
 
-
 gulp.task "test",
     "Perform unit and API tests.",
     [
@@ -93,7 +87,6 @@ gulp.task "test",
         "test:api"
     ]
 
-
 gulp.task "debug",
     "Starts the app and the debugger.",
     [
@@ -103,15 +96,12 @@ gulp.task "debug",
         gulp.src( [] )
             .pipe inspector()
 
-
-
 gulp.task "lint",
     "Lints all CoffeeScript source files.",
     ->
         gulp.src FILES
             .pipe coffeelint()
             .pipe coffeelint.reporter()
-
 
 gulp.task "build",
     "Lints and builds the project to '#{DIRS.build}'.",
@@ -124,8 +114,6 @@ gulp.task "build",
             .pipe cache( "coffee" )
             .pipe coffee( bare: true ).on( "error", -> this.emit "end" )
             .pipe gulp.dest( DIRS.build )
-
-
 
 gulp.task "nodemon",
     "Starts the app with Nodemon."
@@ -146,35 +134,15 @@ gulp.task "nodemon",
             ).on "restart", ->
                 console.log "app restarted"
 
-
 gulp.task "dev",
     "Shorthand for 'develop'.",
     [
         "develop"
     ]
 
-
 gulp.task "sleep",
     "Sleep Helper.",
     shell.task "sleep 2", ignoreErrors: true
-
-
-gulp.task "test:api:standalone",
-    "Perform API tests (standalone).",
-    [
-        "lint"
-        "build"
-        "run"
-        "sleep"
-    ],
-    ->
-        gulp.src ""
-            .pipe shell( JASMINE_APITEST, ignoreErrors: true )
-            .on "end", ->
-                # this is a workaround, otherwise the process wouldn't exit because the app still runs
-                setTimeout ->
-                    process.exit()
-                , 0
 
 gulp.task "test:api",
     "Perform all API tests.",
@@ -207,17 +175,12 @@ gulp.task "docs",
             dest: DIRS.docs
         cb()
 
-
-
 gulp.task "clean",
     "Delete '#{DIRS.build}' folder.",
     (cb) ->
         del [DIRS.build], cb
 
-
 gulp.task "clean:docs",
     "Delete '#{DIRS.docs}' folder.",
     (cb) ->
         del [DIRS.docs], cb
-
-
