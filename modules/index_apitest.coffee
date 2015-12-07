@@ -1,9 +1,7 @@
 "use strict"
 
 frisby = require "frisby"
-
 config = require "./config"
-
 
 frisby.globalSetup
     request:
