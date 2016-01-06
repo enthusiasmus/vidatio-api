@@ -17,8 +17,13 @@ categorySchema = mongoose.Schema
     name:
         type: String
         trim: true
+        unique: true
         required: "API.CATEGORY.NAME.REQUIRED"
         validate: nameValidator
+    createdAt:
+        type: Date
+        required: true
+        default: Date.now
 
 categoryModel = db.model "Category", categorySchema
 module.exports =
