@@ -10,6 +10,7 @@ passport = require "passport"
 {user} = require "./users"
 {auth} = require "./auth"
 {dataset} = require "./datasets"
+{category} = require "./categories"
 
 {routes:logRoutes, auth:logger} = require "../logger"
 
@@ -36,6 +37,7 @@ router.use "/forward", forward
 router.use "/users", user
 router.use "/auth", auth
 router.use "/datasets", dataset
+router.use "/categories", category
 
 
 router.use "/logs", logRoutes
