@@ -32,8 +32,5 @@ build/
 
 userconfig.coffee
 userconfig*
-config.coffee
-
-modules/config.coffee
 
 .idea/

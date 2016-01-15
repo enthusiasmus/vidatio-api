@@ -5,7 +5,7 @@ class Config
         @host = "localhost"
         @url = "http://#{@host}:#{@port}"
         @db =
-            host: "localhost"
+            host: "mongo"
             name: "vidatio"
         @dirs =
             log: "./logs"
@@ -17,6 +17,5 @@ class Config
 
     isApiTest: ->
         process.env.NODE_ENV is "development" or process.env.NODE_ENV is "test"
-
 
 module.exports = new Config
