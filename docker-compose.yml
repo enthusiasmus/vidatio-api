@@ -1,0 +1,12 @@
+api:
+  build: .
+  links:
+    - "mongo:mongo"
+  restart: "unless-stopped"
+  ports:
+    - "3000:3000"
+mongo:
+  image: "mongo:3.2"
+  volumes:
+    - "vidatio-mongodb_data:/data/db"
+  restart: "unless-stopped"

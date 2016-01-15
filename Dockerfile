@@ -20,4 +20,4 @@ ADD . /var/www/
 
 EXPOSE 3000
 
-RUN gulp production
+CMD ["gulp", "production"]
