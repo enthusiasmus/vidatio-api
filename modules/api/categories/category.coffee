@@ -31,80 +31,20 @@ module.exports =
     model:  categoryModel
 
 ###
-@apiDefine SuccessDataset
+@apiDefine SuccessCategory
 @apiVersion 0.0.1
-@apiSuccess {Object} dataset
-@apiSuccess {ObjectId} dataset._id Contains the datasets' object id
-@apiSuccess {Number} dataset.__v Internal Revision of the document.
-@apiSuccess {String} dataset.name Name of the dataset.
-@apiSuccess {ObjectId} dataset.userId ID of the user who created the dataset.
-@apiSuccess {Boolean} dataset.private Tells if the dataset is private.
-@apiSuccess {ObjectId} dataset.parentId ID of the parent dataset.
-@apiSuccess {Date} dataset.createdAt Date when the dataset was created
-@apiSuccess {Date} dataset.updatedAt Date when the dataset was updated
-@apiSuccess {Object} dataset.data Data to be saved
-@apiSuccess {Object} dataset.options Options of the visualization
+@apiSuccess {Object} category
+@apiSuccess {ObjectId} category._id Contains the categories' object id
+@apiSuccess {Number} category.__v Internal Revision of the document.
+@apiSuccess {String} category.name Name of the category.
+@apiSuccess {Date} category.createdAt Date when the category was created
 
 
-@apiSuccess {Boolean} dataset.deleted Tells if the dataset is deleted.
 @apiSuccessExample {json} Success-Response:
     HTTP/1.1 200 OK
     {
         "_id": "5635ed0505b07e9c1ade03b4",
         "name": "test",
-        "userId": "563debdc6b8c74b7393f1f8d",
         "createdAt": Date
-        "data": {
-            key1: "value1"
-        },
-        "options": {
-            key1: "option1"
-        }
     }
-###
-
-###
-@apiDefine SuccessDatasets
-@apiVersion 0.0.1
-@apiSuccess {Object[]} datasets
-@apiSuccess {ObjectId} dataset._id Contains the datasets' object id
-@apiSuccess {Number} dataset.__v Internal Revision of the document.
-@apiSuccess {String} dataset.name Name of the dataset.
-@apiSuccess {ObjectId} dataset.userId ID of the user who created the dataset.
-@apiSuccess {Boolean} dataset.private Tells if the dataset is private.
-@apiSuccess {ObjectId} dataset.parentId ID of the parent dataset.
-@apiSuccess {Date} dataset.createdAt Date when the dataset was created
-@apiSuccess {Date} dataset.updatedAt Date when the dataset was updated
-@apiSuccess {Object} dataset.data Data to be saved
-@apiSuccess {Object} dataset.options Options of the visualization
-@apiSuccess {Boolean} dataset.deleted Tells if the dataset is deleted.
-
-@apiSuccessExample {json} Success-Response:
-    HTTP/1.1 200 OK
-    [
-        {
-            "_id": "5635ed0505b07e9c1ade03b4",
-            "name": "test1",
-            "userId": "563debdc6b8c74b7393f1f8d",
-            "createdAt": Date
-            "data": {
-                key1: "value1"
-            },
-            "options": {
-                key1: "option1"
-            }
-        },
-        {
-            "_id": "5635ed0505b07e9c1ade03b2",
-            "name": "test2",
-            "userId": "563debdc6b8c74b7393f1f8d",
-            "createdAt": Date
-            "data": {
-                key1: "value1"
-            },
-            "options": {
-                key1: "option1"
-            }
-        }
-    ]
 ###
