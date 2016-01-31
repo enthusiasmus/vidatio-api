@@ -2,7 +2,7 @@
 
 mongoose = require "mongoose"
 
-Seeder = require "../seed"
+seeder = require "../seed"
 config = require "../config"
 
 {api:logger} = require "../logger"
@@ -27,6 +27,6 @@ connection.on "disconnected", ->
 
 connection.once "open", ->
     logger.info config.mongo, "db connection opened"
-    Seeder.start connection
+    seeder.start connection
 
 module.exports = connection

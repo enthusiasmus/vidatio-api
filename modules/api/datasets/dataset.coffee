@@ -17,13 +17,14 @@ nameValidator = [
 datasetSchema = mongoose.Schema
     name:
         type: String
-        trim: true
         required: "API.DATASET.CREATE.NAME.REQUIRED"
         validate: nameValidator
+
     deleted:
         type: Boolean
         required: true
         default: false
+
     userId:
         ref: "User"
         type: mongoose.Schema.Types.ObjectId
@@ -32,6 +33,7 @@ datasetSchema = mongoose.Schema
         type: mongoose.Schema.Types.ObjectId
         required: false
         default: null
+
     createdAt:
         type: Date
         required: true
@@ -40,9 +42,11 @@ datasetSchema = mongoose.Schema
         type: Date
         required: true
         default: Date.now
+
     data:
-        type: Object
+        type: [mongoose.Schema.Types.Mixed]
         required: true
+
     options:
         type: Object
         required: false
