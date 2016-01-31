@@ -11,11 +11,11 @@ class Config
             log: "./logs"
 
         @mongo  = do =>
-            if @isApiTest()
+            if @isDevEnvironment()
                 return "#{ @db.host }/#{ @db.name }_test"
             return "#{ @db.host }/#{ @db.name }"
 
-    isApiTest: ->
+    isDevEnvironment: ->
         process.env.NODE_ENV is "development" or process.env.NODE_ENV is "test"
 
 module.exports = new Config
