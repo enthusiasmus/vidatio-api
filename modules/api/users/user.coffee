@@ -6,7 +6,6 @@ crypto = require "crypto"
 
 db = require "../connection"
 
-
 emailValidator = [
     validate
         validator: "isEmail"
