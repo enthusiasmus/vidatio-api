@@ -1,19 +1,13 @@
-User = require("mongoose").model("User")
-
-module.exports = (cb) ->
-    console.log "users/seed.coffee"
-    User.find({}).exec (err, users) ->
-        console.log "user.find something?!"
+module.exports =  (db) ->
+    User = db.model "User"
+    User.find {}, (err, users) ->
         if users.length == 0
-            console.log "No users present in users collection"
+            console.log "No users available in users collection"
             for i in [1..10]
                 console.log "Inserting user #{i}"
                 User.create
                     email:  "user#{i}@vidatio.com"
                     name: "user#{i}"
                     password: "user#{i}"
-
-            return cb true
         else
-            console.log "No need to seed"
-            return cb false
+            console.log "No need to seed users"

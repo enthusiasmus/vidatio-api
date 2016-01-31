@@ -27,6 +27,6 @@ connection.on "disconnected", ->
 
 connection.once "open", ->
     logger.info config.mongo, "db connection opened"
-    Seeder.start()
+    Seeder.start connection
 
 module.exports = connection

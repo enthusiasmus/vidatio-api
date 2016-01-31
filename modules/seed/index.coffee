@@ -2,14 +2,11 @@ glob = require "glob"
 
 class Seeder
     constructor: ->
-        @matches = glob.sync "../api/users/seed.*", {cwd: __dirname}
+        @matches = glob.sync "../api/**/seed.*", {cwd: __dirname}
 
-    start: ->
+    start: (db) ->
         for value, i in @matches
-            console.log "Found file #{value}"
-            console.log process.cwd()
-            require("#{value}")( (isFinished) ->
-                console.log isFinished
-            )
+            console.log "Found seedfile #{value}"
+            require("#{value}")(db)
 
 module.exports = new Seeder
