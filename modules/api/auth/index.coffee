@@ -31,6 +31,10 @@ authRoot = auth.route "/"
     HTTP/1.1 200 OK
     {
         "message": "successfully authenticated"
+        "user":
+            "_id": 1231asdf2131
+            "name": "user1"
+            "email": "user1(at)vidatio.com"
     }
 @apiErrorExample {json} Error-Response:
     HTTP/1.1 401 Unauthorized {}
