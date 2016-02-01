@@ -8,9 +8,9 @@ config   = require "../../config"
 errorHandler   = require "../../helper/error-handler"
 
 {auth:logger}   = require "../../logger"
+{model:User} = require "../users/user"
 
 auth = Router()
-
 
 basicAuth = passport.authenticate "basic",  session: false
 
@@ -39,7 +39,12 @@ authRoot = auth.route "/"
 
 authRoot.get basicAuth, (req, res) ->
     logger.info "authenticate a user"
-    res.status(200).json message: "successfully authenticated"
+    res.status(200).json
+        message: "successfully authenticated"
+        user:
+            _id: req.user._id
+            name: req.user.name
+            email: req.user.email
 
 module.exports =
     auth: auth
