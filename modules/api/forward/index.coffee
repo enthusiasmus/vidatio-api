@@ -31,14 +31,31 @@ forwardRoot.get ( req, res ) ->
     request = http.get req.query.url, (resp) ->
         logger.debug code: resp.statusCode, "http code from http.get request"
 
+        filePath = resp.headers['content-type']
+        fileType = filePath.split "/"
+        fileType = fileType[fileType.length - 1].toLowerCase()
+
+        if fileType isnt "octet-stream" and fileType isnt "zip"
+            logger.error error:"Data format not supported"
+            res.status(500).json error: "Data format not supported"
+            return
+
         bodyChunks = []
         resp.on 'data', (chunk) ->
             bodyChunks.push chunk
 
         .on 'end', ->
             body = Buffer.concat bodyChunks
+
+            if fileType is 'octet-stream'
+                body = body.toString()
+                fileType = 'csv'
+
+            response = {}
+            response.fileType = fileType
+            response.body = body
             logger.debug "return file"
-            res.send body
+            res.send response
 
     request.on 'error', (e) ->
         logger.error error:e.message, "wasn't able to retrieve file by url"
