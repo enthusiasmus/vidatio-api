@@ -24,41 +24,41 @@ forwardRoot = forward.route "/"
     http://localhost:3000/v0/forward?url=http://data.ooe.gv.at/files/cms/Mediendateien/OGD/ogd_abtStat/Wahl_LT_09_OGD.csv
 ###
 
-forwardRoot.get ( req, res ) ->
+forwardRoot.get (req, res) ->
     logger.info "retrieve file from another server"
-    logger.debug params: req.query.url
+    logger.debug
+        params: req.query.url
 
     request = http.get req.query.url, (resp) ->
-        logger.debug code: resp.statusCode, "http code from http.get request"
+        logger.debug
+            code: resp.statusCode, "http code from http.get request"
 
         filePath = resp.headers['content-type']
         fileType = filePath.split "/"
         fileType = fileType[fileType.length - 1].toLowerCase()
 
         if fileType isnt "octet-stream" and fileType isnt "zip"
-            logger.error error:"Data format not supported"
+            logger.error error: "Data format not supported"
             res.status(500).json error: "Data format not supported"
             return
 
-        bodyChunks = []
+        chunks = []
         resp.on 'data', (chunk) ->
-            bodyChunks.push chunk
-
+            chunks.push chunk
         .on 'end', ->
-            body = Buffer.concat bodyChunks
+            body = Buffer.concat chunks
 
+            # CSV (octet-stream) has to be send to the client as string
             if fileType is 'octet-stream'
                 body = body.toString()
                 fileType = 'csv'
 
-            response = {}
-            response.fileType = fileType
-            response.body = body
-            logger.debug "return file"
-            res.send response
+            res.send
+                fileType: fileType
+                body: body
 
     request.on 'error', (e) ->
-        logger.error error:e.message, "wasn't able to retrieve file by url"
+        logger.error error: e.message, "wasn't able to retrieve file by url"
         res.status(500).json error: "not found"
 
 module.exports =
