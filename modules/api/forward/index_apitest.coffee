@@ -4,7 +4,8 @@ frisby = require "frisby"
 
 config = require "../../config"
 
-data = 'http://data.ooe.gv.at/files/cms/Mediendateien/OGD/ogd_abtStat/Wahl_LT_09_OGD.csv'
+dataCSV = 'http://data.ooe.gv.at/files/cms/Mediendateien/OGD/ogd_abtStat/Wahl_LT_09_OGD.csv'
+dataSHP = 'http://data.wien.gv.at/daten/geo?service=WFS&request=GetFeature&version=1.1.0&typeName=ogdwien:KINDERGARTENOGD&srsName=EPSG:4326&outputFormat=shape-zip'
 
 frisby.globalSetup
     request:
@@ -15,9 +16,15 @@ frisby.globalSetup
         json: true
         baseUri: config.url
 
-xdescribe "Forward", ->
+describe "Forward with CSV", ->
     frisby.create('A get request with a query variable called url is requested')
-        .get '/v0/forward?url=' + data
+        .get '/v0/forward?url=' + dataCSV
         .expectStatus(200)
         .expectBodyContains('Gemeindenummer;Name;Wahlberechtigte')
+        .toss()
+
+describe "Forward with SHP", ->
+    frisby.create('A get request with a query variable called url is requested')
+        .get '/v0/forward?url=' + dataSHP
+        .expectStatus(200)
         .toss()

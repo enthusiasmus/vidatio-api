@@ -79,7 +79,7 @@ datasetRoot.post basicAuth, (req, res) ->
 
     dataset = new Dataset
 
-    dataset.userId = req.body.userId
+    dataset.userId = req.user._id
     dataset.name = req.body.name
     dataset.data = req.body.data
     dataset.options = req.body.options
