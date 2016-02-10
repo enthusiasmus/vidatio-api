@@ -39,6 +39,7 @@ forwardRoot.get (req, res) ->
 
         if fileType isnt "octet-stream" and fileType isnt "zip"
             logger.error error: "Data format not supported"
+            logger.debug fileType: fileType
             res.status(500).json error: "Data format not supported"
             return
 
