@@ -25,7 +25,7 @@ forwardRoot = forward.route "/"
 ###
 
 forwardRoot.get (req, res) ->
-    logger.info "retrieve file from another server"
+    logger.info "Retrieve file from another server"
     logger.debug
         params: req.query.url
 
@@ -38,8 +38,9 @@ forwardRoot.get (req, res) ->
         fileType = fileType[fileType.length - 1].toLowerCase()
 
         if fileType isnt "octet-stream" and fileType isnt "zip"
-            logger.error error: "Data format not supported"
-            logger.debug fileType: fileType
+            logger.error "Data format not supported"
+            logger.debug
+                fileType: fileType
             res.status(500).json error: "Data format not supported"
             return
 
@@ -59,7 +60,9 @@ forwardRoot.get (req, res) ->
                 body: body
 
     request.on 'error', (e) ->
-        logger.error error: e.message, "wasn't able to retrieve file by url"
+        logger.error "Wasn't able to retrieve file by url"
+        logger.debug
+            message: e.message
         res.status(500).json error: "not found"
 
 module.exports =
