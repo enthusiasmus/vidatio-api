@@ -176,7 +176,11 @@ datasetIdRoot.delete basicAuth, (req, res) ->
 datasetIdRoot.get (req, res) ->
     logger.info "get a dataset by id"
     logger.debug params: req.params
-    Dataset.findById req.params.id,  "id name userId data options createdAt", (error, dataset) ->
+
+    Dataset.findById req.params.id
+    .select "id name userId data options createdAt"
+    .populate "userId", "name email"
+    .exec (error, dataset) ->
 
         if error
             logger.error error: error, "wasn't able to get dataset"
