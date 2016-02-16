@@ -44,7 +44,7 @@ datasetSchema = mongoose.Schema
         default: Date.now
 
     data:
-        type: [mongoose.Schema.Types.Mixed]
+        type: mongoose.Schema.Types.Mixed
         required: true
 
     options:
