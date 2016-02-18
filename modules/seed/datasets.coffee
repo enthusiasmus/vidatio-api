@@ -8,16 +8,15 @@ seedDatasets = [
     [ ["01.01.2014", "01.01.2015", "01.01.2016"], ["Idee Vidatio", "Umsetzung Vidatio", "Gewinn Vidatio"] ]
 ]
 
-module.exports =  (db) ->
+module.exports =  (db, users) ->
     Dataset = db.model "Dataset"
     User = db.model "User"
 
     Dataset.find {}, (err, datasets) ->
         if datasets.length == 0
             console.log "No datasets available in datasets collection"
-            userPromise = require("../users/seed")(db)
 
-            userPromise.then (result) ->
+            users.then (result) ->
                 User.find {}, (err, users) ->
                     if users.length isnt 0
                         for user, i in users

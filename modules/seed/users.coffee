@@ -1,8 +1,5 @@
 "use strict"
 
-seedUsers = 10
-count = 0
-
 createUser = (User, i) ->
     return new Promise (resolve, reject) ->
         User.create
@@ -13,7 +10,7 @@ createUser = (User, i) ->
             reject error if error
             resolve user
 
-module.exports =  (db) ->
+module.exports =  (db, seedNumberUsers) ->
     promiseArray = []
     User = db.model "User"
 
@@ -23,7 +20,7 @@ module.exports =  (db) ->
             if users.length is 0
                 console.log "No users available in users collection"
 
-                for i in [1..seedUsers]
+                for i in [1..seedNumberUsers]
                     console.log "Inserting user #{i}"
                     promiseArray.push(createUser(User, i))
 

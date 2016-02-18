@@ -5,7 +5,7 @@ class Config
         @host = "localhost"
         @url = "http://#{@host}:#{@port}"
         @db =
-            host: "mongo"
+            host: "localhost"
             name: "vidatio"
         @dirs =
             log: "./logs"
