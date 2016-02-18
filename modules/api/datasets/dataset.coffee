@@ -14,6 +14,19 @@ nameValidator = [
         message: "API.DATASET.CREATE.NAME.NOTVALID"
 ]
 
+
+
+metaDataSchema = mongoose.Schema
+    name:
+        type: String
+
+    tags: [String]
+
+    categories: [
+        ref: "Category"
+        type: mongoose.Schema.Types.ObjectId
+    ]
+
 datasetSchema = mongoose.Schema
     name:
         type: String
@@ -38,8 +51,10 @@ datasetSchema = mongoose.Schema
         type: mongoose.Schema.Types.Mixed
         required: true
 
+    metaData: [metaDataSchema]
+
     options:
-        type: Object
+        type: Schema.Types.Mixed
         required: false
 
 
