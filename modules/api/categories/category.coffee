@@ -3,6 +3,7 @@
 mongoose = require "mongoose"
 validate = require "mongoose-validator"
 crypto = require "crypto"
+timestamps = require "mongoose-timestamp"
 
 db = require "../connection"
 
@@ -20,11 +21,8 @@ categorySchema = mongoose.Schema
         unique: true
         required: "API.CATEGORY.NAME.REQUIRED"
         validate: nameValidator
-    createdAt:
-        type: Date
-        required: true
-        default: Date.now
 
+categoryModel.plugin timestamps
 categoryModel = db.model "Category", categorySchema
 module.exports =
     schema: categorySchema

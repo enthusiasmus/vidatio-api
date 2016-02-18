@@ -2,9 +2,9 @@
 
 mongoose = require "mongoose"
 validate = require "mongoose-validator"
-{extend} = require "mongoose-validator"
+{extend} = validate
+timestamps = require "mongoose-timestamp"
 crypto = require "crypto"
-
 db = require "../connection"
 
 nameValidator = [
@@ -34,15 +34,6 @@ datasetSchema = mongoose.Schema
         required: false
         default: null
 
-    createdAt:
-        type: Date
-        required: true
-        default: Date.now
-    updatedAt:
-        type: Date
-        required: true
-        default: Date.now
-
     data:
         type: mongoose.Schema.Types.Mixed
         required: true
@@ -51,6 +42,8 @@ datasetSchema = mongoose.Schema
         type: Object
         required: false
 
+
+datasetModel.plugin timestamps
 datasetModel = db.model "Dataset", datasetSchema
 module.exports =
     schema: datasetSchema
