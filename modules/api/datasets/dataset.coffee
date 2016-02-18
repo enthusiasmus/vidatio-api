@@ -4,7 +4,6 @@ mongoose = require "mongoose"
 validate = require "mongoose-validator"
 {extend} = validate
 timestamps = require "mongoose-timestamp"
-crypto = require "crypto"
 db = require "../connection"
 
 nameValidator = [
@@ -14,13 +13,14 @@ nameValidator = [
         message: "API.DATASET.CREATE.NAME.NOTVALID"
 ]
 
-
-
 metaDataSchema = mongoose.Schema
     name:
         type: String
 
-    tags: [String]
+    tags: [
+        ref "Tag"
+        type: mongoose.Schema.Types.ObjectId
+    ]
 
     categories: [
         ref: "Category"
@@ -42,6 +42,7 @@ datasetSchema = mongoose.Schema
         ref: "User"
         type: mongoose.Schema.Types.ObjectId
         required: "API.DATASET.CREATE.USER_ID.REQUIRED"
+
     parentId:
         type: mongoose.Schema.Types.ObjectId
         required: false
@@ -51,7 +52,7 @@ datasetSchema = mongoose.Schema
         type: mongoose.Schema.Types.Mixed
         required: true
 
-    metaData: [metaDataSchema]
+    metaData: metaDataSchema
 
     options:
         type: Schema.Types.Mixed
