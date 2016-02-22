@@ -17,7 +17,6 @@ testuser =
 
 testDataset =
     name: "First Dataset"
-    userId: "123456781234567812345678"
     data:
         key1: "value1"
     options:
@@ -82,37 +81,28 @@ User.findOneAndRemove {
                         expect(dataset.options).toEqual({ option1: "option1" })
                         expect(dataset.deleted).not.toBeTruthy()
 
-                        ###
-                        # FIXME: Let frisby silently crash
-                        # Use build/datasets/index_apitest.js to see funny malformed javascript
-                        # Like:
-                        #   ...
-                        #       }).toss();
-                            });
-                            return frisby.create("dataset should get successfully deleted")["delete"](datasetRoute + ("/" + dataset._id)).auth(testuser.email, testuser.password).expectHeaderContains("Content-Type", "json").expectStatus(200).expectJSON({
-                              message: "successfully deleted dataset"
-                            }).toss().toss();
-                        #
                         frisby.create "get all datasets"
                             .get datasetRoute
                             .expectHeaderContains "Content-Type", "json"
                             .expectStatus 200
-                            .after (error, res, body) ->
+                            .after((error, res, body) ->
                                 datasets = body
                                 expect(datasets).toBeDefined()
                                 expect(datasets).toEqual(jasmine.any(Array))
                                 expect(datasets[0]).toEqual(jasmine.any(Object))
-                                expect(datasets).toEqual([dataset])
+                            ).toss()
 
                         frisby.create "get dataset by id"
                             .get datasetRoute + "/#{dataset._id}"
                             .expectHeaderContains "Content-Type", "json"
                             .expectStatus 200
-                            .after (error, res, body) ->
+                            .after((error, res, body) ->
                                 expect(body).toBeDefined()
-                                expect(body).toEqual(dataset)
-                            .toss()
-                        ###
+                                expect(body.options).toEqual(dataset.options)
+                                expect(body.data).toEqual(dataset.data)
+                                expect(body._id).toEqual(dataset._id)
+                                expect(body.name).toEqual(dataset.name)
+                        ).toss()
 
                         frisby.create "dataset should get successfully deleted"
                             .delete datasetRoute + "/#{dataset._id}"

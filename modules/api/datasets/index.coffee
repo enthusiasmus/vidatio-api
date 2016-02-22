@@ -3,14 +3,18 @@
 {Router} = require "express"
 passport = require "passport"
 mongoose = require "mongoose"
+mongoose.Promise = global.Promise
+
 {BasicStrategy:BasicStrategy} = require "passport-http"
 
 config   = require "../../config"
 errorHandler   = require "../../helper/error-handler"
+{hasAllProperties, updateObject}   = require "../../helper/util"
 
 {dataset:logger}   = require "../../logger"
 
 {model:Dataset} = require "./dataset"
+{model:Tag} = require "../tags/tag"
 
 dataset = Router()
 
@@ -41,7 +45,7 @@ datasetRoot.get (req, res) ->
     Dataset.find deleted: false, "id name userId data options createdAt"
     .populate "userId", "name -_id"
     .exec (error, datasets) ->
-        if error
+        if error?
             logger.error error: error, "error retrieving datasets"
             error = errorHandler.format error
             return res.status(500).json error: error
@@ -77,28 +81,47 @@ datasetRoot.post basicAuth, (req, res) ->
     logger.info "creating new dataset"
     logger.debug params: req.body
 
+    unless hasAllProperties req.body, ["data"]
+        return res.status(500).json error: "To save a dataset at least some data need to be presend"
+
     dataset = new Dataset
 
     dataset.userId = req.user._id
-    dataset.name = req.body.name
-    dataset.data = req.body.data
-    dataset.options = req.body.options
+    updateObject req.body, ["name", "data", "options"], dataset
+    promiseArray = []
+    if req.body.metaData?
+        dataset.metaData = {}
+        if req.body.metaData.tags?
+            dataset.metaData.tags = []
+            for tag in req.body.metaData.tags
+                promiseArray.push findOrCreateTag tag, dataset
 
-    dataset.save (error, dataset) ->
-        if error
-            logger.error error: error, "error saving dataset"
-            error = errorHandler.format error
-            return res.status(500).json error: error
+        if req.body.metaData.categories?
+            for category in req.body.metaData.categories
+                dataset.metaData.categories.push category
 
-        logger.debug dataset: dataset, "success saving dataset"
+    Promise.all(promiseArray)
+    .then (result) ->
+        dataset.save (error, dataset) ->
+            if error?
+                logger.error error: error, "error saving dataset"
+                error = errorHandler.format error
+                return res.status(500).json error: error
 
-        return res.json
-            _id: dataset._id
-            name: dataset.name
-            userId: dataset.userId
-            data: dataset.data
-            options: dataset.options
-            createdAt: dataset.createdAt
+            logger.debug dataset: dataset, "success saving dataset"
+
+            return res.json dataset
+    , (error) ->
+        return res.status(500).json error: "A strange error occured"
+
+
+
+findOrCreateTag = (tag, dataset) ->
+    return new Promise (resolve, reject) ->
+        Tag.findOrCreate tag, (error, tag) ->
+            reject error if error?
+            dataset.metaData.tags.push tag._id
+            resolve tag
 
 datasetIdRoot = dataset.route "/:id"
 
@@ -141,7 +164,7 @@ datasetIdRoot.delete basicAuth, (req, res) ->
     }, {
         "new": true
     }, (error, dataset) ->
-        if error
+        if error?
             logger.error error: error, "wasn't able to update dataset"
             error = errorHandler.format error
             return res.status(500).json error: error
@@ -178,11 +201,10 @@ datasetIdRoot.get (req, res) ->
     logger.debug params: req.params
 
     Dataset.findById req.params.id
-    .select "id name userId data options createdAt"
     .populate "userId", "name email"
     .exec (error, dataset) ->
-
-        if error
+        if error?
+            console.log error
             logger.error error: error, "wasn't able to get dataset"
             error = errorHandler.format error
             return res.status(500).json error: error

@@ -18,7 +18,7 @@ metaDataSchema = mongoose.Schema
         type: String
 
     tags: [
-        ref "Tag"
+        ref: "Tag"
         type: mongoose.Schema.Types.ObjectId
     ]
 
@@ -55,11 +55,11 @@ datasetSchema = mongoose.Schema
     metaData: metaDataSchema
 
     options:
-        type: Schema.Types.Mixed
+        type: mongoose.Schema.Types.Mixed
         required: false
 
 
-datasetModel.plugin timestamps
+datasetSchema.plugin timestamps
 datasetModel = db.model "Dataset", datasetSchema
 module.exports =
     schema: datasetSchema
