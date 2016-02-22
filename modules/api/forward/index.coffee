@@ -33,7 +33,7 @@ forwardRoot.get (req, res) ->
         logger.debug
             code: resp.statusCode, "http code from http.get request"
 
-        filePath = resp.headers['content-type']
+        filePath = resp.headers["content-type"]
         fileType = filePath.split "/"
         fileType = fileType[fileType.length - 1].toLowerCase()
 
@@ -41,29 +41,28 @@ forwardRoot.get (req, res) ->
             logger.error "Data format not supported"
             logger.debug
                 fileType: fileType
-            res.status(500).json error: "Data format not supported"
-            return
+            return res.status(500).json error: "Data format not supported"
 
         chunks = []
-        resp.on 'data', (chunk) ->
+        resp.on "data", (chunk) ->
             chunks.push chunk
-        .on 'end', ->
+        .on "end", ->
             body = Buffer.concat chunks
 
-            # CSV (octet-stream) has to be send to the client as string
-            if fileType is 'octet-stream'
+            # CSV (octet-stream) has to be sent to the client as string
+            if fileType is "octet-stream"
                 body = body.toString()
-                fileType = 'csv'
+                fileType = "csv"
 
-            res.send
+            return res.send
                 fileType: fileType
                 body: body
 
-    request.on 'error', (e) ->
+    request.on "error", (e) ->
         logger.error "Wasn't able to retrieve file by url"
         logger.debug
             message: e.message
-        res.status(500).json error: "not found"
+        return res.status(500).json error: "not found"
 
 module.exports =
     forward: forward
