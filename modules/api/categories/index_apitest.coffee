@@ -32,8 +32,8 @@ Category.create testCategory, (error, doc) ->
                 name: "testCategory"
             )
 
-            Category.findOneAndRemove body[body.length - 1], (err) ->
-                console.error(err) if err
+            Category.findOneAndRemove body[body.length - 1]
+            .exec()
     .toss()
 
 

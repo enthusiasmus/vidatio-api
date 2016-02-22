@@ -1,23 +1,10 @@
 "use strict"
 
 {Router} = require "express"
-passport = require "passport"
-mongoose = require "mongoose"
-{BasicStrategy:BasicStrategy} = require "passport-http"
-
-config   = require "../../config"
 errorHandler   = require "../../helper/error-handler"
-
 {category:logger}   = require "../../logger"
-
 {model:Category} = require "./category"
-
 category = Router()
-
-ObjectId = mongoose.Schema.Types.ObjectId
-
-basicAuth = passport.authenticate "basic",  session: false
-
 categoryRoot = category.route "/"
 
 ###
@@ -39,7 +26,7 @@ categoryRoot.get (req, res) ->
     logger.debug params: req.body
 
     Category.find {}, "-_id name", (error, categories) ->
-        if error
+        if error?
             logger.error error: error, "error retrieving categories"
             error = errorHandler.format error
             return res.status(500).json error: error
