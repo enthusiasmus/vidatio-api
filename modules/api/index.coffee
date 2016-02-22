@@ -11,6 +11,7 @@ passport = require "passport"
 {auth} = require "./auth"
 {dataset} = require "./datasets"
 {category} = require "./categories"
+{tag} = require "./tags"
 
 {routes:logRoutes, auth:logger} = require "../logger"
 
@@ -38,6 +39,7 @@ router.use "/users", user
 router.use "/auth", auth
 router.use "/datasets", dataset
 router.use "/categories", category
+router.use "/tags", tag
 
 
 router.use "/logs", logRoutes

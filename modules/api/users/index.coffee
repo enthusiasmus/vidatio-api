@@ -46,7 +46,7 @@ userRoot.post (req, res) ->
     user.password = req.body.password
 
     user.save (error, user) ->
-        if error
+        if error?
             logger.error error: error, "error registering user"
             error = errorHandler.format error
             return res.status(500).json error: error
@@ -102,7 +102,7 @@ userIdRoot.delete basicAuth, (req, res) ->
     }, {
         "new": true
     }, (error, user) ->
-        if error
+        if error?
             logger.error error: error, "wasn't able to update user"
             error = errorHandler.format error
             return res.status(500).json error: error
@@ -153,7 +153,7 @@ userCheckRoot.get (req, res) ->
             when "email", "name"
                 obj = "#{key}": value
                 User.findOne obj, (error, user) ->
-                    if error
+                    if error?
                         logger.error error: error, "wasn't able to find user by #{key}"
                         error = errorHandler.format error
                         return res.status(500).json error: error
