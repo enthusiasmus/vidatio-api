@@ -68,6 +68,7 @@ datasetRoot.get (req, res) ->
 @apiParam {String} userId  ID of the user who created the dataset
 @apiParam {Object} data  Data to be saved
 @apiParam {Object} options  Options of the visualization
+@apiParam {Object} metaData  metaData of the current Dataset like "name", "tags", and "categories"
 
 @apiExample {curl} Example usage:
     curl http://localhost:3000/v0/datasets -u admin:admin -H "Content-Type: application/json" -d '{"name": "vidatio", "data":{"key1": "value1"}}'
@@ -87,6 +88,8 @@ datasetRoot.post basicAuth, (req, res) ->
     dataset = new Dataset
 
     dataset.userId = req.user._id
+
+    dataset.name = req.body.name if req.body.name?
     updateObject req.body, ["name", "data", "options"], dataset
     promiseArray = []
     if req.body.metaData?

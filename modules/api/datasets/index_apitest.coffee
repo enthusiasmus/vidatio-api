@@ -112,7 +112,7 @@ User.findOneAndRemove {
                                 expect(body.data).toEqual(dataset.data)
                                 expect(body._id).toEqual(dataset._id)
                                 expect(body.name).toEqual(dataset.name)
-                        ).toss()
+                            ).toss()
 
                         frisby.create "dataset should get successfully deleted"
                             .delete datasetRoute + "/#{dataset._id}"
