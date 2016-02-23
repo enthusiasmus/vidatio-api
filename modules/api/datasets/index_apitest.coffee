@@ -22,6 +22,15 @@ testDataset =
     options:
         option1: "option1"
 
+tagTestDataset =
+    name: "Second Dataset"
+    data:
+        key1: "value1"
+    options:
+        option1: "option1"
+    metaData:
+        tags: ["tag1", "tag2"]
+
 frisby.globalSetup
     request:
         body: undefined
@@ -75,6 +84,7 @@ User.findOneAndRemove {
                     .after (error, res, body) ->
                         dataset = body
 
+
                         expect(dataset.name).toEqual("First Dataset")
                         expect(dataset.userId).toEqual(user._id)
                         expect(dataset.data).toEqual({ key1: "value1" })
@@ -116,6 +126,29 @@ User.findOneAndRemove {
 
                     .toss()
 
-        .toss()
+            Dataset.remove
+                name: "Second Dataset"
+            , ->
+                frisby.create "Expect a successful creation of a dataset with tags"
+                    .post datasetRoute, tagTestDataset
+                    .auth testuser.email, testuser.password
+                    .expectHeaderContains "Content-Type", "json"
+                    .expectStatus 200
+                    .after((error, res, body) ->
+                        dataset = body
+                        expect(dataset).toBeDefined()
+                        expect(dataset.options).toEqual(tagTestDataset.options)
+                        expect(dataset.data).toEqual(tagTestDataset.data)
+                        expect(dataset.name).toEqual(tagTestDataset.name)
 
+                        expect(dataset.metaData).toBeDefined()
+                        expect(dataset.metaData.categories).toBeDefined()
+                        expect(dataset.metaData.categories).toEqual(jasmine.any(Array))
+                        expect(dataset.metaData.tags).toBeDefined()
+                        expect(dataset.metaData.tags).toEqual(jasmine.any(Array))
+                        expect(dataset.metaData.tags.length).toEqual(2)
+
+                    ).toss()
+
+        .toss()
 
