@@ -5,7 +5,7 @@ createUser = (User, i) ->
         User.create
             email:  "user#{i}@vidatio.com"
             name: "user#{i}"
-            password: "user#{i}"
+            password: "password#{i}"
         , (error, user) ->
             reject error if error
             resolve user
