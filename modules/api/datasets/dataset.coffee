@@ -17,6 +17,9 @@ metaDataSchema = mongoose.Schema
     name:
         type: String
 
+    fileType:
+        type: String
+
     tags: [
         ref: "Tag"
         type: mongoose.Schema.Types.ObjectId

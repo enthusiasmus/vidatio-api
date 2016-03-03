@@ -94,6 +94,9 @@ datasetRoot.post basicAuth, (req, res) ->
     promiseArray = []
     if req.body.metaData?
         dataset.metaData = {}
+        if req.body.metaData.fileType?
+            dataset.metaData.fileType = req.body.metaData.fileType
+
         if req.body.metaData.tags?
             dataset.metaData.tags = []
             for tag in req.body.metaData.tags
