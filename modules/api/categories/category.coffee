@@ -21,6 +21,22 @@ categorySchema = mongoose.Schema
         required: "API.CATEGORY.NAME.REQUIRED"
         validate: nameValidator
 
+
+categorySchema.statics =
+    findOrCreate: (category, dataset) ->
+        return new Promise (resolve, reject) =>
+            @findOneAndUpdate
+                name: category
+            ,
+                $setOnInsert:
+                    name: category
+            ,
+                upsert: true
+            , (err, doc) ->
+                if err then reject err
+                dataset.metaData.category = doc._id
+                resolve doc
+
 categoryModel = db.model "Category", categorySchema
 module.exports =
     schema: categorySchema

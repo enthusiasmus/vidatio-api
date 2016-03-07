@@ -20,7 +20,7 @@ module.exports =  (db) ->
                 Category.update
                     name: seedCategories[i]
                 ,
-                    $set:
+                    $setOnInsert:
                         name: seedCategories[i]
                 ,
                     upsert: true

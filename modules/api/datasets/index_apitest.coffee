@@ -29,6 +29,7 @@ tagTestDataset =
     options:
         option1: "option1"
     metaData:
+        category: "test-category"
         tags: ["tag1", "tag2"]
 
 frisby.globalSetup
@@ -142,8 +143,8 @@ User.findOneAndRemove {
                         expect(dataset.name).toEqual(tagTestDataset.name)
 
                         expect(dataset.metaData).toBeDefined()
-                        expect(dataset.metaData.categories).toBeDefined()
-                        expect(dataset.metaData.categories).toEqual(jasmine.any(Array))
+                        expect(dataset.metaData.category).toBeDefined()
+                        expect(dataset.metaData.category).toEqual(jasmine.any(String))
                         expect(dataset.metaData.tags).toBeDefined()
                         expect(dataset.metaData.tags).toEqual(jasmine.any(Array))
                         expect(dataset.metaData.tags.length).toEqual(2)

@@ -15,6 +15,7 @@ errorHandler   = require "../../helper/error-handler"
 
 {model:Dataset} = require "./dataset"
 {model:Tag} = require "../tags/tag"
+{model:Category} = require "../categories/category"
 
 dataset = Router()
 
@@ -83,7 +84,7 @@ datasetRoot.post basicAuth, (req, res) ->
     logger.debug params: req.body
 
     unless hasAllProperties req.body, ["data"]
-        return res.status(500).json error: "To save a dataset at least some data need to be presend"
+        return res.status(500).json error: "To save a dataset at least some data need to be present"
 
     dataset = new Dataset
 
@@ -102,9 +103,8 @@ datasetRoot.post basicAuth, (req, res) ->
             for tag in req.body.metaData.tags
                 promiseArray.push findOrCreateTag tag, dataset
 
-        if req.body.metaData.categories?
-            for category in req.body.metaData.categories
-                dataset.metaData.categories.push category
+        if req.body.metaData.category?
+            promiseArray.push Category.findOrCreate req.body.metaData.category, dataset
 
     Promise.all(promiseArray)
     .then (result) ->

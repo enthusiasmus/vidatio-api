@@ -25,10 +25,9 @@ metaDataSchema = mongoose.Schema
         type: mongoose.Schema.Types.ObjectId
     ]
 
-    categories: [
+    category:
         ref: "Category"
         type: mongoose.Schema.Types.ObjectId
-    ]
 
 datasetSchema = mongoose.Schema
     name:
