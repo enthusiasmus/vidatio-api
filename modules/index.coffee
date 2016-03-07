@@ -43,10 +43,10 @@ applyMiddlewares = ( app ) ->
     app.use allowCors
 
     # parse urlencode body, --> req.body
-    app.use bodyParser.urlencoded( extended: true )
+    app.use bodyParser.urlencoded({limit: '50mb', extended: true})
 
     # parse json
-    app.use bodyParser.json()
+    app.use bodyParser.json({limit: '50mb'})
 
     # add the api
     app.use "/#{config.apiVersion}/", api
