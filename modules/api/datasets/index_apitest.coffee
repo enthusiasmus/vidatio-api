@@ -29,7 +29,7 @@ tagTestDataset =
     options:
         option1: "option1"
     metaData:
-        category: "test-category"
+        category: "Politik"
         tags: ["tag1", "tag2"]
 
 frisby.globalSetup

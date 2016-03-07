@@ -104,7 +104,7 @@ datasetRoot.post basicAuth, (req, res) ->
                 promiseArray.push findOrCreateTag tag, dataset
 
         if req.body.metaData.category?
-            promiseArray.push Category.findOrCreate req.body.metaData.category, dataset
+            promiseArray.push Category.findCategory req.body.metaData.category, dataset
 
     Promise.all(promiseArray)
     .then (result) ->

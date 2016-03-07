@@ -23,19 +23,16 @@ categorySchema = mongoose.Schema
 
 
 categorySchema.statics =
-    findOrCreate: (category, dataset) ->
+
+    findCategory: (category, dataset) ->
         return new Promise (resolve, reject) =>
-            @findOneAndUpdate
+            @findOne
                 name: category
-            ,
-                $setOnInsert:
-                    name: category
-            ,
-                upsert: true
-            , (err, doc) ->
-                if err then reject err
-                dataset.metaData.category = doc._id
+            , (error, doc) ->
+                reject error if error?
+                if doc then dataset.metaData.category = doc._id else dataset.metaData.category = ""
                 resolve doc
+
 
 categoryModel = db.model "Category", categorySchema
 module.exports =
