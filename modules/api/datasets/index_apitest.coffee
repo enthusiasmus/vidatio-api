@@ -6,6 +6,7 @@ config = require "../../config"
 
 {model:Dataset} = require "./dataset"
 {model:User} = require "../users/user"
+{model:Category} = require "../categories/category"
 
 datasetRoute = "/" + config.apiVersion + "/datasets"
 userRoute = "/" + config.apiVersion + "/users"
@@ -29,7 +30,10 @@ tagTestDataset =
     options:
         option1: "option1"
     metaData:
+        category: ""
         tags: ["tag1", "tag2"]
+
+promises = []
 
 frisby.globalSetup
     request:
@@ -126,9 +130,12 @@ User.findOneAndRemove {
 
                     .toss()
 
-            Dataset.remove
+            promises.push Dataset.remove
                 name: "Second Dataset"
-            , ->
+            promises.push Category.find
+                name: "Politik"
+            Promise.all(promises).then (values) ->
+                tagTestDataset.metaData.category = values[1][0]._id
                 frisby.create "Expect a successful creation of a dataset with tags"
                     .post datasetRoute, tagTestDataset
                     .auth testuser.email, testuser.password
@@ -142,8 +149,8 @@ User.findOneAndRemove {
                         expect(dataset.name).toEqual(tagTestDataset.name)
 
                         expect(dataset.metaData).toBeDefined()
-                        expect(dataset.metaData.categories).toBeDefined()
-                        expect(dataset.metaData.categories).toEqual(jasmine.any(Array))
+                        expect(dataset.metaData.category).toBeDefined()
+                        expect(dataset.metaData.category).toEqual(jasmine.any(String))
                         expect(dataset.metaData.tags).toBeDefined()
                         expect(dataset.metaData.tags).toEqual(jasmine.any(Array))
                         expect(dataset.metaData.tags.length).toEqual(2)

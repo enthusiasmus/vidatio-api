@@ -28,9 +28,7 @@ Category.create testCategory, (error, doc) ->
         .expectStatus 200
         .after (error, res, body) ->
             expect(body).toBeDefined()
-            expect(body[body.length - 1]).toEqual(
-                name: "testCategory"
-            )
+            expect(body[body.length - 1].name).toEqual("testCategory")
 
             Category.findOneAndRemove body[body.length - 1]
             .exec()

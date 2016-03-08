@@ -15,6 +15,7 @@ errorHandler   = require "../../helper/error-handler"
 
 {model:Dataset} = require "./dataset"
 {model:Tag} = require "../tags/tag"
+{model:Category} = require "../categories/category"
 
 dataset = Router()
 
@@ -42,8 +43,9 @@ datasetRoot.get (req, res) ->
     logger.info "get all datasets"
     logger.debug params: req.body
 
-    Dataset.find deleted: false, "id name userId data options createdAt"
+    Dataset.find deleted: false, "id name userId data options createdAt metaData"
     .populate "userId", "name -_id"
+    .populate "metaData.category", "name -_id"
     .exec (error, datasets) ->
         if error?
             logger.error error: error, "error retrieving datasets"
@@ -83,7 +85,7 @@ datasetRoot.post basicAuth, (req, res) ->
     logger.debug params: req.body
 
     unless hasAllProperties req.body, ["data"]
-        return res.status(500).json error: "To save a dataset at least some data need to be presend"
+        return res.status(500).json error: "To save a dataset at least some data need to be present"
 
     dataset = new Dataset
 
@@ -94,14 +96,16 @@ datasetRoot.post basicAuth, (req, res) ->
     promiseArray = []
     if req.body.metaData?
         dataset.metaData = {}
+        if req.body.metaData.fileType?
+            dataset.metaData.fileType = req.body.metaData.fileType
+
         if req.body.metaData.tags?
             dataset.metaData.tags = []
             for tag in req.body.metaData.tags
                 promiseArray.push findOrCreateTag tag, dataset
 
-        if req.body.metaData.categories?
-            for category in req.body.metaData.categories
-                dataset.metaData.categories.push category
+        if req.body.metaData.category?
+            dataset.metaData.category = req.body.metaData.category
 
     Promise.all(promiseArray)
     .then (result) ->
@@ -205,6 +209,7 @@ datasetIdRoot.get (req, res) ->
 
     Dataset.findById req.params.id
     .populate "userId", "name email"
+    .populate "metaData.category", "name -_id"
     .exec (error, dataset) ->
         if error?
             console.log error

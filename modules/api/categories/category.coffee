@@ -21,6 +21,7 @@ categorySchema = mongoose.Schema
         required: "API.CATEGORY.NAME.REQUIRED"
         validate: nameValidator
 
+
 categoryModel = db.model "Category", categorySchema
 module.exports =
     schema: categorySchema
