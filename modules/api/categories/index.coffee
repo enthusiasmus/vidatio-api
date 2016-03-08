@@ -25,7 +25,7 @@ categoryRoot.get (req, res) ->
     logger.info "get all categories"
     logger.debug params: req.body
 
-    Category.find {}, "-_id name", (error, categories) ->
+    Category.find {}, (error, categories) ->
         if error?
             logger.error error: error, "error retrieving categories"
             error = errorHandler.format error

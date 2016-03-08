@@ -22,18 +22,6 @@ categorySchema = mongoose.Schema
         validate: nameValidator
 
 
-categorySchema.statics =
-
-    findCategory: (category, dataset) ->
-        return new Promise (resolve, reject) =>
-            @findOne
-                name: category
-            , (error, doc) ->
-                reject error if error?
-                if doc then dataset.metaData.category = doc._id else dataset.metaData.category = ""
-                resolve doc
-
-
 categoryModel = db.model "Category", categorySchema
 module.exports =
     schema: categorySchema
