@@ -1,5 +1,7 @@
 "use strict"
 
+{api:logger} = require "../logger"
+
 seedDatasets = [
     [ [200, 300, 400], ["Orange", "Banane", "Apfel"] ]
     [ ["Einnahmen", 100, 200, 300, 400], ["Ausgaben", 10, 20, 30, 40] ]
@@ -8,22 +10,42 @@ seedDatasets = [
     [ ["01.01.2014", "01.01.2015", "01.01.2016"], ["Idee Vidatio", "Umsetzung Vidatio", "Gewinn Vidatio"] ]
 ]
 
-module.exports =  (db, users) ->
+module.exports =  (db, users, categories) ->
     Dataset = db.model "Dataset"
     User = db.model "User"
 
     Dataset.find {}, (err, datasets) ->
         if datasets.length == 0
-            console.log "No datasets available in datasets collection"
+            logger.info "No datasets available in datasets collection"
 
-            users.then (result) ->
-                User.find {}, (err, users) ->
-                    if users.length isnt 0
-                        for user, i in users
-                            console.log "Inserting dataset #{i % seedDatasets.length} for seed user #{i}"
-                            Dataset.create
-                                name: "Dataset from #{user.name}"
-                                userId: user._id
-                                data: seedDatasets[i % seedDatasets.length]
+            Promise.all [users, categories]
+            .then (result) ->
+                users = result[0]
+                categories = result[1]
+
+                if users.length is 0
+                    return
+
+                for user, i in users
+                    logger.info "Inserting dataset #{i % seedDatasets.length} for seed user #{i}"
+
+                    idx = Math.floor(Math.random() * categories.length)
+
+                    Dataset.create
+                        name: "Dataset from #{user.name}"
+                        userId: user._id
+                        data: seedDatasets[i % seedDatasets.length]
+                        metaData:
+                            category: categories[idx].upserted[0]._id
+                    , (error, dataset) ->
+                        if error
+                            logger.error "seeding datasets"
+                            logger.debug
+                                error: error
+                                dataset: dataset
+                        else
+                            logger.info "seeded dataset"
+                            logger.debug
+                                dataset: dataset
         else
             console.log "No need to seed datasets"

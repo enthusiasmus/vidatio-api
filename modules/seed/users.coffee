@@ -31,4 +31,4 @@ module.exports =  (db, seedNumberUsers) ->
                     reject error
             else
                 console.log "No need to seed users"
-                resolve true
+                resolve users

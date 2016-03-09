@@ -88,7 +88,6 @@ User.findOneAndRemove {
                     .after (error, res, body) ->
                         dataset = body
 
-
                         expect(dataset.name).toEqual("First Dataset")
                         expect(dataset.userId).toEqual(user._id)
                         expect(dataset.data).toEqual({ key1: "value1" })
