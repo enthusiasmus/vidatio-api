@@ -5,7 +5,10 @@ frisby = require "frisby"
 config = require "../../config"
 
 dataCSV = 'http://data.ooe.gv.at/files/cms/Mediendateien/OGD/ogd_abtStat/Wahl_LT_09_OGD.csv'
-dataSHP = 'http://biogeo.ucdavis.edu/data/diva/pop/BHR_pop.zip'
+# FIXME: Need to encode the URL when there are parameters
+# TODO: request = http.get encodeURIComponent(req.query.url), (resp) ->  don't help
+#       maybe our client should encode the url already
+dataSHP = encodeURIComponent('http://data.stadt-salzburg.at/geodaten/wfs?service=WFS&version=1.1.0&request=GetFeature&srsName=EPSG:4326&outputFormat=shape-zip&typeName=ogdsbg:behindertenstellplatz')
 
 frisby.globalSetup
     request:
