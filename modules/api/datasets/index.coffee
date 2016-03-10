@@ -94,6 +94,9 @@ datasetRoot.post basicAuth, (req, res) ->
     dataset.name = req.body.name if req.body.name?
     updateObject req.body, ["name", "data", "options"], dataset
     promiseArray = []
+    if req.body.options?
+        dataset.options = req.body.options
+
     if req.body.metaData?
         dataset.metaData = {}
         if req.body.metaData.fileType?
