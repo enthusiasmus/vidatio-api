@@ -4,5 +4,6 @@ seedNumberUsers = 5
 module.exports = (db) ->
     users = require("./users")(db, seedNumberUsers)
     categories = require("./category")(db)
-    datasets = require("./datasets")(db, users, categories)
+    tags = require("./tags")(db)
+    datasets = require("./datasets")(db, users, categories, tags)
 

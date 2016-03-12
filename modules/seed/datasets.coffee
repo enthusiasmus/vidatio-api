@@ -10,7 +10,7 @@ seedDatasets = [
     [ ["01.01.2014", "01.01.2015", "01.01.2016"], ["Idee Vidatio", "Umsetzung Vidatio", "Gewinn Vidatio"] ]
 ]
 
-module.exports =  (db, users, categories) ->
+module.exports =  (db, users, categories, tags) ->
     Dataset = db.model "Dataset"
     User = db.model "User"
 
@@ -18,10 +18,11 @@ module.exports =  (db, users, categories) ->
         if datasets.length == 0
             logger.info "No datasets available in datasets collection"
 
-            Promise.all [users, categories]
+            Promise.all [users, categories, tags]
             .then (result) ->
                 users = result[0]
                 categories = result[1]
+                tags = result[2]
 
                 if users.length is 0
                     return
@@ -29,14 +30,25 @@ module.exports =  (db, users, categories) ->
                 for user, i in users
                     logger.info "Inserting dataset #{i % seedDatasets.length} for seed user #{i}"
 
-                    idx = Math.floor(Math.random() * categories.length)
+                    categoryIndex = Math.floor(Math.random() * categories.length)
+
+                    # create 0 to 3 tags for each dataset
+                    numOfTags = Math.floor(Math.random() * 4)
+                    datasetTags = []
+                    j = 0
+                    while j < numOfTags
+                        randomTagIndex = Math.floor(Math.random() * tags.length)
+                        tagID = tags[randomTagIndex % tags.length].upserted[0]._id
+                        datasetTags.push tagID
+                        j++
 
                     Dataset.create
                         name: "Dataset from #{user.name}"
                         userId: user._id
                         data: seedDatasets[i % seedDatasets.length]
                         metaData:
-                            category: categories[idx].upserted[0]._id
+                            category: categories[categoryIndex].upserted[0]._id
+                            tags: datasetTags
                     , (error, dataset) ->
                         if error
                             logger.error "seeding datasets"

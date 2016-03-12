@@ -18,7 +18,7 @@ module.exports =  (db) ->
                 console.log "No or not enough categories available in categories collection"
 
                 for category, i in seedCategories
-                    console.log "Upserting category #{seedCategories[i]}"
+                    console.log "Inserting category #{seedCategories[i]}"
 
                     promise = new Promise (resolve, reject) ->
                         Category.update
