@@ -45,7 +45,7 @@ datasetRoot.get (req, res) ->
 
     Dataset.find deleted: false, "id name userId data options createdAt metaData"
     .populate "userId", "name -_id"
-    .populate "metaData.category", "name -_id"
+    .populate "metaData.category metaData.tags", "name -_id"
     .exec (error, datasets) ->
         if error?
             logger.error error: error, "error retrieving datasets"
@@ -212,7 +212,7 @@ datasetIdRoot.get (req, res) ->
 
     Dataset.findById req.params.id
     .populate "userId", "name email"
-    .populate "metaData.category", "name -_id"
+    .populate "metaData.category metaData.tags", "name -_id"
     .exec (error, dataset) ->
         if error?
             console.log error
