@@ -44,7 +44,7 @@ datasetRoot.get (req, res) ->
     logger.debug params: req.body
 
     Dataset.find deleted: false, "id name userId data options createdAt metaData"
-    .populate "userId", "name -_id"
+    .populate "userId", "name"
     .populate "metaData.category metaData.tags", "name -_id"
     .exec (error, datasets) ->
         if error?
