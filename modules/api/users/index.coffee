@@ -10,6 +10,7 @@ errorHandler   = require "../../helper/error-handler"
 {user:logger}   = require "../../logger"
 
 {model:User} = require "./user"
+{model:Dataset} = require "../datasets/dataset"
 
 user = Router()
 
@@ -171,6 +172,39 @@ userCheckRoot.get (req, res) ->
             else
                 logger.error error: "wasn't able to handle key #{key}"
                 return res.status(404).json error: "not found"
+
+
+userDatasetsRoot = user.route "/:id/datasets"
+
+###
+@api {check} user/:id/datasets/ GET - get datasets by user id
+@apiName getDatasets
+@apiGroup User
+@apiVersion 0.0.1
+
+@apiDescription Get datasets by user id.
+###
+
+userDatasetsRoot.get (req, res) ->
+    logger.info "get datasets by user id"
+    logger.debug params: req.params
+
+    Dataset.find
+        "userId": req.params.id
+    .populate "userId", "name"
+    .populate "metaData.category metaData.tags", "name -_id"
+    .exec (error, datasets) ->
+        if error?
+            logger.error error: error, "error retrieving datasets"
+            error = errorHandler.format error
+            return res.status(500).json error: error
+        else
+            unless datasets?
+                datasets = []
+
+            logger.debug datasets: datasets, "return datasets"
+            return res.status(200).json datasets
+
 
 module.exports =
     user: user
