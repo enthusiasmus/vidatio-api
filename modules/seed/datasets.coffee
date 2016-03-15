@@ -1,7 +1,5 @@
 "use strict"
 
-{api:logger} = require "../logger"
-
 seedDatasets = [
     [ [200, 300, 400], ["Orange", "Banane", "Apfel"] ]
     [ ["Einnahmen", 100, 200, 300, 400], ["Ausgaben", 10, 20, 30, 40] ]
@@ -16,7 +14,7 @@ module.exports =  (db, users, categories, tags) ->
 
     Dataset.find {}, (err, datasets) ->
         if datasets.length == 0
-            logger.info "No datasets available in datasets collection"
+            console.log "No datasets available in datasets collection"
 
             Promise.all [users, categories, tags]
             .then (result) ->
@@ -28,7 +26,7 @@ module.exports =  (db, users, categories, tags) ->
                     return
 
                 for user, i in users
-                    logger.info "Inserting dataset #{i % seedDatasets.length} for seed user #{i}"
+                    console.log "Inserting dataset #{i % seedDatasets.length} for seed user #{i}"
 
                     categoryIndex = Math.floor(Math.random() * categories.length)
 
@@ -50,14 +48,7 @@ module.exports =  (db, users, categories, tags) ->
                             category: categories[categoryIndex].upserted[0]._id
                             tags: datasetTags
                     , (error, dataset) ->
-                        if error
-                            logger.error "seeding datasets"
-                            logger.debug
-                                error: error
-                                dataset: dataset
-                        else
-                            logger.info "seeded dataset"
-                            logger.debug
-                                dataset: dataset
+                        return
+
         else
             console.log "No need to seed datasets"
