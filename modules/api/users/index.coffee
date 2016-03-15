@@ -183,6 +183,16 @@ userDatasetsRoot = user.route "/:id/datasets"
 @apiVersion 0.0.1
 
 @apiDescription Get datasets by user id.
+
+@apiExample {curl} Example usage:
+    curl http://localhost:3000/v0/user/56376b6406e4eeb46ad32b5/datasets
+
+@apiUse SuccessDatasets
+@apiErrorExample {status} Error-Response:
+    HTTP/1.1 500
+    {
+        error: "error retrieving datasets"
+    }
 ###
 
 userDatasetsRoot.get (req, res) ->
