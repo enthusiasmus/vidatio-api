@@ -54,6 +54,8 @@ forwardRoot.get (req, res) ->
             charset = charsetDetector.detectCharset new Buffer(resp.body.toString("binary"), "binary")
             body = iconvlite.decode body, charset.toString()
             fileType = "csv"
+        else
+            fileType = "zip"
 
         return res.status(200).json
             fileType: fileType
