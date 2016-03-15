@@ -17,8 +17,7 @@ module.exports = (db, users, categories, tags) ->
 
     Dataset.find {}, (err, datasets) ->
         if datasets.length == 0
-            logger.info  "No datasets available in datasets collection"
-            console.log  "No datasets available in datasets collection"
+            console.log "No datasets available in datasets collection"
 
             Promise.all [users, categories, tags]
             .then (result) ->
@@ -29,10 +28,8 @@ module.exports = (db, users, categories, tags) ->
                 if users.length is 0
                     return
 
-                for seedDataset, i in seedDatasets
-                    logger.info "Inserting dataset #{i} for seed user #{i % users.length}"
-                    console.log  "Inserting dataset #{i} for seed user #{i % users.length}"
-
+                for user, i in users
+                    console.log "Inserting dataset #{i % seedDatasets.length} for seed user #{i}"
                     categoryIndex = Math.floor(Math.random() * categories.length)
 
                     # create 0 to 3 tags for each dataset
@@ -55,14 +52,7 @@ module.exports = (db, users, categories, tags) ->
                             fileType: seedDataset.metaData.fileType
                         options: seedDataset.options
                     , (error, dataset) ->
-                        if error
-                            logger.error "seeding datasets"
-                            logger.debug
-                                error: error
-                                dataset: dataset
-                        else
-                            logger.info "seeded dataset"
-                            logger.debug
-                                dataset: dataset
+                        return
+
         else
             console.log "No need to seed datasets"
