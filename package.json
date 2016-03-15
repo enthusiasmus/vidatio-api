@@ -41,8 +41,10 @@
     "express": "^4.12.3",
     "express-bunyan-logger": "^1.1.1",
     "mongoose": "^4.0.1",
+    "node-icu-charset-detector": "^0.1.4",
     "passport": "^0.2.1",
-    "passport-http": "^0.2.2"
+    "passport-http": "^0.2.2",
+    "request-promise": "^2.0.1"
   },
   "devDependencies": {
     "apidoc": "^0.12.1",
@@ -62,6 +64,7 @@
     "gulp-shell": "^0.4.0",
     "gulp-util": "^3.0.4",
     "gulp-watch": "^4.2.4",
+    "iconv-lite": "^0.4.13",
     "jasmine-node": "^1.14.5",
     "mongoose-timestamp": "^0.5.0",
     "mongoose-timestamps": "0.0.1",

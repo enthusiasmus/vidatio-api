@@ -5,7 +5,9 @@ passport = require "passport"
 
 {forward:logger}   = require "../../logger"
 
-http = require "http"
+request = require "request-promise"
+iconvlite = require "iconv-lite"
+charsetDetector = require "node-icu-charset-detector"
 
 forward = Router()
 
@@ -29,39 +31,36 @@ forwardRoot.get (req, res) ->
     logger.debug
         params: req.query.url
 
-    request = http.get req.query.url, (resp) ->
+    request
+        "url": decodeURIComponent req.query.url
+        "encoding": null
+        "resolveWithFullResponse": true
+    .then (resp) ->
         logger.debug
-            code: resp.statusCode, "http code from http.get request"
+            code: resp.statusCode
+        , "http code from http.get request"
 
         filePath = resp.headers["content-type"]
         fileType = filePath.split "/"
         fileType = fileType[fileType.length - 1].toLowerCase()
 
-        if fileType isnt "octet-stream" and fileType isnt "zip"
-            logger.error "Data format not supported"
-            logger.debug
-                fileType: fileType
+        unless fileType is "octet-stream" or fileType is "zip" or fileType is "x-zip-compressed"
+            logger.error fileType: fileType, "Data format not supported"
             return res.status(500).json error: "Data format not supported"
 
-        chunks = []
-        resp.on "data", (chunk) ->
-            chunks.push chunk
-        .on "end", ->
-            body = Buffer.concat chunks
+        body = resp.body
+        if fileType is "octet-stream"
+            #charset.toString, charset.language, charset.confidence
+            charset = charsetDetector.detectCharset new Buffer(resp.body.toString("binary"), "binary")
+            body = iconvlite.decode body, charset.toString()
+            fileType = "csv"
 
-            # CSV (octet-stream) has to be sent to the client as string
-            if fileType is "octet-stream"
-                body = body.toString()
-                fileType = "csv"
+        return res.status(200).json
+            fileType: fileType
+            body: body
 
-            return res.send
-                fileType: fileType
-                body: body
-
-    request.on "error", (e) ->
-        logger.error "Wasn't able to retrieve file by url"
-        logger.debug
-            message: e.message
+    .catch (error) ->
+        logger.error error: error, "Wasn't able to retrieve file by url"
         return res.status(500).json error: "not found"
 
 module.exports =
