@@ -10,14 +10,14 @@ categoryRoot = category.route "/"
 ###
 @api {get} categories/ GET - get all categories
 @apiName getCategories
-@apiGroup Categories
+@apiGroup Category
 @apiVersion 0.0.1
 @apiDescription Get all available Categories
 
 @apiExample {curl} Example usage:
     curl http://localhost:3000/v0/categories
 
-@apiUse SuccessCategories
+@apiUse SuccessCategory
 @apiUse ErrorHandler
 ###
 
