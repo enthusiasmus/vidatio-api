@@ -24,10 +24,8 @@ describe "Forward with CSV", ->
         .get '/v0/forward?url=' + dataCSV
         .expectStatus 200
         .after (error, res, body) ->
-
             expect(body.fileType).toEqual("csv")
             expect(body.body).toMatch("Gemeindenummer;Name;Wahlberechtigte;")
-
         .toss()
 
 describe "Forward with SHP", ->
@@ -35,10 +33,8 @@ describe "Forward with SHP", ->
         .get '/v0/forward?url=' + dataSHP
         .expectStatus 200
         .after (error, res, body) ->
-
             expect(body.fileType).toEqual("zip")
             expect(body.body.type).toEqual("Buffer")
-
         .toss()
 
 

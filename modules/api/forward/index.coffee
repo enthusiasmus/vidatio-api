@@ -29,7 +29,8 @@ forwardRoot.get (req, res) ->
     logger.debug
         params: req.query.url
 
-    request = http.get req.query.url, (resp) ->
+    decodedUrl = decodeURIComponent req.query.url
+    request = http.get decodedUrl, (resp) ->
         logger.debug
             code: resp.statusCode, "http code from http.get request"
 
