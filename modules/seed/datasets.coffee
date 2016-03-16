@@ -2,8 +2,8 @@
 
 {api:logger} = require "../logger"
 
-seedDataset1 =
-    name: "Seed Dataset 1"
+seedDataset0 =
+    name: "Seed Dataset Bar 1"
     data: [ [200, "Orange"], [300, "Banane"], [400, "Apfel"] ]
     metaData:
         fileType: "csv"
@@ -15,27 +15,106 @@ seedDataset1 =
         selectedDiagramName: "Balkendiagramm"
         useColumnHeadersFromDataset: false
 
-seedDataset2 =
-    name: "Seed Dataset 2"
-    data: [ [13.084850, 13.087736, 13.086685, 13.086181, 13.086172, 13.089662],
-    [47.723955, 47.725081, 47.724881, 47.724186, 47.722308, 47.722749],
-    ["Bank", "Post", "FH", "Spar", "Vidatio", "Wohnung"] ]
+seedDataset1 =
+    name: "Seed Dataset Map"
+    data: [[47.723955, 13.084850, "Bank"],
+    [47.725081, 13.087736, "Post"],
+    [47.724881, 13.086685, "FH"],
+    [47.724186, 13.086181, "Spar"],
+    [47.722308, 13.086172, "Vidatio"],
+    [47.722749, 13.089662, "Wohnung"]]
     metaData:
         fileType: "csv"
     options:
         type: "map"
         xColumn: 1
         yColumn: 0
-        color: "#FA05AF"
+        color: null
         selectedDiagramName: "Karte"
         useColumnHeadersFromDataset: false
 
-seedDatasets = [seedDataset1, seedDataset2]
+seedDataset2 =
+    name: "Seed Dataset Bar 2"
+    data: [["Stimmen", "Kandidat"]
+    [100, "Rubio"],
+    [200, "Sanders"],
+    [300, "Trump"],
+    [400, "Clinton"]]
+    metaData:
+        fileType: "csv"
+    options:
+        type: "bar"
+        xColumn: 1
+        yColumn: 0
+        color: "#0505AF"
+        selectedDiagramName: "Balkendiagramm"
+        useColumnHeadersFromDataset: true
 
-    # [ ["Einnahmen", 100, 200, 300, 400], ["Ausgaben", 10, 20, 30, 40] ]
-    # [ [13.084850, 13.087736, 13.086685, 13.086181, 13.086172, 13.089662], [47.723955, 47.725081, 47.724881, 47.724186, 47.722308, 47.722749], ["Bank", "Post", "FH", "Spar", "Vidatio", "Wohnung"] ]
-    # [ [200, 300, 400], [500, 600, 700] ]
-    # [ ["01.01.2014", "01.01.2015", "01.01.2016"], ["Idee Vidatio", "Umsetzung Vidatio", "Gewinn Vidatio"] ]
+seedDataset3 =
+    name: "Seed Dataset Scatter"
+    data: [ [200, 300],
+    [500, 600],
+    [120, 100],
+    [170, 250],
+    [280, 400],
+    [460, 370] ]
+    metaData:
+        fileType: "csv"
+    options:
+        type: "scatter"
+        xColumn: 0
+        yColumn: 1
+        color: "#AA0505"
+        selectedDiagramName: "Streudiagramm"
+        useColumnHeadersFromDataset: false
+
+seedDataset4 =
+    name: "Seed Dataset Parallel"
+    data: [ ["Ware", "Wert"],
+    ["Rot", 800],
+    ["Grün", 950],
+    ["Blau", 1200],
+    ["Rot", 1150],
+    ["Blau", 1100],
+    ["Gelb", 1300],
+    ["Blau", 1500],
+    ["Grün", 1450],
+    ["Rot", 1600],
+    ["Blau", 1700] ]
+    metaData:
+        fileType: "csv"
+    options:
+        type: "parallel"
+        xColumn: 0
+        yColumn: 1
+        color: "#42BCF0"
+        selectedDiagramName: "Parallele Koordinaten"
+        useColumnHeadersFromDataset: true
+
+seedDataset5 =
+    name: "Seed Dataset Timeseries"
+    data: [ ["Datum", "Kurs"],
+    ["01.01.2014", 800],
+    ["13.07.2014", 950],
+    ["01.01.2015", 1200],
+    ["10.11.2015", 1150],
+    ["01.01.2016", 1100],
+    ["24.08.2016", 1300],
+    ["01.01.2017", 1500],
+    ["03.05.2017", 1450],
+    ["01.01.2018", 1600],
+    ["15.03.2018", 1700] ]
+    metaData:
+        fileType: "csv"
+    options:
+        type: "timeseries"
+        xColumn: 0
+        yColumn: 1
+        color: "#05AA05"
+        selectedDiagramName: "Zeitlicher Verlauf"
+        useColumnHeadersFromDataset: true
+
+seedDatasets = [seedDataset0, seedDataset1, seedDataset2, seedDataset3, seedDataset4, seedDataset5]
 
 module.exports = (db, users, categories, tags) ->
     Dataset = db.model "Dataset"
@@ -43,7 +122,8 @@ module.exports = (db, users, categories, tags) ->
 
     Dataset.find {}, (err, datasets) ->
         if datasets.length == 0
-            logger.info "No datasets available in datasets collection"
+            logger.info  "No datasets available in datasets collection"
+            console.log  "No datasets available in datasets collection"
 
             Promise.all [users, categories, tags]
             .then (result) ->
@@ -54,11 +134,9 @@ module.exports = (db, users, categories, tags) ->
                 if users.length is 0
                     return
 
-                console.log "seedDatasets", seedDatasets
-
                 for seedDataset, i in seedDatasets
-                    console.log "seedDataset", seedDataset
-                    # logger.info "Inserting dataset #{i % seedDatasets.length} for seed user #{i}"
+                    logger.info "Inserting dataset #{i} for seed user #{i % users.length}"
+                    console.log  "Inserting dataset #{i} for seed user #{i % users.length}"
 
                     categoryIndex = Math.floor(Math.random() * categories.length)
 
@@ -72,7 +150,6 @@ module.exports = (db, users, categories, tags) ->
                         datasetTags.push tagID
                         j++
 
-                    console.log "Create Dataset"
                     Dataset.create
                         name: seedDataset.name
                         userId: users[i % users.length]._id
