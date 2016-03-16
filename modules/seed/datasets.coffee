@@ -2,117 +2,12 @@
 
 {api:logger} = require "../logger"
 
-seedDataset0 =
-    name: "Seed Dataset Bar 1"
-    data: [ [200, "Orange"], [300, "Banane"], [400, "Apfel"] ]
-    metaData:
-        fileType: "csv"
-    options:
-        type: "bar"
-        xColumn: 1
-        yColumn: 0
-        color: "#FA05AF"
-        selectedDiagramName: "Balkendiagramm"
-        useColumnHeadersFromDataset: false
-
-seedDataset1 =
-    name: "Seed Dataset Map"
-    data: [[47.723955, 13.084850, "Bank"],
-    [47.725081, 13.087736, "Post"],
-    [47.724881, 13.086685, "FH"],
-    [47.724186, 13.086181, "Spar"],
-    [47.722308, 13.086172, "Vidatio"],
-    [47.722749, 13.089662, "Wohnung"]]
-    metaData:
-        fileType: "csv"
-    options:
-        type: "map"
-        xColumn: 1
-        yColumn: 0
-        color: null
-        selectedDiagramName: "Karte"
-        useColumnHeadersFromDataset: false
-
-seedDataset2 =
-    name: "Seed Dataset Bar 2"
-    data: [["Stimmen", "Kandidat"]
-    [100, "Rubio"],
-    [200, "Sanders"],
-    [300, "Trump"],
-    [400, "Clinton"]]
-    metaData:
-        fileType: "csv"
-    options:
-        type: "bar"
-        xColumn: 1
-        yColumn: 0
-        color: "#0505AF"
-        selectedDiagramName: "Balkendiagramm"
-        useColumnHeadersFromDataset: true
-
-seedDataset3 =
-    name: "Seed Dataset Scatter"
-    data: [ [200, 300],
-    [500, 600],
-    [120, 100],
-    [170, 250],
-    [280, 400],
-    [460, 370] ]
-    metaData:
-        fileType: "csv"
-    options:
-        type: "scatter"
-        xColumn: 0
-        yColumn: 1
-        color: "#AA0505"
-        selectedDiagramName: "Streudiagramm"
-        useColumnHeadersFromDataset: false
-
-seedDataset4 =
-    name: "Seed Dataset Parallel"
-    data: [ ["Ware", "Wert"],
-    ["Rot", 800],
-    ["Grün", 950],
-    ["Blau", 1200],
-    ["Rot", 1150],
-    ["Blau", 1100],
-    ["Gelb", 1300],
-    ["Blau", 1500],
-    ["Grün", 1450],
-    ["Rot", 1600],
-    ["Blau", 1700] ]
-    metaData:
-        fileType: "csv"
-    options:
-        type: "parallel"
-        xColumn: 0
-        yColumn: 1
-        color: "#42BCF0"
-        selectedDiagramName: "Parallele Koordinaten"
-        useColumnHeadersFromDataset: true
-
-seedDataset5 =
-    name: "Seed Dataset Timeseries"
-    data: [ ["Datum", "Kurs"],
-    ["01.01.2014", 800],
-    ["13.07.2014", 950],
-    ["01.01.2015", 1200],
-    ["10.11.2015", 1150],
-    ["01.01.2016", 1100],
-    ["24.08.2016", 1300],
-    ["01.01.2017", 1500],
-    ["03.05.2017", 1450],
-    ["01.01.2018", 1600],
-    ["15.03.2018", 1700] ]
-    metaData:
-        fileType: "csv"
-    options:
-        type: "timeseries"
-        xColumn: 0
-        yColumn: 1
-        color: "#05AA05"
-        selectedDiagramName: "Zeitlicher Verlauf"
-        useColumnHeadersFromDataset: true
+seedDataset0 = require "./datasets/seedDataset0"
+seedDataset1 = require "./datasets/seedDataset1"
+seedDataset2 = require "./datasets/seedDataset2"
+seedDataset3 = require "./datasets/seedDataset3"
+seedDataset4 = require "./datasets/seedDataset4"
+seedDataset5 = require "./datasets/seedDataset5"
 
 seedDatasets = [seedDataset0, seedDataset1, seedDataset2, seedDataset3, seedDataset4, seedDataset5]
 
