@@ -22,8 +22,7 @@ forwardRoot = forward.route "/"
 
 @apiParam {String} url external ressource.
 @apiExample {curl} Example usage:
-    curl -u admin:admin -i \
-    http://localhost:3000/v0/forward?url=http://data.ooe.gv.at/files/cms/Mediendateien/OGD/ogd_abtStat/Wahl_LT_09_OGD.csv
+    curl http://localhost:3000/v0/forward?url=http://data.ooe.gv.at/files/cms/Mediendateien/OGD/ogd_abtStat/Wahl_LT_09_OGD.csv
 ###
 
 forwardRoot.get (req, res) ->
@@ -40,30 +39,31 @@ forwardRoot.get (req, res) ->
             code: resp.statusCode
         , "http code from http.get request"
 
-        filePath = resp.headers["content-type"]
-        fileType = filePath.split "/"
-        fileType = fileType[fileType.length - 1].toLowerCase()
-
-        unless fileType is "octet-stream" or fileType is "zip" or fileType is "x-zip-compressed"
-            logger.error fileType: fileType, "Data format not supported"
-            return res.status(500).json error: "Data format not supported"
+        contentType = resp.headers["content-type"]
+        logger.debug contentType: contentType, "header[content-type] of request url"
 
         body = resp.body
-        if fileType is "octet-stream"
-            #charset.toString, charset.language, charset.confidence
-            charset = charsetDetector.detectCharset new Buffer(resp.body.toString("binary"), "binary")
-            body = iconvlite.decode body, charset.toString()
-            fileType = "csv"
-        else
-            fileType = "zip"
+        # Headers are used from here https://www.iana.org/assignments/media-types/media-types.xhtml
+        switch contentType
+            when "application/octet-stream", "text/csv"
+                #charset.toString, charset.language, charset.confidence
+                charset = charsetDetector.detectCharset new Buffer(body.toString("binary"), "binary")
+                body = iconvlite.decode body, charset.toString()
+                logger.debug charset: charset, "encoding prediction"
+                fileType = "csv"
+            when "application/zip"
+                fileType = "zip"
+            else
+                logger.error contentType: contentType, "Header cannot be used"
+                return res.status(500).json error: "Data format not supported"
 
         return res.status(200).json
             fileType: fileType
             body: body
 
     .catch (error) ->
-        logger.error error: error, "Wasn't able to retrieve file by url"
-        return res.status(500).json error: "not found"
+        logger.error error: error, "Wasn't able to retrieve or parse file"
+        return res.status(500).json error: "An error occured"
 
 module.exports =
     forward: forward
