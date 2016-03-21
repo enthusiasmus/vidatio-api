@@ -62,8 +62,8 @@ forwardRoot.get (req, res) ->
             body: body
 
     .catch (error) ->
-        logger.error error: error, "Wasn't able to retrieve or parse file"
-        return res.status(500).json error: "An error occured"
+        logger.error error: error, "Wasn't able to retrieve file by url"
+        return res.status(500).json error: "not found"
 
 module.exports =
     forward: forward
