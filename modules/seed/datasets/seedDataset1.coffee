@@ -10,7 +10,7 @@ module.exports =
     metaData:
         name: "Seed Dataset Map"
         fileType: "csv"
-    options:
+    visualizationOptions:
         type: "map"
         xColumn: 1
         yColumn: 0

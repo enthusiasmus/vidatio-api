@@ -30,10 +30,10 @@ userRoot = user.route "/"
 @apiParam {String} password  Users' password
 
 @apiExample {curl} Example usage:
-    curl http://localhost:3000/v0/users -H "Content-Type: application/json" -d '{"email": "admin@admin.com", "name":"admin", "password": "admin"}'
+    curl -i -X POST https://api.vidatio.com/v0/users -H "Content-Type: application/json" -d '{"email": "user@vidatio.com", "name":"user", "password": "supersecretpassword"}'
 
 @apiUse SuccessUser
-@apiUse ErrorHandler
+@apiUse ErrorHandlerMongo
 ###
 
 userRoot.post (req, res) ->
@@ -62,7 +62,7 @@ userRoot.post (req, res) ->
 userCheckRoot = user.route "/check"
 
 ###
-@api {check} user/check?email&name GET - check if a username or email exists
+@api {check} user/check?email&name GET - check availability of username or email
 @apiName checkUser
 @apiGroup User
 @apiVersion 0.0.1
@@ -82,11 +82,7 @@ userCheckRoot = user.route "/check"
         "message": "user@admin.com not available"
         "available": false
     }
-@apiErrorExample {status} Error-Response:
-    HTTP/1.1 404 Not Found
-    {
-        error: "not found"
-    }
+@apiUse ErrorHandler404
 ###
 
 userCheckRoot.get (req, res) ->
@@ -121,22 +117,18 @@ userCheckRoot.get (req, res) ->
 userDatasetsRoot = user.route "/:id/datasets"
 
 ###
-@api {check} user/:id/datasets/ GET - get datasets by user id
+@api {check} user/:id/datasets/ GET - get all datasets from user
 @apiName getDatasets
 @apiGroup User
 @apiVersion 0.0.1
 
-@apiDescription Get datasets by user id.
+@apiDescription Get all datasets by user id.
 
 @apiExample {curl} Example usage:
-    curl http://localhost:3000/v0/user/56376b6406e4eeb46ad32b5/datasets
+    curl -i https://api.vidatio.com/v0/user/56376b6406e4eeb46ad32b5/datasets
 
 @apiUse SuccessDatasets
-@apiErrorExample {status} Error-Response:
-    HTTP/1.1 500
-    {
-        error: "error retrieving datasets"
-    }
+@apiUse ErrorHandlerMongo
 ###
 
 userDatasetsRoot.get (req, res) ->
@@ -145,8 +137,7 @@ userDatasetsRoot.get (req, res) ->
 
     Dataset.find
         "userId": req.params.id
-    .populate "userId", "name"
-    .populate "metaData.category metaData.tags", "name -_id"
+    .populate "metaData.userId metaData.category metaData.tags"
     .exec (error, datasets) ->
         if error?
             logger.error error: error, "error retrieving datasets"
@@ -158,7 +149,6 @@ userDatasetsRoot.get (req, res) ->
 
             logger.debug datasets: datasets, "return datasets"
             return res.status(200).json datasets
-
 
 module.exports =
     user: user

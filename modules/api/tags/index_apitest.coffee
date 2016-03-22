@@ -30,7 +30,7 @@ Tag.create testTag, (error, doc) ->
             expect(body).toBeDefined()
             expect(body[body.length - 1]._id).toBeDefined()
             expect(body[body.length - 1].name).toBeDefined()
-            expect(body[body.length - 1].name).toEqual("testTag")
+            expect(body[body.length - 1]).toEqual jasmine.any Object
 
             Tag.findOneAndRemove body[body.length - 1]
             .exec()

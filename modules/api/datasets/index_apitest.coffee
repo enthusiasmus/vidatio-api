@@ -40,8 +40,6 @@ User.findOneAndRemove {
     "name": testuser.name
 }, (error, doc, result) ->
 
-    console.log "\n\ndataset api tests"
-
     User.create
         email: testuser.email
         name: testuser.name
@@ -72,7 +70,7 @@ User.findOneAndRemove {
                         name: "ValidationError"
                         errors: [{
                             "metaData.name":
-                                i18n: "API.DATASET.CREATE.NAME.REQUIRED"
+                                i18n: "API.ERROR.DATASET.CREATE.NAME.REQUIRED"
                                 value: ""
                         }]
                 }

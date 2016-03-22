@@ -15,7 +15,7 @@ module.exports =
     metaData:
         name: "Seed Dataset Timeseries"
         fileType: "csv"
-    options:
+    visualizationOptions:
         type: "timeseries"
         xColumn: 0
         yColumn: 1

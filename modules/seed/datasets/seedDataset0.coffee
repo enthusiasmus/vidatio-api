@@ -5,7 +5,7 @@ module.exports =
     metaData:
         name: "Seed Dataset Bar 1"
         fileType: "csv"
-    options:
+    visualizationOptions:
         type: "bar"
         xColumn: 1
         yColumn: 0

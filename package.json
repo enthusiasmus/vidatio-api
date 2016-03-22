@@ -15,8 +15,8 @@
   "apidoc": {
     "name": "vidatio-api",
     "version": "0.0.1",
-    "description": "ultra cool api",
-    "url": "https://api.vidatio.mediacube.at/v0/",
+    "url": "https://api.vidatio.com/v0/",
+    "sampleUrl": "https://api.vidatio.com/v0/",
     "header": {
       "title": "Vidatio - API",
       "filename": "./modules/_apidoc/header.md"
@@ -25,9 +25,6 @@
       "title": "",
       "filename": "./modules/_apidoc/footer.md"
     },
-    "order": [
-      "Penguins"
-    ],
     "template": {
       "withCompare": true,
       "withGenerator": false
@@ -47,11 +44,10 @@
     "request-promise": "^2.0.1"
   },
   "devDependencies": {
-    "apidoc": "^0.12.1",
+    "apidoc": "^0.15.1",
     "del": "^1.1.1",
     "frisby": "^0.8.5",
     "gulp": "^3.8.11",
-    "gulp-apidoc": "^0.1.2",
     "gulp-cached": "^1.0.4",
     "gulp-coffee": "^2.3.1",
     "gulp-coffeelint": "^0.4.0",

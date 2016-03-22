@@ -34,13 +34,14 @@ module.exports = (db, users, categories, tags) ->
                 for seedDataset, i in seedDatasets
                     console.log "Inserting dataset #{i} for seed user #{i % users.length}"
 
-                    seedDataset.metaData.categoryId = categories[getRandomEntry(categories)].upserted[0]._id
+                    seedDataset.metaData.categoryId = categories[getRandomEntry(categories)]._id
                     seedDataset.metaData.userId = users[i % users.length]._id
 
                     # create 0 to 3 tags for each dataset
+                    seedDataset.metaData.tags = []
                     for [i..(getRandomEntry(4))]
-                        tagId = tags[getRandomEntry(tags) % tags.length].upserted[0]._id
-                        seedDataset.metaData.tags tagId
+                        tagId = tags[getRandomEntry(tags) % tags.length]._id
+                        seedDataset.metaData.tags.push tagId
 
                     Dataset.create seedDataset
                     , (error, dataset) ->

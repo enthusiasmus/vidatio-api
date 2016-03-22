@@ -33,10 +33,10 @@ datasetRoot = dataset.route "/"
 @apiDescription Get all available Datasets
 
 @apiExample {curl} Example usage:
-    curl http://localhost:3000/v0/datasets
+    curl -i https://api.vidatio.com/v0/datasets
 
 @apiUse SuccessDatasets
-@apiUse ErrorHandler
+@apiUse ErrorHandlerMongo
 ###
 
 datasetRoot.get (req, res) ->
@@ -50,8 +50,7 @@ datasetRoot.get (req, res) ->
     .exec (error, datasets) ->
         if error?
             logger.error error: error, "error retrieving datasets"
-            error = errorHandler.format error
-            return res.status(500).json error: error
+            return res.status(500).json error: errorHandler.format error
         else
             unless datasets?
                 datasets = []
@@ -61,24 +60,74 @@ datasetRoot.get (req, res) ->
 
 
 ###
+@api {get} dataset/:id/ GET - get a dataset by Id
+@apiName getDataset
+@apiGroup Datasets
+@apiVersion 0.0.1
+
+@apiDescription Get a Dataset by Id.
+
+@apiExample {curl} Example usage:
+    curl -i https://api.vidatio.com/v0/datasets/56f17533589e927d08a72dd2
+
+@apiUse SuccessDataset
+@apiUse ErrorHandlerMongo
+@apiUse ErrorHandler404
+###
+
+datasetIdRoot = dataset.route "/:id"
+datasetIdRoot.get (req, res) ->
+    logger.info "get a dataset by id"
+    logger.debug params: req.params
+
+    Dataset.findById req.params.id
+    .populate "metaData.userId metaData.category metaData.tags"
+    .exec (error, dataset) ->
+        if error?
+            logger.error error: error, "wasn't able to get dataset"
+            return res.status(500).json error: errorHandler.format error
+        else
+            if not dataset? or dataset.deleted
+                logger.error error: "dataset not found or deleted"
+                return res.status(404).json error: errorHandler.format 404
+
+            logger.debug dataset: dataset, "return dataset"
+            res.json dataset
+
+
+###
 @api {post} datasets/ POST - create a dataset
 @apiName addDataset
 @apiGroup Datasets
 @apiVersion 0.0.1
 @apiDescription Create a new Dataset
 
-@apiParam {String} name  Name of the dataset
-@apiParam {String} userId  ID of the user who created the dataset
-@apiParam {Object} data  Data to be saved
-@apiParam {Object} options  Options of the visualization
-@apiParam {Object} metaData  metaData of the current Dataset like "name", "tags", and "categories"
+@apiParam {Object} data  The actual data of a dataset as 2D-array or geojson
+@apiParam {Object} metaData  metaData of the given dataset
+
+@apiParam {String} metaData.categoryId the categoryId which you want to assign the dataset
+@apiParam {String} metaData.fileType fileType of saved dataset
+@apiParam {String} metaData.name name of the dataset
+@apiParam {Array} [metaData.tagIds]
+@apiParam {String} metaData.tagIds.tag each string in the array is going to be used as a tag for your dataset
+
+@apiParam {Object} visualizationOptions  Options for a visualization
+@apiParam {String} visualizationOptions.type contains the type of a visualization
+@apiParam {Integer} visualizationOptions.xColumn contains the used x-colum of a visualization
+@apiParam {Integer} visualizationOptions.yColumn contains the used y-colum of a visualization
+@apiParam {String} visualizationOptions.color contains the hex-encoded color of a visualization
+@apiParam {Boolean} visualizationOptions.useColumnHeadersFromDataset tells if the visualization should use the header  from the given dataset
 
 @apiExample {curl} Example usage:
-    curl http://localhost:3000/v0/datasets -u admin:admin -H "Content-Type: application/json" -d '{"name": "vidatio", "data":{"key1": "value1"}}'
+    curl -i -X POST https://api.vidatio.com/v0/datasets -H "Content-Type: application/json" -d @testDataFile.json -u username:password'
 
 @apiUse basicAuth
 @apiUse SuccessDataset
-@apiUse ErrorHandler
+@apiUse ErrorHandlerValidation
+@apiUse ErrorHandlerMongo
+@apiUse ErrorHandlerCheckProperties
+@apiUse ErrorHandlerPromises
+@apiSampleRequest off
 ###
 
 datasetRoot.post basicAuth, (req, res) ->
@@ -86,11 +135,12 @@ datasetRoot.post basicAuth, (req, res) ->
     logger.debug params: req.body
 
     unless hasAllProperties req.body, ["data", "visualizationOptions", "metaData"]
-        return res.status(500).json error: "To save a dataset the following keys must be present: [data, visualizationOptions, metaData]"
+        return res.status(500).json error: errorHandler.format
+            name: "ParameterError"
+            value: "To save a dataset the following keys on body must be present: data, visualizationOptions and metaData"
 
     dataset = new Dataset
         metaData: {}
-
 
     dataset.metaData.userId = req.user._id
     dataset.metaData.name = req.body.metaData.name
@@ -114,14 +164,13 @@ datasetRoot.post basicAuth, (req, res) ->
                     error: error
                     dataset: dataset
                 , "error saving dataset"
-                error = errorHandler.format error
-                return res.status(500).json error: error
+                return res.status(500).json error: errorHandler.format error
 
             logger.debug dataset: dataset, "success saving dataset"
 
             return res.json dataset
-    , (error) ->
-        return res.status(500).json error: "Error saving dataset"
+    .catch (error) ->
+        return res.status(500).json error: errorHandler.format()
 
 findOrCreateTag = (tag, dataset) ->
     return new Promise (resolve, reject) ->
@@ -129,49 +178,6 @@ findOrCreateTag = (tag, dataset) ->
             reject error if error?
             dataset.metaData.tagIds.push tag._id
             resolve tag
-
-datasetIdRoot = dataset.route "/:id"
-
-###
-@api {get} dataset/:id/ GET - get a dataset by Id
-@apiName getDataset
-@apiGroup Dataset
-@apiVersion 0.0.1
-
-@apiDescription Get a Dataset by Id.
-
-@apiExample {curl} Example usage:
-    curl http://localhost:3000/v0/datasets/56376b6406e4eeb46ad32b5
-
-@apiUse SuccessDataset
-@apiUse ErrorHandler
-@apiErrorExample {status} Error-Response:
-    HTTP/1.1 404 Not Found
-    {
-        error: "not found"
-    }
-###
-
-datasetIdRoot.get (req, res) ->
-    logger.info "get a dataset by id"
-    logger.debug params: req.params
-
-    Dataset.findById req.params.id
-    .populate "userId", "name email"
-    .populate "metaData.category metaData.tags", "name -_id"
-    .exec (error, dataset) ->
-        if error?
-            console.log error
-            logger.error error: error, "wasn't able to get dataset"
-            error = errorHandler.format error
-            return res.status(500).json error: error
-        else
-            if not dataset? or dataset.deleted
-                logger.error error: "dataset not found or deleted"
-                return res.status(404).json error: "not found"
-
-            logger.debug dataset: dataset, "return dataset"
-            res.json dataset
 
 module.exports =
     dataset: dataset

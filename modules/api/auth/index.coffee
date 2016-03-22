@@ -17,14 +17,14 @@ basicAuth = passport.authenticate "basic",  session: false
 authRoot = auth.route "/"
 
 ###
-@api {get} user/ GET - login a user
-@apiName login
+@api {get} user/ GET - Authentication
+@apiName authentication
 @apiGroup Auth
 @apiVersion 0.0.1
-@apiDescription Login a user
+@apiDescription Authenticate a user
 
 @apiExample {curl} Example usage:
-    curl http://localhost:3000/v0/auth -u admin:admin
+    curl -i https://api.vidatio.com/v0/auth -u username:password
 
 @apiUse basicAuth
 @apiSuccessExample {json} Success-Response:
@@ -32,13 +32,12 @@ authRoot = auth.route "/"
     {
         "message": "successfully authenticated"
         "user":
-            "_id": 1231asdf2131
+            "_id": "4edd40c86762e0fb12000003"
             "name": "user1"
-            "email": "user1(at)vidatio.com"
+            "email": "user1@vidatio.com"
     }
 @apiErrorExample {json} Error-Response:
     HTTP/1.1 401 Unauthorized {}
-@apiUse ErrorHandler
 ###
 
 authRoot.get basicAuth, (req, res) ->

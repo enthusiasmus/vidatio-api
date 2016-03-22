@@ -9,14 +9,14 @@ db = require "../connection"
 emailValidator = [
     validate
         validator: "isEmail"
-        message: "API.USER.REGISTER.EMAIL.NOTVALID"
+        message: "API.ERROR.USER.REGISTER.EMAIL.NOTVALID"
 ]
 
 nameValidator = [
     validate
         validator: "matches"
         arguments: /^[\w_.-]+$/
-        message: "API.USER.REGISTER.NAME.NOTVALID"
+        message: "API.ERROR.USER.REGISTER.NAME.NOTVALID"
 ]
 
 userSchema = mongoose.Schema
@@ -24,13 +24,13 @@ userSchema = mongoose.Schema
         type: String
         trim: true
         unique: true
-        required: "API.USER.REGISTER.EMAIL.REQUIRED"
+        required: "API.ERROR.USER.REGISTER.EMAIL.REQUIRED"
         validate: emailValidator
     name:
         type: String
         trim: true
         unique: true
-        required: "API.USER.REGISTER.NAME.REQUIRED"
+        required: "API.ERROR.USER.REGISTER.NAME.REQUIRED"
         validate: nameValidator
     admin:
         type: Boolean
@@ -88,17 +88,11 @@ module.exports =
 @apiSuccess {Number} user.__v Internal Revision of the document.
 @apiSuccess {String} user.name Contains the users' username.
 @apiSuccess {String} user.email Contains the users' email.
-@apiSuccess {String} user.salt Contains the users' salt of password.
-@apiSuccess {String} user.hash Contains the users' password as hash.
-@apiSuccess {Boolean} user.admin Tells if the user is admin.
-@apiSuccess {Boolean} user.deleted Tells if the user is deleted.
 @apiSuccessExample {json} Success-Response:
     HTTP/1.1 200 OK
     {
         "_id": "5635ed0505b07e9c1ade03b4",
         "name": "test",
         "email": "test@test.com",
-        "deleted": false,
-        "admin": false
     }
 ###

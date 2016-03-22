@@ -56,21 +56,23 @@ describe "Error-Handler", ->
         expect(errorHandler.format).toBeDefined()
 
     it "should correctly format a mongo error for client-side parsing", ->
-        expect(errorHandler.format(MONGO_ERROR)).toEqual jasmine.any Object
-        expect(errorHandler.format(MONGO_ERROR)).toEqual {
+        error = errorHandler.format(MONGO_ERROR)
+        expect(error).toEqual jasmine.any Object
+        expect(error).toEqual {
             name: "MongoError"
             errors: [
                 {
                     mongo:
-                        i18n: "API.MONGO.ERROR"
+                        i18n: "API.ERROR.MONGO"
                         value: "undefined"
                 }
             ]
         }
 
     it "should correctly format a validation error for client-side parsing", ->
-        expect(errorHandler.format(VALIDATION_ERROR)).toEqual jasmine.any Object
-        expect(errorHandler.format(VALIDATION_ERROR)).toEqual {
+        error = errorHandler.format(VALIDATION_ERROR)
+        expect(error).toEqual jasmine.any Object
+        expect(error).toEqual {
             name: "ValidationError"
             errors:[
                 {
@@ -82,6 +84,68 @@ describe "Error-Handler", ->
                     name:
                         i18n: "API.USER.REGISTER.NAME.REQUIRED"
                         value: ""
+                }
+            ]
+        }
+
+    it "should correctly format a 404 not found error for client-side parsing", ->
+        error = errorHandler.format(404)
+        expect(error).toEqual jasmine.any Object
+        expect(error).toEqual {
+            name: "NotFound",
+            errors: [
+                {
+                    "not.found":
+                        i18n: "API.ERROR.NOTFOUND",
+                        value: "404"
+                }
+            ]
+        }
+
+    it "should correctly format an unknown error for client-side parsing", ->
+        error = errorHandler.format()
+        expect(error).toEqual jasmine.any Object
+        expect(error).toEqual {
+            name: "Unknown",
+            errors: [
+                {
+                    "unknown":
+                        i18n: "API.ERROR.UNKNOWN",
+                        value: "An unknown error occured"
+                }
+            ]
+        }
+
+    it "should correctly format a parameter error for client-side parsing", ->
+        error = errorHandler.format
+            name: "ParameterError"
+            value: "blabla"
+
+        expect(error).toEqual jasmine.any Object
+        expect(error).toEqual {
+            name: "ParameterError",
+            errors: [
+                {
+                    "parameter":
+                        i18n: "API.ERROR.PARAMETER",
+                        value: "blabla"
+                }
+            ]
+        }
+
+    it "should correctly format a header error for client-side parsing", ->
+        error = errorHandler.format
+            name: "HeaderError"
+            value: "blabla"
+
+        expect(error).toEqual jasmine.any Object
+        expect(error).toEqual {
+            name: "HeaderError",
+            errors: [
+                {
+                    "header":
+                        i18n: "API.ERROR.HEADER",
+                        value: "blabla"
                 }
             ]
         }

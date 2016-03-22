@@ -35,12 +35,12 @@ frisby.create "Expect 500 on registering user without email"
             errors: [
                 {
                     email:
-                        i18n: "API.USER.REGISTER.EMAIL.REQUIRED"
+                        i18n: "API.ERROR.USER.REGISTER.EMAIL.REQUIRED"
                         value: ""
                 },
                 {
                     name:
-                        i18n: "API.USER.REGISTER.NAME.REQUIRED"
+                        i18n: "API.ERROR.USER.REGISTER.NAME.REQUIRED"
                         value: ""
                 }
             ]
@@ -59,7 +59,7 @@ frisby.create "Expect email validation error on registering user with wrong emai
             name: "ValidationError"
             errors: [{
                 email:
-                    i18n: "API.USER.REGISTER.EMAIL.NOTVALID"
+                    i18n: "API.ERROR.USER.REGISTER.EMAIL.NOTVALID"
                     value: "admin"
             }]
     }
@@ -68,7 +68,7 @@ frisby.create "Expect email validation error on registering user with wrong emai
         expect(body.error).toEqual(jasmine.any(Object))
         expect(body.error.errors).toEqual(jasmine.any(Array))
         expect(body.error.errors[0]).toEqual(jasmine.any(Object))
-        expect(body.error.errors[0].email.i18n).toBe("API.USER.REGISTER.EMAIL.NOTVALID")
+        expect(body.error.errors[0].email.i18n).toBe("API.ERROR.USER.REGISTER.EMAIL.NOTVALID")
         expect(body.error.errors[0].email.value).toBe("admin")
     .toss()
 
@@ -84,7 +84,7 @@ frisby.create "Expect email validation error on registering user without email"
             name: "ValidationError"
             errors: [{
                 email:
-                    i18n: "API.USER.REGISTER.EMAIL.REQUIRED"
+                    i18n: "API.ERROR.USER.REGISTER.EMAIL.REQUIRED"
                     value: ""
             }]
     }
@@ -93,7 +93,7 @@ frisby.create "Expect email validation error on registering user without email"
         expect(body.error).toEqual(jasmine.any(Object))
         expect(body.error.errors).toEqual(jasmine.any(Array))
         expect(body.error.errors[0].email).toEqual(jasmine.any(Object))
-        expect(body.error.errors[0].email.i18n).toBe("API.USER.REGISTER.EMAIL.REQUIRED")
+        expect(body.error.errors[0].email.i18n).toBe("API.ERROR.USER.REGISTER.EMAIL.REQUIRED")
         expect(body.error.errors[0].email.value).not.toBeTruthy()
     .toss()
 
@@ -109,7 +109,7 @@ frisby.create "Expect username validation error on registering user with wrong u
             name: "ValidationError"
             errors: [{
                 name:
-                    i18n: "API.USER.REGISTER.NAME.NOTVALID"
+                    i18n: "API.ERROR.USER.REGISTER.NAME.NOTVALID"
                     value: "admin§"
             }]
     }
@@ -118,7 +118,7 @@ frisby.create "Expect username validation error on registering user with wrong u
         expect(body.error).toEqual(jasmine.any(Object))
         expect(body.error.errors).toEqual(jasmine.any(Array))
         expect(body.error.errors[0].name).toEqual(jasmine.any(Object))
-        expect(body.error.errors[0].name.i18n).toBe("API.USER.REGISTER.NAME.NOTVALID")
+        expect(body.error.errors[0].name.i18n).toBe("API.ERROR.USER.REGISTER.NAME.NOTVALID")
         expect(body.error.errors[0].name.value).toBe("admin§")
     .toss()
 
@@ -134,7 +134,7 @@ frisby.create "Expect username validation error on registering user without user
             name: "ValidationError"
             errors: [{
                 name:
-                    i18n: "API.USER.REGISTER.NAME.REQUIRED"
+                    i18n: "API.ERROR.USER.REGISTER.NAME.REQUIRED"
                     value: ""
             }]
     }
@@ -143,24 +143,13 @@ frisby.create "Expect username validation error on registering user without user
         expect(body.error).toEqual(jasmine.any(Object))
         expect(body.error.errors).toEqual(jasmine.any(Array))
         expect(body.error.errors[0].name).toEqual(jasmine.any(Object))
-        expect(body.error.errors[0].name.i18n).toBe("API.USER.REGISTER.NAME.REQUIRED")
+        expect(body.error.errors[0].name.i18n).toBe("API.ERROR.USER.REGISTER.NAME.REQUIRED")
         expect(body.error.errors[0].name.value).not.toBeTruthy()
     .toss()
 
 
 frisby.create "username shouldnt exist in database"
     .get userRoute + "/check?name=userAdmin"
-    .expectHeaderContains "Content-Type", "json"
-    .expectStatus 200
-    .after (error, res, body) ->
-        expect(body.message).toBeDefined()
-        expect(body.message).toEqual("user not found")
-        expect(body.available).toBeDefined()
-        expect(body.available).toBeTruthy()
-    .toss()
-
-frisby.create "username shouldnt exist in database"
-    .get userRoute + "/check?email=user@admin.com"
     .expectHeaderContains "Content-Type", "json"
     .expectStatus 200
     .after (error, res, body) ->
@@ -217,7 +206,7 @@ User.findOneAndRemove {
                         name: "MongoError"
                         errors: [{
                             mongo:
-                                i18n: "API.MONGO.ERROR"
+                                i18n: "API.ERROR.MONGO"
                                 value: "undefined"
                         }]
                 }

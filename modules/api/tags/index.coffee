@@ -20,10 +20,10 @@ tagRoot = tag.route "/"
 @apiDescription Get all available Tags
 
 @apiExample {curl} Example usage:
-    curl http://localhost:3000/v0/tags
+    curl -i https://api.vidatio.com/v0/tags
 
-@apiUse SuccessTag
-@apiUse ErrorHandler
+@apiUse SuccessTags
+@apiUse ErrorHandlerMongo
 ###
 
 tagRoot.get (req, res) ->
@@ -33,8 +33,7 @@ tagRoot.get (req, res) ->
     Tag.find {}, (error, tags) ->
         if error?
             logger.error error: error, "error retrieving tags"
-            error = errorHandler.format error
-            return res.status(500).json error: error
+            return res.status(500).json error: errorHandler.format error
         else
             unless tags?
                 tags = []

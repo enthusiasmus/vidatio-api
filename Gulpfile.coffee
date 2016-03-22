@@ -9,7 +9,7 @@ concat     = require "gulp-concat"
 nodemon    = require "gulp-nodemon"
 inspector  = require "gulp-node-inspector"
 watch      = require "gulp-watch"
-apidoc     = require "gulp-apidoc"
+apidoc     = require "apidoc"
 cache      = require "gulp-cached"
 plumber    = require "gulp-plumber"
 shell      = require "gulp-shell"
@@ -170,9 +170,11 @@ gulp.task "docs",
         "clean:docs"
     ],
     (cb) ->
-        apidoc.exec
+        apidoc.createDoc
             src: DIRS.modules
             dest: DIRS.docs
+            includeFilters: [ ".*\\.coffee$" ]
+            verbose: true
         cb()
 
 gulp.task "clean",

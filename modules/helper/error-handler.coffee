@@ -1,24 +1,17 @@
 "use strict"
-
-###
-# This Class formats ValidationError- and MongoError objects for client-side handling
-# {
-#     name: "ValidationError"
-#     errors: {
-#         email: {
-#             i18n: "NOT.VALID.ANYTHING"
-#             value: "§$"
-#         }
-#         name: {
-#             i18n: "NOT.VALID.ANYTHING"
-#             value: undefined
-#         }
-#     }
-# }
-###
-
 class ErrorHandler
-    format: (error) ->
+    format: (error = 0) ->
+
+        unless typeof error is "object"
+            switch error
+                when 404
+                    error =
+                        name: "NotFound"
+                        code: error
+                else
+                    error =
+                        name: "Unknown"
+
         _formatedError = {}
         _formatedError.name = error.name
         _formatedError.errors = []
@@ -32,31 +25,144 @@ class ErrorHandler
 
             when "MongoError"
                 _formatedError.errors.push "mongo":
-                    i18n: "API.MONGO.ERROR"
+                    i18n: "API.ERROR.MONGO"
                     value: "undefined"
+
+            when "ParameterError"
+                _formatedError.errors.push "parameter":
+                    i18n: "API.ERROR.PARAMETER"
+                    value: "#{error.value}"
+
+            when "HeaderError"
+                _formatedError.errors.push "header":
+                    i18n: "API.ERROR.HEADER"
+                    value: "#{error.value}"
+
+            when "NotFound"
+                _formatedError.errors.push "not.found":
+                    i18n: "API.ERROR.NOTFOUND"
+                    value: "#{error.code}"
+
+            when "Unknown"
+                _formatedError.errors.push "unknown":
+                    i18n: "API.ERROR.UNKNOWN"
+                    value: "An unknown error occured"
 
         return _formatedError
 
 module.exports = new ErrorHandler
 
+
 ###
-@apiDefine ErrorHandler
-@apiVersion 0.0.1
-@apiError {String} name Contains the Name of the Error
-@apiError {Object} errors Contains all errors as objects
-@apiErrorExample {json} Error-Response:
+@apiDefine ErrorHandlerValidation
+@apiError {String} name Contains the name of the error
+@apiError {Array} errors Contains all errors as an array of error-objects
+@apiErrorExample {json} Validation-error response:
     HTTP/1.1 500 Internal Server Error
     {
-        name: "ValidationError"
-        errors: {
-            email: {
-                i18n: "NOT.VALID.ANYTHING"
-                value: "§$"
+        name: "ValidationError",
+        errors: [
+            {
+                "email": {
+                    i18n: "API.USER.REGISTER.EMAIL.REQUIRED",
+                    value: ""
+                }
+            },
+            {
+                "metaData.name":
+                    i18n: "API.DATASET.CREATE.NAME.REQUIRED",
+                    value: ""
             }
-            name: {
-                i18n: "NOT.VALID.ANYTHING"
-                value: undefined
+        ]
+    }
+###
+
+###
+@apiDefine ErrorHandlerMongo
+@apiError {String} name Contains the name of the error
+@apiError {Array} errors Contains all errors as an array of error-objects
+@apiErrorExample {json} MongoDb-error response:
+    HTTP/1.1 500 Internal Server Error
+    {
+        name: "MongoError",
+        errors: [
+            {
+                mongo:
+                    i18n: "API.MONGO.ERROR",
+                    value: "undefined"
             }
-        }
+        ]
+    }
+###
+
+###
+@apiDefine ErrorHandler404
+@apiError {String} name Contains the name of the error
+@apiError {Array} errors Contains all errors as an array of error-objects
+@apiErrorExample {json} Not found response:
+    HTTP/1.1 404 Not Found
+    {
+        name: "NotFound",
+        errors: [
+            {
+                not.found:
+                    i18n: "API.NOT-FOUND",
+                    value: "404"
+            }
+        ]
+    }
+###
+
+###
+@apiDefine ErrorHandlerCheckProperties
+@apiError {String} name Contains the name of the error
+@apiError {Array} errors Contains all errors as an array of error-objects
+@apiErrorExample {json} Parameter error response:
+    HTTP/1.1 500 Not Found
+    {
+        name: "ParameterError",
+        errors: [
+            {
+                parameter:
+                    i18n: "API.PARAMETER.ERROR",
+                    value: "To save a dataset the following keys on body must be present: data, visualizationOptions and metaData"
+            }
+        ]
+    }
+###
+
+###
+@apiDefine ErrorHandlerPromises
+@apiError {String} name Contains the name of the error
+@apiError {Array} errors Contains all errors as an array of error-objects
+@apiErrorExample {json} Unknown error response:
+    HTTP/1.1 500 Not Found
+    {
+        name: "Unknown",
+        errors: [
+            {
+                "unknown":
+                    i18n: "API.ERROR.UNKNOWN",
+                    value: "An unknown error occured"
+            }
+        ]
+    }
+###
+
+###
+@apiDefine ErrorHandlerHeader
+@apiError {String} name Contains the name of the error
+@apiError {Array} errors Contains all errors as an array of error-objects
+@apiErrorExample {json} Header error response:
+    HTTP/1.1 500 Not Found
+    {
+        name: "HeaderError",
+        errors: [
+            {
+                "header":
+                    i18n: "API.ERROR.HEADER.UNKNOWN",
+                    value: "An unknown error occured"
+            }
+        ]
     }
 ###

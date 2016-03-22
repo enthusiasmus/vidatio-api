@@ -3,6 +3,7 @@
 {Router} = require "express"
 passport = require "passport"
 
+errorHandler   = require "../../helper/error-handler"
 {forward:logger}   = require "../../logger"
 
 request = require "request-promise"
@@ -22,7 +23,10 @@ forwardRoot = forward.route "/"
 
 @apiParam {String} url external ressource.
 @apiExample {curl} Example usage:
-    curl http://localhost:3000/v0/forward?url=http://data.ooe.gv.at/files/cms/Mediendateien/OGD/ogd_abtStat/Wahl_LT_09_OGD.csv
+    curl -i https://api.vidatio.com/v0/forward?url=http://data.ooe.gv.at/files/cms/Mediendateien/OGD/ogd_abtStat/Wahl_LT_09_OGD.csv
+
+@apiUse ErrorHandlerHeader
+@apiUse ErrorHandlerPromises
 ###
 
 forwardRoot.get (req, res) ->
@@ -55,15 +59,17 @@ forwardRoot.get (req, res) ->
                 fileType = "zip"
             else
                 logger.error contentType: contentType, "Header cannot be used"
-                return res.status(500).json error: "Data format not supported"
+                return res.status(500).json error: errorHandler.format
+                    name: "HeaderError"
+                    value: "Header does not use a standardized content-type and therefore cannot be used"
 
         return res.status(200).json
             fileType: fileType
             body: body
 
     .catch (error) ->
-        logger.error error: error, "Wasn't able to retrieve file by url"
-        return res.status(500).json error: "not found"
+        logger.error error: error, "unknown"
+        return res.status(500).json error: errorHandler.format()
 
 module.exports =
     forward: forward

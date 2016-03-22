@@ -10,13 +10,13 @@ nameValidator = [
     validate
         validator: "matches"
         arguments: /^[\w\s_.-]+$/
-        message: "API.TAG.CREATE.NAME.NOTVALID"
+        message: "API.ERROR.TAG.CREATE.NAME.NOTVALID"
 ]
 
 tagSchema = mongoose.Schema
     name:
         type: String
-        required: "API.TAG.CREATE.NAME.REQUIRED"
+        required: "API.ERROR.TAG.CREATE.NAME.REQUIRED"
         validate: nameValidator
         unique: true
         trim: true
@@ -40,12 +40,12 @@ module.exports =
 
 
 ###
-@apiDefine SuccessTag
-@apiVersion 0.0.1
-@apiSuccess {Object} tag
-@apiSuccess {ObjectId} tag._id Contains the tag' object id
-@apiSuccess {Number} tag.__v Internal Revision of the document.
-@apiSuccess {String} tag.name Name of the tag.
+@apiDefine SuccessTags
+@apiSuccess {Object[]} tags list of tags
+@apiSuccess {Object} tags.tag tag
+@apiSuccess {ObjectId} tags.tag._id Contains the tag' object id
+@apiSuccess {Number} tags.tag.__v Internal revision of the document
+@apiSuccess {String} tags.tag.name Name of the tag
 
 @apiSuccessExample {json} Success-Response:
     HTTP/1.1 200 OK
