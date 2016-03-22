@@ -32,10 +32,6 @@ userSchema = mongoose.Schema
         unique: true
         required: "API.USER.REGISTER.NAME.REQUIRED"
         validate: nameValidator
-    deleted:
-        type: Boolean
-        required: true
-        default: false
     admin:
         type: Boolean
         required: true

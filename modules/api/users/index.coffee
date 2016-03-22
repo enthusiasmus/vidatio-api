@@ -58,62 +58,6 @@ userRoot.post (req, res) ->
             _id: user._id
             name: user.name
             email: user.email
-            deleted: user.deleted
-
-
-userIdRoot = user.route "/:id"
-
-###
-@api {delete} user/:id/ DELETE - delete a User by Id
-@apiName deleteUser
-@apiGroup User
-@apiVersion 0.0.1
-
-@apiDescription Delete a User by Id. This doesn't really deletes the User,
-a deleted flag is set to True and the name of the User is changed (to prevent
-conflicts when creating a User with the same name later).
-
-@apiExample {curl} Example usage:
-    curl -u admin:admin -X DELETE http://localhost:3000/v0/users/56376b6406e4eeb46ad32b5
-
-@apiUse basicAuth
-@apiSuccessExample {json} Success-Response:
-    HTTP/1.1 200 OK
-    {
-        "message": "successfully deleted user"
-    }
-@apiErrorExample {status} Error-Response:
-    HTTP/1.1 404 Not Found
-    {
-        error: "not found"
-    }
-@apiUse ErrorHandler
-###
-
-userIdRoot.delete basicAuth, (req, res) ->
-    logger.info "delete a user by id"
-    logger.debug params: req.params
-
-    User.findOneAndUpdate {
-        _id: req.params.id
-    },  {
-        name: "#{ user.name }:#{ user.email }"
-        email: "#{ user.name }:#{ user.email }"
-        deleted: true
-    }, {
-        "new": true
-    }, (error, user) ->
-        if error?
-            logger.error error: error, "wasn't able to update user"
-            error = errorHandler.format error
-            return res.status(500).json error: error
-        else
-            if not user? or !user.deleted
-                logger.error error: "user not found or already deleted"
-                return res.status(404).json error: "not found"
-
-            logger.debug user: user, "successfully updated user"
-            res.json message: "successfully deleted user"
 
 userCheckRoot = user.route "/check"
 

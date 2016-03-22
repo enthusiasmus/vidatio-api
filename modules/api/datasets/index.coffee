@@ -45,6 +45,8 @@ datasetRoot.get (req, res) ->
 
     Dataset.find {}
     .populate "metaData.userId metaData.category metaData.tags"
+    .sort
+        "createdAt": -1
     .exec (error, datasets) ->
         if error?
             logger.error error: error, "error retrieving datasets"
