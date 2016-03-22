@@ -1,7 +1,6 @@
 "use strict"
 
 module.exports =
-    name: "Seed Dataset Scatter"
     data: [ [200, 300],
     [500, 600],
     [120, 100],
@@ -9,6 +8,7 @@ module.exports =
     [280, 400],
     [460, 370] ]
     metaData:
+        name: "Seed Dataset Scatter"
         fileType: "csv"
     options:
         type: "scatter"

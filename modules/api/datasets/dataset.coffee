@@ -15,50 +15,47 @@ nameValidator = [
 
 metaDataSchema = mongoose.Schema
     name:
+        required: "API.DATASET.CREATE.NAME.REQUIRED"
+        validate: nameValidator
+        type: String
+
+    author:
         type: String
 
     fileType:
+        required: "API.DATASET.CREATE.FILETYPE.REQUIRED"
         type: String
 
-    tags: [
+    tagIds: [
         ref: "Tag"
         type: mongoose.Schema.Types.ObjectId
     ]
-
-    category:
-        ref: "Category"
-        type: mongoose.Schema.Types.ObjectId
-
-datasetSchema = mongoose.Schema
-    name:
-        type: String
-        required: "API.DATASET.CREATE.NAME.REQUIRED"
-        validate: nameValidator
-
-    deleted:
-        type: Boolean
-        required: true
-        default: false
 
     userId:
         ref: "User"
         type: mongoose.Schema.Types.ObjectId
         required: "API.DATASET.CREATE.USER_ID.REQUIRED"
 
-    parentId:
+    categoryId:
+        ref: "Category"
+        required: "API.DATASET.CREATE.CATEGORY.REQUIRED"
         type: mongoose.Schema.Types.ObjectId
-        required: false
-        default: null
 
+datasetSchema = mongoose.Schema
     data:
         type: mongoose.Schema.Types.Mixed
         required: true
 
+    published:
+        type: Boolean
+        required: true
+        default: true
+
     metaData: metaDataSchema
 
-    options:
+    visualizationOptions:
         type: mongoose.Schema.Types.Mixed
-        required: false
+        required: "API.DATASET.CREATE.VISUALIZATION_OPTIONS.REQUIRED"
 
 
 datasetSchema.plugin timestamps

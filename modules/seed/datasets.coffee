@@ -11,6 +11,10 @@ seedDataset5 = require "./datasets/seedDataset5"
 
 seedDatasets = [seedDataset0, seedDataset1, seedDataset2, seedDataset3, seedDataset4, seedDataset5]
 
+getRandomEntry = (val) ->
+    return Math.floor(Math.random() * val.length) if Array.isArray val
+    return Math.floor(Math.random() * val)
+
 module.exports = (db, users, categories, tags) ->
     Dataset = db.model "Dataset"
     User = db.model "User"
@@ -25,34 +29,21 @@ module.exports = (db, users, categories, tags) ->
                 categories = result[1]
                 tags = result[2]
 
-                if users.length is 0
-                    return
+                return if users.length is 0
 
-                for user, i in users
-                    console.log "Inserting dataset #{i % seedDatasets.length} for seed user #{i}"
-                    categoryIndex = Math.floor(Math.random() * categories.length)
+                for seedDataset, i in seedDatasets
+                    console.log "Inserting dataset #{i} for seed user #{i % users.length}"
+
+                    seedDataset.metaData.categoryId = categories[getRandomEntry(categories)].upserted[0]._id
+                    seedDataset.metaData.userId = users[i % users.length]._id
 
                     # create 0 to 3 tags for each dataset
-                    numOfTags = Math.floor(Math.random() * 4)
-                    datasetTags = []
-                    j = 0
-                    while j < numOfTags
-                        randomTagIndex = Math.floor(Math.random() * tags.length)
-                        tagID = tags[randomTagIndex % tags.length].upserted[0]._id
-                        datasetTags.push tagID
-                        j++
+                    for [i..(getRandomEntry(4))]
+                        tagId = tags[getRandomEntry(tags) % tags.length].upserted[0]._id
+                        seedDataset.metaData.tags tagId
 
-                    Dataset.create
-                        name: seedDataset.name
-                        userId: users[i % users.length]._id
-                        data: seedDataset.data
-                        metaData:
-                            category: categories[categoryIndex].upserted[0]._id
-                            tags: datasetTags
-                            fileType: seedDataset.metaData.fileType
-                        options: seedDataset.options
+                    Dataset.create seedDataset
                     , (error, dataset) ->
                         return
-
         else
             console.log "No need to seed datasets"

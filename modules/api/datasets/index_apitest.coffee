@@ -17,21 +17,13 @@ testuser =
     password: "admin"
 
 testDataset =
-    name: "First Dataset"
     data:
         key1: "value1"
-    options:
-        option1: "option1"
-
-tagTestDataset =
-    name: "Second Dataset"
-    data:
-        key1: "value1"
-    options:
+    visualizationOptions:
         option1: "option1"
     metaData:
-        category: ""
-        tags: ["tag1", "tag2"]
+        name: "First Dataset"
+        fileType: "csv"
 
 promises = []
 
@@ -48,37 +40,46 @@ User.findOneAndRemove {
     "name": testuser.name
 }, (error, doc, result) ->
 
-    frisby.create "Create a user for authentication"
-        .post userRoute,
-            email: testuser.email
-            name: testuser.name
-            password: testuser.password
-        .after (error, res, body) ->
-            user = body
+    console.log "\n\ndataset api tests"
+
+    User.create
+        email: testuser.email
+        name: testuser.name
+        password: testuser.password
+    .then (user) ->
+
+        Category.find {}
+        .exec (error, categories) ->
+            category = categories[0]
+            testDataset.metaData["categoryId"] = category._id
 
             frisby.create "Expect 500 on creating dataset without name"
                 .post datasetRoute,
-                    name: ""
-                    userId: user._id
                     data:
                         key1: "value1"
-                    options:
+                    visualizationOptions:
                         option1: "option1"
+                    metaData:
+                        name: ""
+                        userId: user._id
+                        fileType: "csv"
+                        categoryId: category._id
                 .auth testuser.email, testuser.password
                 .expectHeaderContains "Content-Type", "json"
                 .expectStatus 500
                 .expectJSON {
                     error:
                         name: "ValidationError"
-                        errors:
-                            name:
+                        errors: [{
+                            "metaData.name":
                                 i18n: "API.DATASET.CREATE.NAME.REQUIRED"
                                 value: ""
+                        }]
                 }
-                .toss()
+            .toss()
 
             Dataset.remove
-                name: "First Dataset"
+                "metaData.name": "First Dataset"
             , ->
                 frisby.create "Expect a successful creation of a dataset"
                     .post datasetRoute, testDataset
@@ -88,11 +89,10 @@ User.findOneAndRemove {
                     .after (error, res, body) ->
                         dataset = body
 
-                        expect(dataset.name).toEqual("First Dataset")
-                        expect(dataset.userId).toEqual(user._id)
+                        expect(dataset.metaData.name).toEqual("First Dataset")
+                        expect("#{dataset.metaData.userId}").toEqual("#{user._id}")
                         expect(dataset.data).toEqual({ key1: "value1" })
-                        expect(dataset.options).toEqual({ option1: "option1" })
-                        expect(dataset.deleted).not.toBeTruthy()
+                        expect(dataset.visualizationOptions).toEqual({ option1: "option1" })
 
                         frisby.create "get all datasets"
                             .get datasetRoute
@@ -111,50 +111,35 @@ User.findOneAndRemove {
                             .expectStatus 200
                             .after((error, res, body) ->
                                 expect(body).toBeDefined()
-                                expect(body.options).toEqual(dataset.options)
+                                expect(body.visualizationOptions).toEqual(dataset.visualizationOptions)
                                 expect(body.data).toEqual(dataset.data)
                                 expect(body._id).toEqual(dataset._id)
-                                expect(body.name).toEqual(dataset.name)
+                                expect(body.metaData.name).toEqual(dataset.metaData.name)
                             ).toss()
+                .toss()
 
-                        frisby.create "dataset should get successfully deleted"
-                            .delete datasetRoute + "/#{dataset._id}"
-                            .auth testuser.email, testuser.password
-                            .expectHeaderContains "Content-Type", "json"
-                            .expectStatus 200
-                            .expectJSON {
-                                message: "successfully deleted dataset"
-                            }
-                            .toss()
-
-                    .toss()
-
-            promises.push Dataset.remove
-                name: "Second Dataset"
-            promises.push Category.find
-                name: "Politik"
-            Promise.all(promises).then (values) ->
-                tagTestDataset.metaData.category = values[1][0]._id
+            deepCopyDataset = JSON.parse(JSON.stringify(testDataset))
+            deepCopyDataset.metaData.name = "Tmp Dataset"
+            deepCopyDataset.metaData.tags = ["tag1", "tag 2"]
+            Dataset.remove
+                "metaData.name": "Tmp Dataset"
+            , ->
                 frisby.create "Expect a successful creation of a dataset with tags"
-                    .post datasetRoute, tagTestDataset
+                    .post datasetRoute, deepCopyDataset
                     .auth testuser.email, testuser.password
                     .expectHeaderContains "Content-Type", "json"
                     .expectStatus 200
                     .after((error, res, body) ->
                         dataset = body
                         expect(dataset).toBeDefined()
-                        expect(dataset.options).toEqual(tagTestDataset.options)
-                        expect(dataset.data).toEqual(tagTestDataset.data)
-                        expect(dataset.name).toEqual(tagTestDataset.name)
-
+                        expect(dataset.visualizationOptions).toEqual(deepCopyDataset.visualizationOptions)
+                        expect(dataset.data).toEqual(deepCopyDataset.data)
                         expect(dataset.metaData).toBeDefined()
-                        expect(dataset.metaData.category).toBeDefined()
-                        expect(dataset.metaData.category).toEqual(jasmine.any(String))
-                        expect(dataset.metaData.tags).toBeDefined()
-                        expect(dataset.metaData.tags).toEqual(jasmine.any(Array))
-                        expect(dataset.metaData.tags.length).toEqual(2)
-
+                        expect(dataset.metaData.name).toEqual(deepCopyDataset.metaData.name)
+                        expect(dataset.metaData.categoryId).toBeDefined()
+                        expect(dataset.metaData.categoryId).toEqual(jasmine.any(String))
+                        expect(dataset.metaData.categoryId).toEqual(deepCopyDataset.metaData.categoryId)
+                        expect(dataset.metaData.tagIds).toBeDefined()
+                        expect(dataset.metaData.tagIds).toEqual(jasmine.any(Array))
+                        expect(dataset.metaData.tagIds.length).toEqual(2)
                     ).toss()
-
-        .toss()
-

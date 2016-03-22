@@ -1,7 +1,6 @@
 "use strict"
 
 module.exports =
-    name: "Seed Dataset Parallel"
     data: [ ["Ware", "Wert"],
     ["Rot", 800],
     ["Grün", 950],
@@ -14,6 +13,7 @@ module.exports =
     ["Rot", 1600],
     ["Blau", 1700] ]
     metaData:
+        name: "Seed Dataset Parallel"
         fileType: "csv"
     options:
         type: "parallel"

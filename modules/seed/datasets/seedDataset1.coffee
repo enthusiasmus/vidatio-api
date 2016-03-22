@@ -1,7 +1,6 @@
 "use strict"
 
 module.exports =
-    name: "Seed Dataset Map"
     data: [[47.723955, 13.084850, "Bank"],
     [47.725081, 13.087736, "Post"],
     [47.724881, 13.086685, "FH"],
@@ -9,6 +8,7 @@ module.exports =
     [47.722308, 13.086172, "Vidatio"],
     [47.722749, 13.089662, "Wohnung"]]
     metaData:
+        name: "Seed Dataset Map"
         fileType: "csv"
     options:
         type: "map"

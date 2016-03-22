@@ -43,9 +43,8 @@ datasetRoot.get (req, res) ->
     logger.info "get all datasets"
     logger.debug params: req.body
 
-    Dataset.find deleted: false, "id name userId data options createdAt metaData"
-    .populate "userId", "name"
-    .populate "metaData.category metaData.tags", "name -_id"
+    Dataset.find {}
+    .populate "metaData.userId metaData.category metaData.tags"
     .exec (error, datasets) ->
         if error?
             logger.error error: error, "error retrieving datasets"
@@ -84,37 +83,35 @@ datasetRoot.post basicAuth, (req, res) ->
     logger.info "creating new dataset"
     logger.debug params: req.body
 
-    unless hasAllProperties req.body, ["data"]
-        return res.status(500).json error: "To save a dataset at least some data need to be present"
+    unless hasAllProperties req.body, ["data", "visualizationOptions", "metaData"]
+        return res.status(500).json error: "To save a dataset the following keys must be present: [data, visualizationOptions, metaData]"
 
     dataset = new Dataset
+        metaData: {}
 
-    dataset.userId = req.user._id
 
-    dataset.name = req.body.name if req.body.name?
-    updateObject req.body, ["name", "data", "options"], dataset
-    promiseArray = []
-    if req.body.options?
-        dataset.options = req.body.options
+    dataset.metaData.userId = req.user._id
+    dataset.metaData.name = req.body.metaData.name
+    dataset.metaData.fileType = req.body.metaData.fileType
+    dataset.metaData.categoryId = req.body.metaData.categoryId
 
-    if req.body.metaData?
-        dataset.metaData = {}
-        if req.body.metaData.fileType?
-            dataset.metaData.fileType = req.body.metaData.fileType
+    dataset.data = req.body.data
+    dataset.visualizationOptions = req.body.visualizationOptions
 
-        if req.body.metaData.tags?
-            dataset.metaData.tags = []
-            for tag in req.body.metaData.tags
-                promiseArray.push findOrCreateTag tag, dataset
+    tagsPromiseArray = []
+    if req.body.metaData.tags?
+        dataset.metaData.tagIds = []
+        for tag in req.body.metaData.tags
+            tagsPromiseArray.push findOrCreateTag tag, dataset
 
-        if req.body.metaData.category?
-            dataset.metaData.category = req.body.metaData.category
-
-    Promise.all(promiseArray)
+    Promise.all tagsPromiseArray
     .then (result) ->
-        dataset.save (error, dataset) ->
+        dataset.save (error) ->
             if error?
-                logger.error error: error, "error saving dataset"
+                logger.error
+                    error: error
+                    dataset: dataset
+                , "error saving dataset"
                 error = errorHandler.format error
                 return res.status(500).json error: error
 
@@ -122,69 +119,16 @@ datasetRoot.post basicAuth, (req, res) ->
 
             return res.json dataset
     , (error) ->
-        return res.status(500).json error: "A strange error occured"
-
-
+        return res.status(500).json error: "Error saving dataset"
 
 findOrCreateTag = (tag, dataset) ->
     return new Promise (resolve, reject) ->
         Tag.findOrCreate tag, (error, tag) ->
             reject error if error?
-            dataset.metaData.tags.push tag._id
+            dataset.metaData.tagIds.push tag._id
             resolve tag
 
 datasetIdRoot = dataset.route "/:id"
-
-###
-@api {delete} datasets/:id/ DELETE - delete a Dataset by Id
-@apiName deleteDataset
-@apiGroup Datasets
-@apiVersion 0.0.1
-
-@apiDescription Delete a Dataset by Id. This doesn't really delete the Dataset,
-a deleted flag is set to true.
-
-@apiExample {curl} Example usage:
-    curl -u admin:admin -X DELETE http://localhost:3000/v0/datasets/56376b6406e4eeb46ad32b5
-
-@apiUse basicAuth
-@apiSuccessExample {json} Success-Response:
-    HTTP/1.1 200 OK
-    {
-        "message": "successfully deleted dataset"
-    }
-@apiErrorExample {status} Error-Response:
-    HTTP/1.1 404 Not Found
-    {
-        error: "not found"
-    }
-@apiUse ErrorHandler
-###
-
-datasetIdRoot.delete basicAuth, (req, res) ->
-    logger.info "delete a dataset by id"
-    logger.debug params: req.params
-
-    Dataset.findOneAndUpdate {
-        _id: req.params.id
-    },  {
-        $set: {
-            deleted: true
-        }
-    }, {
-        "new": true
-    }, (error, dataset) ->
-        if error?
-            logger.error error: error, "wasn't able to update dataset"
-            error = errorHandler.format error
-            return res.status(500).json error: error
-        else
-            if not dataset? or !dataset.deleted
-                logger.error error: "dataset not found or already deleted"
-                return res.status(404).json error: "not found"
-
-            logger.debug dataset: dataset, "successfully updated dataset"
-            res.json message: "successfully deleted dataset"
 
 ###
 @api {get} dataset/:id/ GET - get a dataset by Id

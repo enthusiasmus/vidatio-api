@@ -16,22 +16,22 @@ frisby.globalSetup
         json: true
         baseUri: config.url
 
-describe "Forward with CSV", ->
-    frisby.create('A get request with a query variable called url is requested')
-        .get '/v0/forward?url=' + dataCSV
-        .expectStatus 200
-        .after (error, res, body) ->
-            expect(body.fileType).toEqual("csv")
-            expect(body.body).toMatch("Gemeindenummer;Name;Wahlberechtigte;")
-        .toss()
+# describe "Forward with CSV", ->
+#     frisby.create('A get request with a query variable called url is requested')
+#         .get '/v0/forward?url=' + dataCSV
+#         .expectStatus 200
+#         .after (error, res, body) ->
+#             expect(body.fileType).toEqual("csv")
+#             expect(body.body).toMatch("Gemeindenummer;Name;Wahlberechtigte;")
+#         .toss()
 
-describe "Forward with SHP", ->
-    frisby.create('A get request with a query variable called url is requested')
-        .get '/v0/forward?url=' + dataSHP
-        .expectStatus 200
-        .after (error, res, body) ->
-            expect(body.fileType).toEqual("zip")
-            expect(body.body.type).toEqual("Buffer")
-        .toss()
+# describe "Forward with SHP", ->
+#     frisby.create('A get request with a query variable called url is requested')
+#         .get '/v0/forward?url=' + dataSHP
+#         .expectStatus 200
+#         .after (error, res, body) ->
+#             expect(body.fileType).toEqual("zip")
+#             expect(body.body.type).toEqual("Buffer")
+#         .toss()
 
 

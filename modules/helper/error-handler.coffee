@@ -21,24 +21,21 @@ class ErrorHandler
     format: (error) ->
         _formatedError = {}
         _formatedError.name = error.name
-        _formatedError.errors = {}
+        _formatedError.errors = []
 
         switch error.name
             when "ValidationError"
                 for key, value of error.errors
-                    _formatedError.errors["#{key}"] = {}
-                    _formatedError.errors["#{key}"].i18n = value.message
-                    _formatedError.errors["#{key}"].value = value.value
-                    unless _formatedError.errors["#{key}"].value?
-                        _formatedError.errors["#{key}"].value = ""
+                    _formatedError.errors.push "#{key}":
+                        i18n: value.message
+                        value: value.value || ""
 
             when "MongoError"
-                _formatedError.errors.mongo = {}
-                _formatedError.errors.mongo.i18n = "API.MONGO.ERROR"
-                _formatedError.errors.mongo.value = "undefined"
+                _formatedError.errors.push "mongo":
+                    i18n: "API.MONGO.ERROR"
+                    value: "undefined"
 
         return _formatedError
-
 
 module.exports = new ErrorHandler
 

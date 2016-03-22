@@ -59,21 +59,29 @@ describe "Error-Handler", ->
         expect(errorHandler.format(MONGO_ERROR)).toEqual jasmine.any Object
         expect(errorHandler.format(MONGO_ERROR)).toEqual {
             name: "MongoError"
-            errors:
-                mongo:
-                    i18n: "API.MONGO.ERROR"
-                    value: "undefined"
+            errors: [
+                {
+                    mongo:
+                        i18n: "API.MONGO.ERROR"
+                        value: "undefined"
+                }
+            ]
         }
 
     it "should correctly format a validation error for client-side parsing", ->
         expect(errorHandler.format(VALIDATION_ERROR)).toEqual jasmine.any Object
         expect(errorHandler.format(VALIDATION_ERROR)).toEqual {
             name: "ValidationError"
-            errors:
-                email:
-                    i18n: "API.USER.REGISTER.EMAIL.REQUIRED"
-                    value: ""
-                name:
-                    i18n: "API.USER.REGISTER.NAME.REQUIRED"
-                    value: ""
+            errors:[
+                {
+                    email:
+                        i18n: "API.USER.REGISTER.EMAIL.REQUIRED"
+                        value: ""
+                },
+                {
+                    name:
+                        i18n: "API.USER.REGISTER.NAME.REQUIRED"
+                        value: ""
+                }
+            ]
         }

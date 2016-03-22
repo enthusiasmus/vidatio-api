@@ -1,7 +1,6 @@
 "use strict"
 
 module.exports =
-    name: "Seed Dataset Timeseries"
     data: [ ["Datum", "Kurs"],
     ["01.01.2014", 800],
     ["13.07.2014", 950],
@@ -14,6 +13,7 @@ module.exports =
     ["01.01.2018", 1600],
     ["15.03.2018", 1700] ]
     metaData:
+        name: "Seed Dataset Timeseries"
         fileType: "csv"
     options:
         type: "timeseries"
