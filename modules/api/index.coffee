@@ -1,6 +1,7 @@
 "use strict"
 
-{Router} = require "express"
+express = require "express"
+{Router} = express
 passport = require "passport"
 {BasicStrategy} = require "passport-http"
 
@@ -14,6 +15,8 @@ passport = require "passport"
 {tag} = require "./tags"
 
 {routes:logRoutes, auth:logger} = require "../logger"
+
+path = require "path"
 
 router = Router()
 
@@ -41,7 +44,7 @@ router.use "/datasets", dataset
 router.use "/categories", category
 router.use "/tags", tag
 
-
+router.use "/docs", express.static path.join process.cwd(), "docs"
 router.use "/logs", logRoutes
 
 router.all "/*", (req, res) ->
