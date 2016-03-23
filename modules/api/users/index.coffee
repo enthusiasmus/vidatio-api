@@ -19,7 +19,7 @@ basicAuth = passport.authenticate "basic",  session: false
 userRoot = user.route "/"
 
 ###
-@api {post} user/ POST - register a user
+@api {post} users/ POST - register a user
 @apiName addUser
 @apiGroup User
 @apiVersion 0.0.1
@@ -62,12 +62,15 @@ userRoot.post (req, res) ->
 userCheckRoot = user.route "/check"
 
 ###
-@api {check} user/check?email&name GET - check availability of username or email
+@api {check} users/check?email&name GET - check availability of username or email
 @apiName checkUser
 @apiGroup User
 @apiVersion 0.0.1
 
 @apiDescription Check if the given username or email is already in the database.
+
+@apiExample {curl} Example usage:
+    curl -i https://api.vidatio.com/v0/users/check?email=user@test.com
 
 @apiSuccessExample {json} Success-Response:
     HTTP/1.1 200 OK
@@ -117,7 +120,7 @@ userCheckRoot.get (req, res) ->
 userDatasetsRoot = user.route "/:id/datasets"
 
 ###
-@api {check} user/:id/datasets/ GET - get all datasets from user
+@api {check} users/:id/datasets/ GET - get all datasets from user
 @apiName getDatasets
 @apiGroup User
 @apiVersion 0.0.1
@@ -125,7 +128,7 @@ userDatasetsRoot = user.route "/:id/datasets"
 @apiDescription Get all datasets by user id.
 
 @apiExample {curl} Example usage:
-    curl -i https://api.vidatio.com/v0/user/56376b6406e4eeb46ad32b5/datasets
+    curl -i https://api.vidatio.com/v0/users/56376b6406e4eeb46ad32b5/datasets
 
 @apiUse SuccessDatasets
 @apiUse ErrorHandlerMongo
@@ -137,7 +140,9 @@ userDatasetsRoot.get (req, res) ->
 
     Dataset.find
         "userId": req.params.id
-    .populate "metaData.userId metaData.category metaData.tags"
+    .populate "metaData.userId", "-hash -salt"
+    .populate "metaData.category"
+    .populate "metaData.tags"
     .exec (error, datasets) ->
         if error?
             logger.error error: error, "error retrieving datasets"
