@@ -141,8 +141,8 @@ userDatasetsRoot.get (req, res) ->
     Dataset.find
         "metaData.userId": req.params.id
     .populate "metaData.userId", "-hash -salt"
-    .populate "metaData.category"
-    .populate "metaData.tags"
+    .populate "metaData.categoryId"
+    .populate "metaData.tagIds"
     .exec (error, datasets) ->
         if error?
             logger.error error: error, "error retrieving datasets"
