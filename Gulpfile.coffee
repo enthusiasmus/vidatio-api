@@ -107,6 +107,7 @@ gulp.task "build",
     "Lints and builds the project to '#{DIRS.build}'.",
     [
         "lint"
+        "docs"
     ],
     ->
         gulp.src FILES
