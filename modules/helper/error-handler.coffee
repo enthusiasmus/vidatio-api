@@ -43,6 +43,11 @@ class ErrorHandler
                     i18n: "API.ERROR.NOTFOUND"
                     value: "#{error.code}"
 
+            when "CastError"
+                _formatedError.errors.push "cast":
+                    i18n: "API.ERROR.CAST"
+                    value: "#{error.value} doesn't match datatype #{error.kind}"
+
             when "Unknown"
                 _formatedError.errors.push "unknown":
                     i18n: "API.ERROR.UNKNOWN"
