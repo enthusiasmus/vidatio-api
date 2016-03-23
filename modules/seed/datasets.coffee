@@ -39,10 +39,10 @@ module.exports = (db, users, categories, tags) ->
                     seedDataset.metaData.userId = users[i % users.length]._id
 
                     # create 0 to 3 tags for each dataset
-                    seedDataset.metaData.tags = []
+                    seedDataset.metaData.tagIds = []
                     for [i..(getRandomEntry(4))]
                         tagId = tags[getRandomEntry(tags) % tags.length]._id
-                        seedDataset.metaData.tags.push tagId
+                        seedDataset.metaData.tagIds.push tagId
 
                     Dataset.create seedDataset
                     , (error, dataset) ->
