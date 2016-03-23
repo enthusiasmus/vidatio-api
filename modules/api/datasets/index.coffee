@@ -44,7 +44,9 @@ datasetRoot.get (req, res) ->
     logger.debug params: req.body
 
     Dataset.find {}
-    .populate "metaData.userId metaData.category metaData.tags"
+    .populate "metaData.userId", "-hash -salt"
+    .populate "metaData.category"
+    .populate "metaData.tags"
     .sort
         "createdAt": -1
     .exec (error, datasets) ->
@@ -81,7 +83,9 @@ datasetIdRoot.get (req, res) ->
     logger.debug params: req.params
 
     Dataset.findById req.params.id
-    .populate "metaData.userId metaData.category metaData.tags"
+    .populate "metaData.userId", "-hash -salt"
+    .populate "metaData.category"
+    .populate "metaData.tags"
     .exec (error, dataset) ->
         if error?
             logger.error error: error, "wasn't able to get dataset"

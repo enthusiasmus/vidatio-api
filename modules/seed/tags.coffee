@@ -32,7 +32,7 @@ module.exports =  (db) ->
                             upsert: true
                         , (error, doc) ->
                             reject error if error
-                            resolve doc
+                            resolve doc.upserted[0]
 
                     promiseArray.push promise
 

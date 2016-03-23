@@ -139,7 +139,7 @@ userDatasetsRoot.get (req, res) ->
     logger.debug params: req.params
 
     Dataset.find
-        "userId": req.params.id
+        "metaData.userId": req.params.id
     .populate "metaData.userId", "-hash -salt"
     .populate "metaData.category"
     .populate "metaData.tags"
