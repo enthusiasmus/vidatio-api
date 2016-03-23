@@ -90,26 +90,50 @@ module.exports =
 
 @apiSuccessExample {json} Success-Response:
     HTTP/1.1 200 OK
-    UPDATE CORRECT EXAMPLE
     {
-        "_id": "56f17533589e927d08a72dd2",
-        "createdAt": "2016-03-22T16:39:15.632Z",
-        "updatedAt": "2016-03-22T16:39:15.632Z",
-        "visualizationOptions": {
-            "option1": "option1"
+      "_id": "56f27b9fa642da4f431e3c27",
+      "createdAt": "2016-03-23T11:18:55.647Z",
+      "updatedAt": "2016-03-23T11:18:55.647Z",
+      "data": [
+        [
+          47.723955,
+          13.08485,
+          "Bank"
+        ],
+        [
+          47.725081,
+          13.087736,
+          "Post"
+        ],
+      ],
+      "metaData": {
+        "name": "Seed Dataset Map",
+        "fileType": "csv",
+        "categoryId": {
+          "_id": "56f27b9fa4e454961211c226",
+          "name": "Sport"
         },
-        "data": {
-            "key1": "value1"
+        "userId": {
+          "_id": "56f27b9ea642da4f431e3c22",
+          "email": "user2@vidatio.com",
+          "name": "user2",
+          "admin": false
         },
-        "metaData": {
-            "categoryId": "56f167a70c2d232845af14c4",
-            "fileType": "csv",
-            "name": "First Dataset",
-            "userId": "56f175335ace5d610fd3272d",
-            "tagIds": []
-        },
-        "__v": 0,
-        "published": true
+        "tagIds": [
+          {
+            "_id": "56f27b9fa4e454961211c230",
+            "name": "mmt"
+          }
+        ]
+      },
+      "visualizationOptions": {
+        "type": "map",
+        "xColumn": 1,
+        "yColumn": 0,
+        "color": null,
+        "useColumnHeadersFromDataset": false
+      },
+      "published": true
     }
 ###
 
@@ -140,47 +164,102 @@ module.exports =
 
 @apiSuccessExample {json} Success-Response:
     HTTP/1.1 200 OK
-    UPDATE CORRECT EXAMPLE
      [
         {
-            "_id": "56f17533589e927d08a72dd2",
-            "createdAt": "2016-03-22T16:39:15.632Z",
-            "updatedAt": "2016-03-22T16:39:15.632Z",
-            "visualizationOptions": {
-                "option1": "option1"
+          "_id": "56f27b9fa642da4f431e3c27",
+          "createdAt": "2016-03-23T11:18:55.647Z",
+          "updatedAt": "2016-03-23T11:18:55.647Z",
+          "data": [
+            [
+              47.723955,
+              13.08485,
+              "Bank"
+            ],
+            [
+              47.725081,
+              13.087736,
+              "Post"
+            ],
+          ],
+          "metaData": {
+            "name": "Seed Dataset Map",
+            "fileType": "csv",
+            "categoryId": {
+              "_id": "56f27b9fa4e454961211c226",
+              "name": "Sport"
             },
-            "data": {
-                "key1": "value1"
+            "userId": {
+              "_id": "56f27b9ea642da4f431e3c22",
+              "email": "user2@vidatio.com",
+              "name": "user2",
+              "admin": false
             },
-            "metaData": {
-                "categoryId": "56f167a70c2d232845af14c4",
-                "fileType": "csv",
-                "name": "First Dataset",
-                "userId": "56f175335ace5d610fd3272d",
-                "tagIds": []
-            },
-            "__v": 0,
-            "published": true
+            "tagIds": [
+              {
+                "_id": "56f27b9fa4e454961211c230",
+                "name": "mmt"
+              }
+            ]
+          },
+          "visualizationOptions": {
+            "type": "map",
+            "xColumn": 1,
+            "yColumn": 0,
+            "color": null,
+            "useColumnHeadersFromDataset": false
+          },
+          "published": true
         },
         {
-            "_id": "56f17533589e927d08a72dd2",
-            "createdAt": "2016-03-22T16:39:15.632Z",
-            "updatedAt": "2016-03-22T16:39:15.632Z",
-            "visualizationOptions": {
-                "option1": "option1"
+          "_id": "56f27b9fa642da4f431e3c26",
+          "createdAt": "2016-03-23T11:18:55.626Z",
+          "updatedAt": "2016-03-23T11:18:55.626Z",
+          "data": [
+            [
+              200,
+              "Orange"
+            ],
+            [
+              300,
+              "Banane"
+            ],
+            [
+              400,
+              "Apfel"
+            ]
+          ],
+          "metaData": {
+            "name": "Seed Dataset Bar 1",
+            "fileType": "csv",
+            "categoryId": {
+              "_id": "56f27b9fa4e454961211c226",
+              "name": "Sport"
             },
-            "data": {
-                "key1": "value1"
+            "userId": {
+              "_id": "56f27b9ea642da4f431e3c21",
+              "email": "user1@vidatio.com",
+              "name": "user1",
+              "admin": false
             },
-            "metaData": {
-                "categoryId": "56f167a70c2d232845af14c4",
-                "fileType": "csv",
-                "name": "First Dataset",
-                "userId": "56f175335ace5d610fd3272d",
-                "tagIds": []
-            },
-            "__v": 0,
-            "published": true
-        },
+            "tagIds": [
+              {
+                "_id": "56f27b9fa4e454961211c22a",
+                "name": "vidatio"
+              },
+              {
+                "_id": "56f27b9fa4e454961211c22d",
+                "name": "greatViz"
+              }
+            ]
+          },
+          "visualizationOptions": {
+            "type": "bar",
+            "xColumn": 1,
+            "yColumn": 0,
+            "color": "#FA05AF",
+            "useColumnHeadersFromDataset": false
+          },
+          "published": true
+        }
      ]
 ###

@@ -43,7 +43,8 @@ datasetRoot.get (req, res) ->
     logger.info "get all datasets"
     logger.debug params: req.body
 
-    Dataset.find {}
+    Dataset.find
+        published: true
     .populate "metaData.userId", "-hash -salt"
     .populate "metaData.categoryId"
     .populate "metaData.tagIds"
@@ -152,6 +153,7 @@ datasetRoot.post basicAuth, (req, res) ->
     dataset.metaData.categoryId = req.body.metaData.categoryId
 
     dataset.data = req.body.data
+    dataset.published = req.body.published if req.body.published?
     dataset.visualizationOptions = req.body.visualizationOptions
 
     tagsPromiseArray = []

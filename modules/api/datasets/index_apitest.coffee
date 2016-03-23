@@ -24,6 +24,7 @@ testDataset =
     metaData:
         name: "First Dataset"
         fileType: "csv"
+    published: false
 
 promises = []
 
@@ -140,4 +141,9 @@ User.findOneAndRemove {
                         expect(dataset.metaData.tagIds).toBeDefined()
                         expect(dataset.metaData.tagIds).toEqual(jasmine.any(Array))
                         expect(dataset.metaData.tagIds.length).toEqual(2)
+
+                        Dataset.remove
+                            "metaData.name": "Tmp Dataset"
+                        , ->
+                            console.log "Tmp Dataset removed"
                     ).toss()
