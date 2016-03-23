@@ -8,8 +8,9 @@ seedDataset2 = require "./datasets/seedDataset2"
 seedDataset3 = require "./datasets/seedDataset3"
 seedDataset4 = require "./datasets/seedDataset4"
 seedDataset5 = require "./datasets/seedDataset5"
+seedDatasetSHP1 = require "./datasets/seedDatasetSHP1"
 
-seedDatasets = [seedDataset0, seedDataset1, seedDataset2, seedDataset3, seedDataset4, seedDataset5]
+seedDatasets = [seedDataset0, seedDataset1, seedDataset2, seedDataset3, seedDataset4, seedDataset5, seedDatasetSHP1]
 
 getRandomEntry = (val) ->
     return Math.floor(Math.random() * val.length) if Array.isArray val
