@@ -26,7 +26,7 @@ basicAuth = passport.authenticate "basic",  session: false
 datasetRoot = dataset.route "/"
 
 ###
-@api {get} datasets/ GET - get all Datasets
+@api {get} datasets?limit/ GET - get all Datasets
 @apiName getDatasets
 @apiGroup Datasets
 @apiVersion 0.0.1
@@ -41,10 +41,15 @@ datasetRoot = dataset.route "/"
 
 datasetRoot.get (req, res) ->
     logger.info "get all datasets"
-    logger.debug params: req.body
+    logger.debug
+        params: req.body
+        query: req.query
+
+    limit = if req.query?.limit? then req.query.limit else 0
 
     Dataset.find
         published: true
+    .limit(limit)
     .populate "metaData.userId", "-hash -salt"
     .populate "metaData.categoryId"
     .populate "metaData.tagIds"
