@@ -30,7 +30,10 @@ tagRoot.get (req, res) ->
     logger.info "get all tags"
     logger.debug params: req.body
 
-    Tag.find {}, (error, tags) ->
+    Tag.find {}
+    .sort
+        "name": 1
+    .exec (error, tags) ->
         if error?
             logger.error error: error, "error retrieving tags"
             error = errorHandler.format error

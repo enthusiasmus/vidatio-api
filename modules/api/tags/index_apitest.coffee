@@ -28,11 +28,17 @@ Tag.create testTag, (error, doc) ->
         .expectStatus 200
         .after (error, res, body) ->
             expect(body).toBeDefined()
-            expect(body[body.length - 1]._id).toBeDefined()
-            expect(body[body.length - 1].name).toBeDefined()
-            expect(body[body.length - 1].name).toEqual("testTag")
+            testTagIndex = -1
+            for element, index in body
+                if element.name = testTag.name
+                    testTagIndex = index
 
-            Tag.findOneAndRemove body[body.length - 1]
+            expect(body[testTagIndex]._id).toBeDefined()
+            expect(body[testTagIndex].name).toBeDefined()
+            expect(body[testTagIndex].name).toEqual("testTag")
+
+            Tag.findOneAndRemove
+                name: "testTag"
             .exec()
     .toss()
 
