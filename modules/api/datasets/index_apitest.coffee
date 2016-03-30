@@ -89,7 +89,7 @@ User.findOneAndRemove {
                         dataset = body
 
                         expect(dataset.metaData.name).toEqual("First Dataset")
-                        expect("#{dataset.metaData.userId}").toEqual("#{user._id}")
+                        expect("#{dataset.metaData.userId._id}").toEqual("#{user._id}")
                         expect(dataset.data).toEqual({ key1: "value1" })
                         expect(dataset.visualizationOptions).toEqual({ option1: "option1" })
 
@@ -136,8 +136,8 @@ User.findOneAndRemove {
                         expect(dataset.metaData).toBeDefined()
                         expect(dataset.metaData.name).toEqual(deepCopyDataset.metaData.name)
                         expect(dataset.metaData.categoryId).toBeDefined()
-                        expect(dataset.metaData.categoryId).toEqual(jasmine.any(String))
-                        expect(dataset.metaData.categoryId).toEqual(deepCopyDataset.metaData.categoryId)
+                        expect(dataset.metaData.categoryId._id).toEqual(jasmine.any(String))
+                        expect(dataset.metaData.categoryId._id).toEqual(deepCopyDataset.metaData.categoryId)
                         expect(dataset.metaData.tagIds).toBeDefined()
                         expect(dataset.metaData.tagIds).toEqual(jasmine.any(Array))
                         expect(dataset.metaData.tagIds.length).toEqual(2)

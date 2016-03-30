@@ -97,8 +97,8 @@ datasetIdRoot.get (req, res) ->
             logger.error error: error, "wasn't able to get dataset"
             return res.status(500).json error: errorHandler.format error
         else
-            if not dataset? or dataset.deleted
-                logger.error error: "dataset not found or deleted"
+            if not dataset?
+                logger.error error: "dataset not found"
                 return res.status(404).json error: errorHandler.format 404
 
             logger.debug dataset: dataset, "return dataset"
@@ -179,7 +179,22 @@ datasetRoot.post basicAuth, (req, res) ->
 
             logger.debug dataset: dataset, "success saving dataset"
 
-            return res.json dataset
+            dataset
+            .populate "metaData.userId", "-hash -salt"
+            .populate "metaData.categoryId"
+            .populate "metaData.tagIds"
+            , (error) ->
+                if error?
+                    logger.error error: error, "wasn't able to get dataset"
+                    return res.status(500).json error: errorHandler.format error
+                else
+                    if not dataset?
+                        logger.error error: "dataset not found"
+                        return res.status(404).json error: errorHandler.format 404
+
+                    logger.debug dataset: dataset, "return dataset"
+                    return res.json dataset
+
     .catch (error) ->
         return res.status(500).json error: errorHandler.format()
 
