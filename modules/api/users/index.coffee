@@ -62,7 +62,7 @@ userRoot.post (req, res) ->
 userCheckRoot = user.route "/check"
 
 ###
-@api {check} users/check?email&name GET - check availability of username or email
+@api {check} users/check?email=test&name=test GET - check availability of username or email
 @apiName checkUser
 @apiGroup User
 @apiVersion 0.0.1

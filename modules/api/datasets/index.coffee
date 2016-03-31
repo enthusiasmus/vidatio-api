@@ -45,7 +45,8 @@ datasetRoot.get (req, res) ->
         params: req.body
         query: req.query
 
-    limit = if req.query?.limit? then req.query.limit else 0
+    limit = if req.query?.limit? then Number(req.query.limit) else 0
+    limit = 0 if isNaN(limit)
 
     Dataset.find
         published: true
