@@ -21,7 +21,6 @@ frisby.globalSetup
         baseUri: config.url
 
 Tag.create testTag, (error, doc) ->
-
     frisby.create "Query tags"
         .get tagRoute
         .expectHeaderContains "Content-Type", "json"
@@ -42,5 +41,3 @@ Tag.create testTag, (error, doc) ->
                 name: "testTag"
             .exec()
     .toss()
-
-
