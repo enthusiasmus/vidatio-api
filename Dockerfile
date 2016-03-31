@@ -3,7 +3,7 @@ MAINTAINER Christian Lehner <lehner.chri@gmail.com>, Lukas Wanko <lwanko.mmt-m20
 
 RUN apk update && \
     apk upgrade && \
-    apk add nginx git python make g++
+    apk add nginx git python make g++ libicu-dev
 
 WORKDIR /var/www/
 
