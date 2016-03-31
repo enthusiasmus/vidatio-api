@@ -9,7 +9,7 @@ db = require "../connection"
 nameValidator = [
     validate
         validator: "matches"
-        arguments: /^[\w\s_.-\/]+$/
+        arguments: /^[\w\s_.-\/()]+$/
         message: "API.ERROR.DATASET.CREATE.NAME.NOTVALID"
 ]
 
