@@ -7,8 +7,8 @@ errorHandler   = require "../../helper/error-handler"
 {forward:logger}   = require "../../logger"
 
 request = require "request-promise"
-iconvlite = require "iconv-lite"
-charsetDetector = require "node-icu-charset-detector"
+# iconvlite = require "iconv-lite"
+# charsetDetector = require "node-icu-charset-detector"
 
 forward = Router()
 
@@ -50,10 +50,12 @@ forwardRoot.get (req, res) ->
         # Headers are used from here https://www.iana.org/assignments/media-types/media-types.xhtml
         switch contentType
             when "application/octet-stream", "text/csv"
+                # currently disabling libicu-dev things because of alpine-linux icu-dev not working
                 #charset.toString, charset.language, charset.confidence
-                charset = charsetDetector.detectCharset new Buffer(body.toString("binary"), "binary")
-                body = iconvlite.decode body, charset.toString()
-                logger.debug charset: charset, "encoding prediction"
+                # charset = charsetDetector.detectCharset new Buffer(body.toString("binary"), "binary")
+                # body = iconvlite.decode body, charset.toString()
+                # logger.debug charset: charset, "encoding prediction"
+                body = body.toString "utf8"
                 fileType = "csv"
             when "application/zip"
                 fileType = "zip"
