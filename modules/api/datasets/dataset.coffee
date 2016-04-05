@@ -6,17 +6,9 @@ validate = require "mongoose-validator"
 timestamps = require "mongoose-timestamp"
 db = require "../connection"
 
-nameValidator = [
-    validate
-        validator: "matches"
-        arguments: /^[\w\s_.-\/()]+$/
-        message: "API.ERROR.DATASET.CREATE.NAME.NOTVALID"
-]
-
 metaDataSchema = mongoose.Schema
     name:
         required: "API.ERROR.DATASET.CREATE.NAME.REQUIRED"
-        validate: nameValidator
         type: String
 
     author:
@@ -78,6 +70,7 @@ module.exports =
 @apiSuccess {Object} dataset.metaData.userId contains the user who saved the dataset
 @apiSuccess {String} dataset.metaData.fileType fileType of saved dataset
 @apiSuccess {String} dataset.metaData.name name of the dataset
+@apiSuccess {String} dataset.metaData.author originator of the dataset
 @apiSuccess {Array} [dataset.metaData.tagIds]
 @apiSuccess {Object} dataset.metaData.tagIds.tag a tag object of the given dataset
 
@@ -108,6 +101,7 @@ module.exports =
       ],
       "metaData": {
         "name": "Seed Dataset Map",
+        "author": "Data.gv.at",
         "fileType": "csv",
         "categoryId": {
           "_id": "56f27b9fa4e454961211c226",
@@ -150,6 +144,7 @@ module.exports =
 @apiSuccess {Object} datasets.dataset.metaData contains all meta-data of the given dataset
 @apiSuccess {Object} datasets.dataset.metaData.categoryId contains the category object of the given dataset
 @apiSuccess {Object} datasets.dataset.metaData.userId contains the user who saved the dataset
+@apiSuccess {Object} datasets.dataset.metaData.author originator of the dataset
 @apiSuccess {String} datasets.dataset.metaData.fileType fileType of saved dataset
 @apiSuccess {String} datasets.dataset.metaData.name name of the dataset
 @apiSuccess {Array} [datasets.dataset.metaData.tagIds]
@@ -182,6 +177,7 @@ module.exports =
             ],
           ],
           "metaData": {
+            "author": "Data.gv.at",
             "name": "Seed Dataset Map",
             "fileType": "csv",
             "categoryId": {

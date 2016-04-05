@@ -119,6 +119,7 @@ datasetIdRoot.get (req, res) ->
 @apiParam {String} metaData.categoryId the categoryId which you want to assign the dataset
 @apiParam {String} metaData.fileType fileType of saved dataset
 @apiParam {String} metaData.name name of the dataset
+@apiParam {String} metaData.author originator of the dataset
 @apiParam {Array} [metaData.tagIds]
 @apiParam {String} metaData.tagIds.tag each string in the array is going to be used as a tag for your dataset
 
