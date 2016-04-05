@@ -10,6 +10,7 @@ module.exports =
     metaData:
         name: "Seed Dataset Scatter"
         fileType: "csv"
+        author: "Vidatio-Urheber"
     visualizationOptions:
         type: "scatter"
         xColumn: 0

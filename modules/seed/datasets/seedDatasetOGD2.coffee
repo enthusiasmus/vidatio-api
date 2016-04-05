@@ -202,6 +202,7 @@ module.exports =
     metaData:
         name: "Stickstoffdioxid NOe (OGD)"
         fileType: "csv"
+        author: "OGD"
     published: true
     visualizationOptions:
         color: "#11DDC6"

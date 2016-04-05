@@ -5,6 +5,7 @@ module.exports =
     metaData:
         name: "Seed Dataset Bar 1"
         fileType: "csv"
+        author: "Vidatio-Urheber"
     visualizationOptions:
         type: "bar"
         xColumn: 1

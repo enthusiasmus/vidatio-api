@@ -344,6 +344,7 @@ module.exports =
     metaData:
         name: "Seed Dataset SHP ImpfOGD"
         fileType: "shp"
+        author: "OGD"
     visualizationOptions:
         type: "map"
         xColumn: 0

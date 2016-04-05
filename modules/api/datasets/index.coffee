@@ -157,6 +157,7 @@ datasetRoot.post basicAuth, (req, res) ->
     dataset.metaData.name = req.body.metaData.name
     dataset.metaData.fileType = req.body.metaData.fileType
     dataset.metaData.categoryId = req.body.metaData.categoryId
+    dataset.metaData.author = req.body.metaData.author
 
     dataset.data = req.body.data
     dataset.published = req.body.published if req.body.published?

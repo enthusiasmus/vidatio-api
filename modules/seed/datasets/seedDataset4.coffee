@@ -15,6 +15,7 @@ module.exports =
     metaData:
         name: "Seed Dataset Parallel"
         fileType: "csv"
+        author: "Vidatio-Urheber"
     visualizationOptions:
         type: "parallel"
         xColumn: 0

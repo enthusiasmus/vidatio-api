@@ -15,6 +15,7 @@ module.exports =
     metaData:
         name: "Seed Dataset Timeseries"
         fileType: "csv"
+        author: "Vidatio-Urheber"
     visualizationOptions:
         type: "timeseries"
         xColumn: 0

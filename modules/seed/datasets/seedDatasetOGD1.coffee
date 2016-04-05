@@ -79,6 +79,7 @@ module.exports =
     metaData:
         name: "Volksschulen Salzburg (OGD)"
         fileType: "csv"
+        author: "OGD"
     published: true
     visualizationOptions:
         color: "#11DDC6"
