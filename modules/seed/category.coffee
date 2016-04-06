@@ -25,16 +25,17 @@ module.exports =  (db) ->
                     console.log "Inserting category #{seedCategories[i]}"
 
                     promise = new Promise (resolve, reject) ->
-                        Category.update
+                        Category.findOneAndUpdate
                             name: seedCategories[i]
                         ,
                             $setOnInsert:
                                 name: seedCategories[i]
                         ,
+                            new: true
                             upsert: true
                         , (error, doc) ->
                             reject error if error
-                            resolve doc.upserted[0]
+                            resolve doc
 
                     promiseArray.push promise
 

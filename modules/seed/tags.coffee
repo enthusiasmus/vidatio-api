@@ -34,16 +34,17 @@ module.exports =  (db) ->
                     console.log "Inserting tag #{seedTags[i]}"
 
                     promise = new Promise (resolve, reject) ->
-                        Tag.update
+                        Tag.findOneAndUpdate
                             name: seedTags[i]
                         ,
                             $setOnInsert:
                                 name: seedTags[i]
                         ,
+                            new: true
                             upsert: true
                         , (error, doc) ->
                             reject error if error
-                            resolve doc.upserted[0]
+                            resolve doc
 
                     promiseArray.push promise
 

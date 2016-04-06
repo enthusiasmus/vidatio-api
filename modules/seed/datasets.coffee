@@ -55,7 +55,6 @@ getCategoryByName = (name, categories) ->
         return category if category.name is name
 
 populateDevData = (seedDataset, categories, tags) ->
-    console.log "populateDevData"
     seedDataset.data.metaData.categoryId = categories[getRandomEntry(categories)]._id
     seedDataset.data.metaData.tagIds = []
     numberOfTags = getRandomEntry (tags.length / 2)
@@ -67,11 +66,11 @@ populateDevData = (seedDataset, categories, tags) ->
 populateProdData = (seedDataset, categories, tags) ->
     category = getCategoryByName seedDataset.category, categories
     seedDataset.data.metaData.categoryId = category._id
+    seedDataset.data.metaData.tagIds = []
     for seedTag in seedDataset.tags
         for tag in tags
             if tag.name is seedTag
-                tagId = tag._id
-        seedDataset.data.metaData.tagIds.push tagId
+                seedDataset.data.metaData.tagIds.push tag._id
     return seedDataset
 
 module.exports = (db, users, categories, tags, useAllDatasets) ->
@@ -99,12 +98,8 @@ module.exports = (db, users, categories, tags, useAllDatasets) ->
 
                 for data, i in arrayToProcess
                     console.log "Inserting dataset #{i} (#{data.data.metaData.name}) for seed user #{i % users.length}"
-                    console.log "#{arrayToProcess.length}"
                     seedDataset = seedFunction data, categories, tags
                     seedDataset.data.metaData.userId = users[i % users.length]._id
-
-                    console.log seedDataset.data.metaData
-                    console.log "\n"
 
                     Dataset.create seedDataset.data
                     , (error, dataset) ->
