@@ -1,13 +1,24 @@
 "use strict"
 
 seedTags = [
-    "vidatio"
-    "visualization"
-    "hello world"
-    "greatViz"
-    "yolo"
-    "fh salzburg"
-    "mmt"
+    "Vidatio"
+    "Visualization"
+    "FH Salzburg"
+    "Luftgüte"
+    "OGD"
+    "Impfung"
+    "2015"
+    "Schule"
+    "Salzburg"
+    "Kartenvisualisierung"
+    "Arbeitslosigkeit"
+    "Ausland"
+    "Asyl"
+    "Arzt"
+    "Ausbildung"
+    "Barrierefreiheit"
+    "Datenvisualisierung"
+    "Datenanalyse"
 ]
 
 module.exports =  (db) ->

@@ -1,7 +1,5 @@
 "use strict"
 
-{api:logger} = require "../logger"
-
 seedDataset0 = require "./datasets/seedDataset0"
 seedDataset1 = require "./datasets/seedDataset1"
 seedDataset2 = require "./datasets/seedDataset2"
@@ -12,13 +10,70 @@ seedDatasetOGD1 = require "./datasets/seedDatasetOGD1"
 seedDatasetOGD2 = require "./datasets/seedDatasetOGD2"
 seedDatasetSHP1 = require "./datasets/seedDatasetSHP1"
 
-seedDatasets = [seedDataset0, seedDataset1, seedDataset2, seedDataset3, seedDataset4, seedDataset5, seedDatasetOGD1, seedDatasetOGD2, seedDatasetSHP1]
+seedDatasets = [
+    {data: seedDataset0}
+    {data: seedDataset1}
+    {data: seedDataset2}
+    {data: seedDataset3}
+    {data: seedDataset4}
+    {data: seedDataset5}
+    {data: seedDatasetOGD1}
+    {data: seedDatasetOGD2}
+    {data: seedDatasetSHP1}
+]
+
+seedDatasetsOGD = [
+    {
+        data: seedDatasetOGD1
+        category: "Bildung"
+        tags: ["Schule", "Salzburg", "OGD"]
+    }
+    {
+        data: seedDatasetOGD2
+        category: "Umwelt"
+        tags: ["OGD", "Luftgüte", "Kartenvisualisierung"]
+    }
+    {
+        data: seedDatasetSHP1
+        category: "Gesundheit"
+        tags: ["Impfung", "OGD", "Salzburg", "2015"]
+    }
+]
 
 getRandomEntry = (val) ->
     return Math.floor(Math.random() * val.length) if Array.isArray val
     return Math.floor(Math.random() * val)
 
-module.exports = (db, users, categories, tags) ->
+getUniqueTagId = (seedDataset,tags) ->
+    tagId = tags[getRandomEntry(tags) % tags.length]._id
+    if tagId in seedDataset.data.metaData.tagIds
+        return getUniqueTagId seedDataset
+    return tagId
+
+getCategoryByName = (name, categories) ->
+    for category in categories
+        return category if category.name is name
+
+populateDevData = (seedDataset, categories, tags) ->
+    seedDataset.data.metaData.categoryId = categories[getRandomEntry(categories)]._id
+    seedDataset.data.metaData.tagIds = []
+    numberOfTags = getRandomEntry (tags.length / 2)
+    for i in [0..numberOfTags]
+        tagId = getUniqueTagId seedDataset, tags
+        seedDataset.data.metaData.tagIds.push tagId
+    return seedDataset
+
+populateProdData = (seedDataset, categories, tags) ->
+    category = getCategoryByName seedDataset.category, categories
+    seedDataset.data.metaData.categoryId = category._id
+    for seedTag in seedDataset.tags
+        tagId = tags.filter (tag) ->
+            if tag.name is seedTag
+                return tag._id
+        seedDataset.data.metaData.tagIds.push tagId
+    return seedDataset
+
+module.exports = (db, users, categories, tags, useAllDatasets) ->
     Dataset = db.model "Dataset"
     User = db.model "User"
 
@@ -34,21 +89,25 @@ module.exports = (db, users, categories, tags) ->
 
                 return if users.length is 0
 
-                for seedDataset, i in seedDatasets
-                    console.log "Inserting dataset #{i} (#{seedDataset.metaData.name}) for seed user #{i % users.length}"
+                arrayToProcess = if useAllDatasets then seedDatasets else seedDatasetsOGD
+                console.log "arrayToProcess", arrayToProcess
+                for data, i in arrayToProcess
+                    console.log "Inserting dataset #{i} (#{data.data.metaData.name}) for seed user #{i % users.length}"
 
-                    seedDataset.metaData.categoryId = categories[getRandomEntry(categories)]._id
-                    seedDataset.metaData.userId = users[i % users.length]._id
+                    if useAllDatasets
+                        seedDataset = populateDevData data, categories, tags
+                    else
+                        seedDataset = populateProdData data, categories, tags
 
-                    # create 0 to 3 tags for each dataset
-                    seedDataset.metaData.tagIds = []
-                    for [i..(getRandomEntry(4))]
-                        tagId = tags[getRandomEntry(tags) % tags.length]._id
-                        seedDataset.metaData.tagIds.push tagId
+                    seedDataset.data.metaData.userId = users[i % users.length]._id
 
-                    Dataset.create seedDataset
+                    console.log data.data.metaData.name
+                    test = seedDataset.data
+                    console.log test
+
+                    Dataset.create test
                     , (error, dataset) ->
                         console.log "Error inserting Dataset", error
-                        return
+
         else
             console.log "No need to seed datasets"

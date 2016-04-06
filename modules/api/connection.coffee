@@ -27,6 +27,9 @@ connection.on "disconnected", ->
 
 connection.once "open", ->
     logger.info config.mongo, "db connection opened"
-    seeder(connection) if config.isDevEnvironment()
+    if config.isDevEnvironment()
+        seeder.dev connection
+    else
+        seeder.prod connection
 
 module.exports = connection

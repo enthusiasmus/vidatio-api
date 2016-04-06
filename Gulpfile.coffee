@@ -36,9 +36,8 @@ DIRS =
 APP = "./app.js"
 
 NODEMONSTARTED = false
-
-JASMINE_APITEST = "NODE_ENV='test' jasmine-node -m '_apitest.' --matchall --forceexit --color --nohelpers #{DIRS.build}"
-JASMINE_UNITTEST = "NODE_ENV='test' jasmine-node -m '_test.' --matchall --forceexit --color --nohelpers #{DIRS.build}"
+JASMINE_APITEST = "jasmine-node -m '_apitest.' --matchall --forceexit --color --nohelpers #{DIRS.build}"
+JASMINE_UNITTEST = "jasmine-node -m '_test.' --matchall --forceexit --color --nohelpers #{DIRS.build}"
 
 gulp.task "default",
     "Runs 'develop' and 'test'.",
@@ -71,8 +70,6 @@ gulp.task "develop",
 
                 delete cache.caches.coffee[__dirname + "/" + file.relative]
             gulp.start "build"
-            gulp.start "test:unit"
-            gulp.start "test:api"
 
         gulp.src( [] )
             .pipe inspector()
