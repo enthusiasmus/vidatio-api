@@ -3,9 +3,13 @@
 seedCategories = [
     "Politik"
     "Sport"
-    "Finanzen"
+    "Wirtschaft"
     "Umwelt"
     "Bildung"
+    "Gesundheit"
+    "Tourismus"
+    "Arbeit"
+    "Kultur"
 ]
 
 module.exports =  (db) ->
