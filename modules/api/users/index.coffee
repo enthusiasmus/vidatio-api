@@ -143,6 +143,8 @@ userDatasetsRoot.get (req, res) ->
     .populate "metaData.userId", "-hash -salt"
     .populate "metaData.categoryId"
     .populate "metaData.tagIds"
+    .sort
+        "createdAt": -1
     .exec (error, datasets) ->
         if error?
             logger.error error: error, "error retrieving datasets"
