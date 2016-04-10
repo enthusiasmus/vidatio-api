@@ -120,7 +120,7 @@ userCheckRoot.get (req, res) ->
 userDatasetsRoot = user.route "/:id/datasets"
 
 ###
-@api {check} users/:id/datasets/ GET - get all datasets from user
+@api {check} users/:id/datasets?limit/ GET - get all datasets from user
 @apiName getDatasets
 @apiGroup User
 @apiVersion 0.0.1
