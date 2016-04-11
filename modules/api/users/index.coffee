@@ -120,7 +120,7 @@ userCheckRoot.get (req, res) ->
 userDatasetsRoot = user.route "/:id/datasets"
 
 ###
-@api {check} users/:id/datasets/ GET - get all datasets from user
+@api {check} users/:id/datasets?limit/ GET - get all datasets from user
 @apiName getDatasets
 @apiGroup User
 @apiVersion 0.0.1
@@ -136,10 +136,16 @@ userDatasetsRoot = user.route "/:id/datasets"
 
 userDatasetsRoot.get (req, res) ->
     logger.info "get datasets by user id"
-    logger.debug params: req.params
+    logger.debug
+        params: req.params
+        query: req.query
+
+    limit = if req.query?.limit? then Number(req.query.limit) else 0
+    limit = 0 if isNaN(limit)
 
     Dataset.find
         "metaData.userId": req.params.id
+    .limit(limit)
     .populate "metaData.userId", "-hash -salt"
     .populate "metaData.categoryId"
     .populate "metaData.tagIds"
