@@ -342,7 +342,7 @@ module.exports =
             }
         ]
     metaData:
-        name: "Seed Dataset SHP ImpfOGD"
+        name: "Impfstellen Salzburg (OGD/SHP)"
         fileType: "shp"
         author: "OGD"
     visualizationOptions:

@@ -9,6 +9,7 @@ seedDataset5 = require "./datasets/seedDataset5"
 seedDatasetOGD1 = require "./datasets/seedDatasetOGD1"
 seedDatasetOGD2 = require "./datasets/seedDatasetOGD2"
 seedDatasetOGD3 = require "./datasets/seedDatasetOGD3"
+seedDatasetOGD4 = require "./datasets/seedDatasetOGD4"
 seedDatasetSHP1 = require "./datasets/seedDatasetSHP1"
 
 seedDatasets = [
@@ -21,6 +22,7 @@ seedDatasets = [
     {data: seedDatasetOGD1}
     {data: seedDatasetOGD2}
     {data: seedDatasetOGD3}
+    {data: seedDatasetOGD4}
     {data: seedDatasetSHP1}
 ]
 
@@ -39,6 +41,11 @@ seedDatasetsOGD = [
         data: seedDatasetOGD3
         category: "Tourismus"
         tags: ["OGD", "Skilifte", "Vorarlberg"]
+    }
+    {
+        data: seedDatasetOGD4
+        category: "Umwelt"
+        tags: ["OGD", "Bevölkerung", "Geburtenrate"]
     }
     {
         data: seedDatasetSHP1
