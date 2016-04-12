@@ -13,11 +13,11 @@ module.exports =
     ["01.01.2018", 1600],
     ["15.03.2018", 1700] ]
     metaData:
-        name: "Seed Dataset Timeseries"
+        name: "Seed Dataset Line"
         fileType: "csv"
         author: "Vidatio-Urheber"
     visualizationOptions:
-        type: "timeseries"
+        type: "line"
         xColumn: 0
         yColumn: 1
         color: "#05AA05"

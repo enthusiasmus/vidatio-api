@@ -10,6 +10,7 @@ seedDatasetOGD1 = require "./datasets/seedDatasetOGD1"
 seedDatasetOGD2 = require "./datasets/seedDatasetOGD2"
 seedDatasetOGD3 = require "./datasets/seedDatasetOGD3"
 seedDatasetOGD4 = require "./datasets/seedDatasetOGD4"
+seedDatasetOGD5 = require "./datasets/seedDatasetOGD5"
 seedDatasetSHP1 = require "./datasets/seedDatasetSHP1"
 
 seedDatasets = [
@@ -23,6 +24,7 @@ seedDatasets = [
     {data: seedDatasetOGD2}
     {data: seedDatasetOGD3}
     {data: seedDatasetOGD4}
+    {data: seedDatasetOGD5}
     {data: seedDatasetSHP1}
 ]
 
@@ -46,6 +48,11 @@ seedDatasetsOGD = [
         data: seedDatasetOGD4
         category: "Umwelt"
         tags: ["OGD", "Bevölkerung", "Geburtenrate"]
+    }
+    {
+        data: seedDatasetOGD5
+        category: "Umwelt"
+        tags: ["OGD", "Tirol", "Holz", "Preisenticklung"]
     }
     {
         data: seedDatasetSHP1
