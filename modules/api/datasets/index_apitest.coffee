@@ -142,8 +142,21 @@ User.findOneAndRemove {
                         expect(dataset.metaData.tagIds).toEqual(jasmine.any(Array))
                         expect(dataset.metaData.tagIds.length).toEqual(2)
 
-                        Dataset.remove
-                            "metaData.name": "Tmp Dataset"
-                        , ->
-                            console.log "Tmp Dataset removed"
+                        frisby.create "expect a successful deletion of a dataset"
+                            .delete "#{datasetRoute}/#{dataset._id}"
+                            .auth testuser.email, testuser.password
+                            .after((error, res, body) ->
+                                dataset = body
+                                expect(dataset).toBeDefined()
+                                expect(dataset.visualizationOptions).toEqual(deepCopyDataset.visualizationOptions)
+                                expect(dataset.data).toEqual(deepCopyDataset.data)
+                                expect(dataset.metaData).toBeDefined()
+                                expect(dataset.metaData.name).toEqual(deepCopyDataset.metaData.name)
+                                expect(dataset.metaData.categoryId).toBeDefined()
+                                expect(dataset.metaData.categoryId).toEqual(jasmine.any(String))
+                                expect(dataset.metaData.categoryId).toEqual(deepCopyDataset.metaData.categoryId)
+                                expect(dataset.metaData.tagIds).toBeDefined()
+                                expect(dataset.metaData.tagIds).toEqual(jasmine.any(Array))
+                                expect(dataset.metaData.tagIds.length).toEqual(2)
+                            ).toss()
                     ).toss()
