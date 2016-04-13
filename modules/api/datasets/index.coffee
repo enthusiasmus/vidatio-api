@@ -204,7 +204,9 @@ datasetRoot.post basicAuth, (req, res) ->
 findOrCreateTag = (tag, dataset) ->
     return new Promise (resolve, reject) ->
         Tag.findOrCreate tag, (error, tag) ->
-            reject error if error?
+            console.log error
+            if error?
+                return reject error
             dataset.metaData.tagIds.push tag._id
             resolve tag
 
