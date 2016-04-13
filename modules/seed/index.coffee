@@ -1,10 +1,8 @@
 "use strict"
 
-seedNumberUsers = 5
-
 module.exports =
     dev: (db) ->
-        users = require("./users")(db, seedNumberUsers)
+        users = require("./users")(db, 5)
         categories = require("./category")(db)
         tags = require("./tags")(db)
         datasets = require("./datasets")(db, users, categories, tags, true)

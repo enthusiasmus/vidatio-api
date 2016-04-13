@@ -74,7 +74,7 @@ datasetRoot.get (req, res) ->
 @apiGroup Datasets
 @apiVersion 0.0.1
 
-@apiDescription Delete a Dataset by Id.
+@apiDescription Delete a Dataset by Id. This requires ownership of the given dataset.
 
 @apiExample {curl} Example usage:
     curl -i -X "DELETE" https://api.vidatio.com/v0/datasets/56f17533589e927d08a72dd2 -u username:password'

@@ -102,19 +102,37 @@ User.findOneAndRemove {
                                 expect(datasets).toBeDefined()
                                 expect(datasets).toEqual(jasmine.any(Array))
                                 expect(datasets[0]).toEqual(jasmine.any(Object))
+
+                                frisby.create "get dataset by id"
+                                    .get datasetRoute + "/#{dataset._id}"
+                                    .expectHeaderContains "Content-Type", "json"
+                                    .expectStatus 200
+                                    .after((error, res, body) ->
+                                        expect(body).toBeDefined()
+                                        expect(body.visualizationOptions).toEqual(dataset.visualizationOptions)
+                                        expect(body.data).toEqual(dataset.data)
+                                        expect(body._id).toEqual(dataset._id)
+                                        expect(body.metaData.name).toEqual(dataset.metaData.name)
+
+                                        frisby.create "expect a successful deletion of a dataset"
+                                            .delete "#{datasetRoute}/#{dataset._id}"
+                                            .auth testuser.email, testuser.password
+                                            .after((error, res, body) ->
+                                                datasetTwo = body
+                                                expect(datasetTwo).toBeDefined()
+                                                expect(datasetTwo.visualizationOptions).toEqual(testDataset.visualizationOptions)
+                                                expect(datasetTwo.data).toEqual(testDataset.data)
+                                                expect(datasetTwo.metaData).toBeDefined()
+                                                expect(datasetTwo.metaData.name).toEqual(testDataset.metaData.name)
+                                                expect(datasetTwo.metaData.categoryId).toBeDefined()
+                                                expect(datasetTwo.metaData.categoryId).toEqual(jasmine.any(String))
+                                                expect("#{datasetTwo.metaData.categoryId}").toEqual("#{testDataset.metaData.categoryId}")
+                                            ).toss()
+
+                                    ).toss()
+
                             ).toss()
 
-                        frisby.create "get dataset by id"
-                            .get datasetRoute + "/#{dataset._id}"
-                            .expectHeaderContains "Content-Type", "json"
-                            .expectStatus 200
-                            .after((error, res, body) ->
-                                expect(body).toBeDefined()
-                                expect(body.visualizationOptions).toEqual(dataset.visualizationOptions)
-                                expect(body.data).toEqual(dataset.data)
-                                expect(body._id).toEqual(dataset._id)
-                                expect(body.metaData.name).toEqual(dataset.metaData.name)
-                            ).toss()
                 .toss()
 
             deepCopyDataset = JSON.parse(JSON.stringify(testDataset))
