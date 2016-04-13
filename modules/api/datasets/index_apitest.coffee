@@ -100,6 +100,10 @@ User.findOneAndRemove {
                             expect(datasets).toEqual(jasmine.any(Array))
                             expect(datasets[0]).toEqual(jasmine.any(Object))
 
+                            ###
+                             This is in .after callback of "get all datasets" because it is necessary that the following test and the test
+                             before executes before deleting the dataset again and therefore this nesting is needed
+                            ###
                             frisby.create "get dataset by id"
                                 .get datasetRoute + "/#{dataset._id}"
                                 .expectHeaderContains "Content-Type", "json"
@@ -114,17 +118,8 @@ User.findOneAndRemove {
                                     frisby.create "expect a successful deletion of a dataset"
                                         .delete "#{datasetRoute}/#{dataset._id}"
                                         .auth testuser.email, testuser.password
-                                        .after((error, res, body) ->
-                                            datasetTwo = body
-                                            expect(datasetTwo).toBeDefined()
-                                            expect(datasetTwo.visualizationOptions).toEqual(testDataset.visualizationOptions)
-                                            expect(datasetTwo.data).toEqual(testDataset.data)
-                                            expect(datasetTwo.metaData).toBeDefined()
-                                            expect(datasetTwo.metaData.name).toEqual(testDataset.metaData.name)
-                                            expect(datasetTwo.metaData.categoryId).toBeDefined()
-                                            expect(datasetTwo.metaData.categoryId).toEqual(jasmine.any(String))
-                                            expect("#{datasetTwo.metaData.categoryId}").toEqual("#{testDataset.metaData.categoryId}")
-                                        ).toss()
+                                        .expectStatus 204
+                                        .toss()
 
                                 ).toss()
 
@@ -135,43 +130,29 @@ User.findOneAndRemove {
             deepCopyDataset = JSON.parse(JSON.stringify(testDataset))
             deepCopyDataset.metaData.name = "Tmp Dataset"
             deepCopyDataset.metaData.tags = ["tag1", "tag 2"]
-            Dataset.remove
-                "metaData.name": "Tmp Dataset"
-            , ->
-                frisby.create "Expect a successful creation of a dataset with tags"
-                    .post datasetRoute, deepCopyDataset
-                    .auth testuser.email, testuser.password
-                    .expectHeaderContains "Content-Type", "json"
-                    .expectStatus 200
-                    .after((error, res, body) ->
-                        dataset = body
-                        expect(dataset).toBeDefined()
-                        expect(dataset.visualizationOptions).toEqual(deepCopyDataset.visualizationOptions)
-                        expect(dataset.data).toEqual(deepCopyDataset.data)
-                        expect(dataset.metaData).toBeDefined()
-                        expect(dataset.metaData.name).toEqual(deepCopyDataset.metaData.name)
-                        expect(dataset.metaData.categoryId).toBeDefined()
-                        expect(dataset.metaData.categoryId._id).toEqual(jasmine.any(String))
-                        expect(dataset.metaData.categoryId._id).toEqual(deepCopyDataset.metaData.categoryId)
-                        expect(dataset.metaData.tagIds).toBeDefined()
-                        expect(dataset.metaData.tagIds).toEqual(jasmine.any(Array))
-                        expect(dataset.metaData.tagIds.length).toEqual(2)
 
-                        frisby.create "expect a successful deletion of a dataset"
-                            .delete "#{datasetRoute}/#{dataset._id}"
-                            .auth testuser.email, testuser.password
-                            .after((error, res, body) ->
-                                dataset = body
-                                expect(dataset).toBeDefined()
-                                expect(dataset.visualizationOptions).toEqual(deepCopyDataset.visualizationOptions)
-                                expect(dataset.data).toEqual(deepCopyDataset.data)
-                                expect(dataset.metaData).toBeDefined()
-                                expect(dataset.metaData.name).toEqual(deepCopyDataset.metaData.name)
-                                expect(dataset.metaData.categoryId).toBeDefined()
-                                expect(dataset.metaData.categoryId).toEqual(jasmine.any(String))
-                                expect(dataset.metaData.categoryId).toEqual(deepCopyDataset.metaData.categoryId)
-                                expect(dataset.metaData.tagIds).toBeDefined()
-                                expect(dataset.metaData.tagIds).toEqual(jasmine.any(Array))
-                                expect(dataset.metaData.tagIds.length).toEqual(2)
-                            ).toss()
-                    ).toss()
+            frisby.create "Expect a successful creation of a dataset with tags"
+                .post datasetRoute, deepCopyDataset
+                .auth testuser.email, testuser.password
+                .expectHeaderContains "Content-Type", "json"
+                .expectStatus 200
+                .after((error, res, body) ->
+                    dataset = body
+                    expect(dataset).toBeDefined()
+                    expect(dataset.visualizationOptions).toEqual(deepCopyDataset.visualizationOptions)
+                    expect(dataset.data).toEqual(deepCopyDataset.data)
+                    expect(dataset.metaData).toBeDefined()
+                    expect(dataset.metaData.name).toEqual(deepCopyDataset.metaData.name)
+                    expect(dataset.metaData.categoryId).toBeDefined()
+                    expect(dataset.metaData.categoryId._id).toEqual(jasmine.any(String))
+                    expect(dataset.metaData.categoryId._id).toEqual(deepCopyDataset.metaData.categoryId)
+                    expect(dataset.metaData.tagIds).toBeDefined()
+                    expect(dataset.metaData.tagIds).toEqual(jasmine.any(Array))
+                    expect(dataset.metaData.tagIds.length).toEqual(2)
+
+                    frisby.create "expect a successful deletion of a dataset"
+                        .delete "#{datasetRoute}/#{dataset._id}"
+                        .auth testuser.email, testuser.password
+                        .expectStatus 204
+                        .toss()
+                ).toss()

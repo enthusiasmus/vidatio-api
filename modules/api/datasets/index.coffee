@@ -100,7 +100,7 @@ datasetIdRoot.delete basicAuth, (req, res) ->
                 logger.error error: error, "error removing dataset"
                 return res.status(200).json errorHandler.format error
             logger.debug removedDataset: removedDataset, "success removing dataset"
-            return res.status(200).json removedDataset
+            return res.status(204).json {}
 
 ###
 @api {get} dataset/:id/ GET - get a dataset by Id
