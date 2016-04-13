@@ -28,7 +28,6 @@ module.exports =
     schema: tagSchema
     model:  tagModel
 
-
 ###
 @apiDefine SuccessTags
 @apiSuccess {Object[]} tags list of tags
