@@ -342,7 +342,7 @@ module.exports =
             }
         ]
     metaData:
-        name: "Impfstellen Salzburg (OGD/SHP)"
+        name: "Impfstellen Salzburg (OGD)"
         fileType: "shp"
         author: "OGD"
     visualizationOptions:
