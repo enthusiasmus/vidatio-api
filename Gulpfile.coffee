@@ -48,7 +48,7 @@ gulp.task "default",
 gulp.task "production",
     "Runs 'nodemon'",
     [
-        "nodemon"
+        "nodemon-production"
     ]
 
 gulp.task "develop",
@@ -129,6 +129,25 @@ gulp.task "nodemon",
                 ]
                 env:
                     "NODE_ENV": "development"
+            ).on "restart", ->
+                console.log "app restarted"
+
+gulp.task "nodemon-production",
+    "Starts the app with Nodemon in Production."
+    [
+        "build"
+    ],
+    ->
+        return true if NODEMONSTARTED
+        NODEMONSTARTED = true
+        nodemon(
+                script: APP
+                nodeArgs: [ "--debug" ]
+                watch:  [
+                    DIRS.build
+                ]
+                env:
+                    "NODE_ENV": "production"
             ).on "restart", ->
                 console.log "app restarted"
 
