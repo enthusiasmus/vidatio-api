@@ -69,6 +69,40 @@ datasetRoot.get (req, res) ->
 
 
 ###
+@api {delete} dataset/:id/ DELETE - delete a dataset by Id
+@apiName getDataset
+@apiGroup Datasets
+@apiVersion 0.0.1
+
+@apiDescription Delete a Dataset by Id. This requires ownership of the given dataset.
+
+@apiExample {curl} Example usage:
+    curl -i -X "DELETE" https://api.vidatio.com/v0/datasets/56f17533589e927d08a72dd2 -u username:password'
+
+@apiUse basicAuth
+@apiUse SuccessDataset
+@apiUse ErrorHandlerMongo
+###
+
+datasetIdRoot = dataset.route "/:id"
+datasetIdRoot.delete basicAuth, (req, res) ->
+    logger.info "delete a dataset by id"
+    logger.debug params: req.params
+
+    Dataset.findById req.params.id
+    .exec (error, dataset) ->
+        unless "#{dataset.metaData.userId}" is "#{req.user._id}"
+            logger.error "Deletion of dataset of not authorized user"
+            return res.status(401)
+
+        dataset.remove (error, removedDataset) ->
+            if error?
+                logger.error error: error, "error removing dataset"
+                return res.status(200).json errorHandler.format error
+            logger.debug removedDataset: removedDataset, "success removing dataset"
+            return res.status(204).json {}
+
+###
 @api {get} dataset/:id/ GET - get a dataset by Id
 @apiName getDataset
 @apiGroup Datasets
@@ -84,7 +118,6 @@ datasetRoot.get (req, res) ->
 @apiUse ErrorHandler404
 ###
 
-datasetIdRoot = dataset.route "/:id"
 datasetIdRoot.get (req, res) ->
     logger.info "get a dataset by id"
     logger.debug params: req.params
@@ -199,12 +232,14 @@ datasetRoot.post basicAuth, (req, res) ->
                     return res.json dataset
 
     .catch (error) ->
-        return res.status(500).json error: errorHandler.format()
+        return res.status(500).json error: errorHandler.format(error)
 
 findOrCreateTag = (tag, dataset) ->
     return new Promise (resolve, reject) ->
         Tag.findOrCreate tag, (error, tag) ->
-            reject error if error?
+            if error?
+                return reject error
+
             dataset.metaData.tagIds.push tag._id
             resolve tag
 

@@ -97,31 +97,6 @@ frisby.create "Expect email validation error on registering user without email"
         expect(body.error.errors[0].email.value).not.toBeTruthy()
     .toss()
 
-frisby.create "Expect username validation error on registering user with wrong username"
-    .post userRoute,
-        email: "admin@admin.com"
-        name: "admin§"
-        password: "admin"
-    .expectHeaderContains "Content-Type", "json"
-    .expectStatus 500
-    .expectJSON {
-        error:
-            name: "ValidationError"
-            errors: [{
-                name:
-                    i18n: "API.ERROR.USER.REGISTER.NAME.NOTVALID"
-                    value: "admin§"
-            }]
-    }
-    .after (error, res, body) ->
-        expect(body.error.name).toBe("ValidationError")
-        expect(body.error).toEqual(jasmine.any(Object))
-        expect(body.error.errors).toEqual(jasmine.any(Array))
-        expect(body.error.errors[0].name).toEqual(jasmine.any(Object))
-        expect(body.error.errors[0].name.i18n).toBe("API.ERROR.USER.REGISTER.NAME.NOTVALID")
-        expect(body.error.errors[0].name.value).toBe("admin§")
-    .toss()
-
 frisby.create "Expect username validation error on registering user without username"
     .post userRoute,
         email: "admin@admin.com"
@@ -147,8 +122,7 @@ frisby.create "Expect username validation error on registering user without user
         expect(body.error.errors[0].name.value).not.toBeTruthy()
     .toss()
 
-
-frisby.create "username shouldnt exist in database"
+frisby.create "username shouldn't exist in database"
     .get userRoute + "/check?name=userAdmin"
     .expectHeaderContains "Content-Type", "json"
     .expectStatus 200

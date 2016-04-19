@@ -1,23 +1,13 @@
 "use strict"
 
 mongoose = require "mongoose"
-validate = require "mongoose-validator"
-{extend} = validate
 timestamps = require "mongoose-timestamp"
 db = require "../connection"
-
-nameValidator = [
-    validate
-        validator: "matches"
-        arguments: /^[\w\s_.-]+$/
-        message: "API.ERROR.TAG.CREATE.NAME.NOTVALID"
-]
 
 tagSchema = mongoose.Schema
     name:
         type: String
         required: "API.ERROR.TAG.CREATE.NAME.REQUIRED"
-        validate: nameValidator
         unique: true
         trim: true
 
@@ -37,7 +27,6 @@ tagModel = db.model "Tag", tagSchema
 module.exports =
     schema: tagSchema
     model:  tagModel
-
 
 ###
 @apiDefine SuccessTags

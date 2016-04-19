@@ -1,8 +1,6 @@
 "use strict"
 
 mongoose = require "mongoose"
-validate = require "mongoose-validator"
-{extend} = validate
 timestamps = require "mongoose-timestamp"
 db = require "../connection"
 
