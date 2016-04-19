@@ -8,7 +8,7 @@ db = require "../connection"
 nameValidator = [
     validate
         validator: (val) ->
-            return not(/[\/;^<>|\\[\]#"{}§°]+/.test(val))
+            return not(/[\/;^<>|\\[\]"{}§°]+/.test(val))
         message: "API.ERROR.DATASET.CREATE.NAME.NOTVALID"
 ]
 
