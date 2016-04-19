@@ -100,7 +100,7 @@ frisby.create "Expect email validation error on registering user without email"
 frisby.create "Expect username validation error on registering user with special character"
     .post userRoute,
         email: "admin@admin.com"
-        name: "admin #"
+        name: "admin  "
         password: "admin"
     .expectHeaderContains "Content-Type", "json"
     .expectStatus 500
@@ -110,7 +110,7 @@ frisby.create "Expect username validation error on registering user with special
             errors: [{
                 name:
                     i18n: "API.ERROR.USER.REGISTER.NAME.NOTVALID"
-                    value: "admin #"
+                    value: "admin  "
             }]
     }
     .after (error, res, body) ->
