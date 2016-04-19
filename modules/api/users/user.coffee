@@ -12,6 +12,13 @@ emailValidator = [
         message: "API.ERROR.USER.REGISTER.EMAIL.NOTVALID"
 ]
 
+nameValidator = [
+    validate
+        validator: (val) ->
+            return not(/[\/;^<>|\()\[\]#"{}§°\s]+/.test(val))
+        message: "API.ERROR.USER.REGISTER.NAME.NOTVALID"
+]
+
 userSchema = mongoose.Schema
     email:
         type: String
@@ -21,9 +28,9 @@ userSchema = mongoose.Schema
         validate: emailValidator
     name:
         type: String
-        trim: true
         unique: true
         required: "API.ERROR.USER.REGISTER.NAME.REQUIRED"
+        validate: nameValidator
     admin:
         type: Boolean
         required: true

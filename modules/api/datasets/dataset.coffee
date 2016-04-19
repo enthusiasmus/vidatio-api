@@ -1,12 +1,21 @@
 "use strict"
 
 mongoose = require "mongoose"
+validate = require "mongoose-validator"
 timestamps = require "mongoose-timestamp"
 db = require "../connection"
+
+nameValidator = [
+    validate
+        validator: (val) ->
+            return not(/[\/;^<>|\\[\]#"{}§°]+/.test(val))
+        message: "API.ERROR.DATASET.CREATE.NAME.NOTVALID"
+]
 
 metaDataSchema = mongoose.Schema
     name:
         required: "API.ERROR.DATASET.CREATE.NAME.REQUIRED"
+        validate: nameValidator
         type: String
 
     author:

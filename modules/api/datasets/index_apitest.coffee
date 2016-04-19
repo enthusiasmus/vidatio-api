@@ -77,6 +77,31 @@ User.findOneAndRemove {
                 }
             .toss()
 
+            frisby.create "Expect name validation error on creating dataset with invalid name"
+                .post datasetRoute,
+                    data:
+                        key1: "value1"
+                    visualizationOptions:
+                        option1: "option1"
+                    metaData:
+                        name: "<>/&;"
+                        userId: user._id
+                        fileType: "csv"
+                        categoryId: category._id
+                .auth testuser.email, testuser.password
+                .expectHeaderContains "Content-Type", "json"
+                .expectStatus 500
+                .expectJSON {
+                    error:
+                        name: "ValidationError"
+                        errors: [{
+                            "metaData.name":
+                                i18n: "API.ERROR.DATASET.CREATE.NAME.NOTVALID"
+                                value: "<>/&;"
+                        }]
+                }
+            .toss()
+
             frisby.create "Expect a successful creation of a dataset"
                 .post datasetRoute, testDataset
                 .auth testuser.email, testuser.password
