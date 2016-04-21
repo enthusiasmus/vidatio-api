@@ -1,7 +1,7 @@
 develop_api:
   build: .
   links:
-    - "develop_mongo:mongo"
+    - "mongo:develop_mongo"
   restart: "unless-stopped"
   ports:
     - "3001:3000"
