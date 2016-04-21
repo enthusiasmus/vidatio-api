@@ -1,10 +1,16 @@
 develop_api:
   build: .
   links:
-    - "mongo:mongo"
+    - "develop_mongo:mongo"
   restart: "unless-stopped"
   ports:
     - "3001:3000"
+
+develop_mongo:
+  image: "mongo:3.2"
+  volumes:
+    - "develop_vidatio-mongodb_data:/data/db"
+  restart: "unless-stopped"
 
 api:
   build: .
