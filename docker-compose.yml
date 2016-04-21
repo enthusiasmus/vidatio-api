@@ -4,7 +4,7 @@ develop_api:
     - "mongo:mongo"
   restart: "unless-stopped"
   ports:
-    - "3000:3001"
+    - "3001:3000"
 
 api:
   build: .
