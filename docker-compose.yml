@@ -5,6 +5,7 @@ api:
   restart: "unless-stopped"
   ports:
     - "3000:3000"
+
 mongo:
   image: "mongo:3.2"
   volumes:
