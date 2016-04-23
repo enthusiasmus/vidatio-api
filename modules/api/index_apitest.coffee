@@ -20,7 +20,7 @@ frisby.create "Expect 404 on not defined base route"
     .expectStatus 404
     .expectHeader "Access-Control-Allow-Origin", "*"
     .expectHeader "Access-Control-Allow-Headers", "Origin, X-Requested-With, " +
-        "Content-Type, Accept, Authorization, X-HTTP-Method-Override"
+        "Content-Type, Accept, Authorization, X-HTTP-Method-Override, Range-Unit, Range"
     .expectHeader "Access-Control-ALlow-Methods",
         "GET, POST, PUT, DELETE, OPTIONS"
     .expectJSON error: "not found"
@@ -31,7 +31,7 @@ frisby.create "Expect 404 on not defined /v0/api route"
     .expectStatus 404
     .expectHeader "Access-Control-Allow-Origin", "*"
     .expectHeader "Access-Control-Allow-Headers", "Origin, X-Requested-With, " +
-        "Content-Type, Accept, Authorization, X-HTTP-Method-Override"
+        "Content-Type, Accept, Authorization, X-HTTP-Method-Override, Range-Unit, Range"
     .expectHeader "Access-Control-ALlow-Methods",
         "GET, POST, PUT, DELETE, OPTIONS"
     .expectJSON error: "not found"
