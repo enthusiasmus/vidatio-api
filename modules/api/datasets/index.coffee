@@ -2,6 +2,7 @@
 
 {Router} = require "express"
 passport = require "passport"
+paginate = require "node-paginate-anything"
 mongoose = require "mongoose"
 mongoose.Promise = global.Promise
 
@@ -48,24 +49,34 @@ datasetRoot.get (req, res) ->
     limit = if req.query?.limit? then Number(req.query.limit) else 0
     limit = 0 if isNaN(limit)
 
-    Dataset.find
-        published: true
-    .limit(limit)
-    .populate "metaData.userId", "-hash -salt"
-    .populate "metaData.categoryId"
-    .populate "metaData.tagIds"
-    .sort
-        "createdAt": -1
-    .exec (error, datasets) ->
+    Dataset
+    .count()
+    .exec (error, count) ->
         if error?
-            logger.error error: error, "error retrieving datasets"
+            logger.error error: error, "error counting datasets"
             return res.status(500).json error: errorHandler.format error
-        else
-            unless datasets?
-                datasets = []
 
-            logger.debug datasets: datasets, "return datasets"
-            return res.status(200).json datasets
+        queryParams = paginate req, res, count, 5
+
+        Dataset.find
+            published: true
+        .limit(queryParams.limit)
+        .skip(queryParams.skip)
+        .populate "metaData.userId", "-hash -salt"
+        .populate "metaData.categoryId"
+        .populate "metaData.tagIds"
+        .sort
+            "createdAt": -1
+        .exec (error, datasets) ->
+            if error?
+                logger.error error: error, "error retrieving datasets"
+                return res.status(500).json error: errorHandler.format error
+            else
+                unless datasets?
+                    datasets = []
+
+                logger.debug "success returning datasets"
+                return res.status(200).json datasets
 
 
 ###
