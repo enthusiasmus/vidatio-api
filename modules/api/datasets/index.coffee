@@ -56,7 +56,22 @@ datasetRoot.get (req, res) ->
             logger.error error: error, "error counting datasets"
             return res.status(500).json error: errorHandler.format error
 
-        queryParams = paginate req, res, count, 5
+        queryParams = paginate req, res, count, 9
+
+        ### TODO set default values
+        params = req.query
+        console.log(params)
+        if params.category is ""
+            params.category = {}
+        if params.dates.from is ""
+            params.dates.from = "1990"
+        if params.dates.to is ""
+            params.dates.to = "1990"
+        if params.name is ""
+            params.name = ""
+        if params.tags.length is 0
+            params.tags = []
+        ###
 
         Dataset.find
             published: true
